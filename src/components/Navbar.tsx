@@ -75,7 +75,7 @@ export default function Navbar() {
   };
 
   return (
-    <AppBar position="static" color="secondary">
+    <AppBar position="static" color="primary">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
@@ -127,7 +127,7 @@ export default function Navbar() {
               }}
             >
               {pages.map((page) => (
-                <Link href={page.path}>
+                <Link href={page.path} style={{ textDecoration: "none" }}>
                   <MenuItem
                     key={page.name}
                     onClick={handleCloseNavMenu}
@@ -160,7 +160,11 @@ export default function Navbar() {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
-              <Link href={page.path} key={page.path}>
+              <Link
+                href={page.path}
+                key={page.path}
+                style={{ textDecoration: "none" }}
+              >
                 <Button
                   key={page.name}
                   color="primary"

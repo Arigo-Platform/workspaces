@@ -53,12 +53,26 @@ export default function RootLayout({
       createTheme({
         palette: {
           mode,
+          primary: {
+            main: "#844ae0",
+          },
+          secondary: {
+            main: "#f50057",
+          },
+          background: {
+            default: mode === "dark" ? "#0e0e18" : "#f5f5f5",
+            paper: mode === "dark" ? "#1d203b" : "#ffffff",
+          },
         },
         typography: {
           button: {
             textTransform: "none",
           },
         },
+        shape: {
+          borderRadius: 12,
+        },
+        spacing: (factor: number) => `${0.25 * factor}rem`,
       }),
     [mode]
   );
