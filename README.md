@@ -34,4 +34,4 @@ supabase login
 ## Team
 
 - [Ishaan Tilva](https://github.com/ishaantilva) - _CEO_
-- [Jack Merrill](https://github.com/jackmerrill) - _CTO_
+- [Jack Merrill](https://github.com/jackmerrill) - _Software Engineer (maybe CTO soo?!_
