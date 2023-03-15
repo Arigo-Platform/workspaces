@@ -9,6 +9,32 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      bots: {
+        Row: {
+          created_at: string | null;
+          id: string;
+          prefix: string;
+          region: string | null;
+          token: string | null;
+          workspace: string | null;
+        };
+        Insert: {
+          created_at?: string | null;
+          id?: string;
+          prefix?: string;
+          region?: string | null;
+          token?: string | null;
+          workspace?: string | null;
+        };
+        Update: {
+          created_at?: string | null;
+          id?: string;
+          prefix?: string;
+          region?: string | null;
+          token?: string | null;
+          workspace?: string | null;
+        };
+      };
       profiles: {
         Row: {
           discord_id: string | null;
@@ -33,6 +59,29 @@ export interface Database {
           support_access?: boolean;
           suspended?: boolean;
           username?: string;
+        };
+      };
+      workspaces: {
+        Row: {
+          created_at: string | null;
+          guild_id: string;
+          id: string;
+          name: string | null;
+          owner: string | null;
+        };
+        Insert: {
+          created_at?: string | null;
+          guild_id: string;
+          id?: string;
+          name?: string | null;
+          owner?: string | null;
+        };
+        Update: {
+          created_at?: string | null;
+          guild_id?: string;
+          id?: string;
+          name?: string | null;
+          owner?: string | null;
         };
       };
     };

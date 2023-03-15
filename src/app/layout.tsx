@@ -15,8 +15,7 @@ import {
 } from "@supabase/auth-helpers-react";
 import { useRouter } from "next/navigation";
 import { Database } from "@/types/supabase";
-
-export const ColorModeContext = createContext({ toggleColorMode: () => {} });
+import useDarkMode from "@/util/useDarkMode";
 
 export default function RootLayout({
   children,
@@ -27,6 +26,7 @@ export default function RootLayout({
   const [supabase] = useState(() => createBrowserSupabaseClient<Database>());
   const user = useUser();
   const session = useSession();
+  const [theme, setTheme] = useDarkMode();
 
   // Initialize router
   const router = useRouter();
@@ -40,7 +40,11 @@ export default function RootLayout({
         supabaseClient={supabase}
         initialSession={session}
       >
-        <body>
+        <body
+          className={`${
+            theme === "dark" ? "dark" : ""
+          } dark:bg-blackA12 bg-white`}
+        >
           <Navbar />
           <main>{children}</main>
         </body>
