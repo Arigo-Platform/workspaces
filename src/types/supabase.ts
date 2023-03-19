@@ -61,6 +61,29 @@ export interface Database {
           username?: string;
         };
       };
+      workspace_members: {
+        Row: {
+          created_at: string | null;
+          id: string;
+          role: Database["public"]["Enums"]["workspace_member_type"];
+          user: string;
+          workspace: string;
+        };
+        Insert: {
+          created_at?: string | null;
+          id?: string;
+          role?: Database["public"]["Enums"]["workspace_member_type"];
+          user: string;
+          workspace: string;
+        };
+        Update: {
+          created_at?: string | null;
+          id?: string;
+          role?: Database["public"]["Enums"]["workspace_member_type"];
+          user?: string;
+          workspace?: string;
+        };
+      };
       workspaces: {
         Row: {
           created_at: string | null;
@@ -92,7 +115,7 @@ export interface Database {
       [_ in never]: never;
     };
     Enums: {
-      [_ in never]: never;
+      workspace_member_type: "OWNER" | "ADMIN" | "MEMBER" | "VIEWER";
     };
     CompositeTypes: {
       [_ in never]: never;
