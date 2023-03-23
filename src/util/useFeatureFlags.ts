@@ -51,8 +51,9 @@ const useFeatureFlags = () => {
 
               const userHasFeature = (feature: Feature) => {
                 return (
-                  (feature.global_enabled && feature.user_enabled) ||
-                  data.some((f) => f.feature === feature.id)
+                  feature.global_enabled &&
+                  (feature.user_enabled ||
+                    data.some((f) => f.feature === feature.id))
                 );
               };
 

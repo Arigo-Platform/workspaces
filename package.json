@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "doppler run next dev",
-    "build": "next build",
-    "start": "next start",
+    "build": "doppler run next build",
+    "start": "doppler run next start",
     "lint": "next lint",
     "prepare": "husky install",
     "types": "supabase gen types typescript --project-id \"ftuvuggmwgsuhnsglben\" --schema public > ./src/types/supabase.ts"

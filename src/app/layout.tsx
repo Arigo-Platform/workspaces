@@ -36,11 +36,7 @@ export default function RootLayout({
         supabaseClient={supabase}
         initialSession={session}
       >
-        <body
-          className={`${
-            theme === "dark" ? "dark" : ""
-          } dark:bg-blackA12 bg-white`}
-        >
+        <body className="bg-white dark:bg-blackA12">
           <Navbar />
           <FeatureFlagsProvider>
             <main>{children}</main>

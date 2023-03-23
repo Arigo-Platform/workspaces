@@ -46,14 +46,16 @@ export default function Navbar() {
   }, [session, isLoading]);
 
   return (
-    <nav className="flex flex-wrap items-center justify-between p-6 mx-auto dark:bg-black">
-      <div className="flex items-center space-x-2 flex-1">
-        <span className="dark:text-white text-black font-bold text-xl px-2">
-          A
-        </span>
+    <nav className="flex flex-wrap items-center justify-between p-6 mx-auto dark:bg-black bg-slate-100">
+      <div className="flex items-center flex-1 space-x-2">
+        <Link href="/">
+          <span className="px-2 text-xl font-bold text-black dark:text-white">
+            A
+          </span>
+        </Link>
       </div>
 
-      <div className="flex-0 flex space-x-4">
+      <div className="flex space-x-4 flex-0">
         <UserMenu />
       </div>
     </nav>
