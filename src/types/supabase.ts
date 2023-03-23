@@ -35,6 +35,49 @@ export interface Database {
           workspace?: string | null;
         };
       };
+      features: {
+        Row: {
+          created_at: string | null;
+          data: Json | null;
+          description: string | null;
+          global_enabled: boolean;
+          id: string;
+          name: string;
+          user_enabled: boolean;
+        };
+        Insert: {
+          created_at?: string | null;
+          data?: Json | null;
+          description?: string | null;
+          global_enabled?: boolean;
+          id?: string;
+          name: string;
+          user_enabled?: boolean;
+        };
+        Update: {
+          created_at?: string | null;
+          data?: Json | null;
+          description?: string | null;
+          global_enabled?: boolean;
+          id?: string;
+          name?: string;
+          user_enabled?: boolean;
+        };
+      };
+      features_users: {
+        Row: {
+          feature: string;
+          profile: string;
+        };
+        Insert: {
+          feature: string;
+          profile: string;
+        };
+        Update: {
+          feature?: string;
+          profile?: string;
+        };
+      };
       profiles: {
         Row: {
           discord_id: string | null;
@@ -59,6 +102,32 @@ export interface Database {
           support_access?: boolean;
           suspended?: boolean;
           username?: string;
+        };
+      };
+      waitlist: {
+        Row: {
+          created_at: string | null;
+          id: string;
+          invite: string;
+          name: string;
+          role: string;
+          user: string;
+        };
+        Insert: {
+          created_at?: string | null;
+          id?: string;
+          invite: string;
+          name: string;
+          role: string;
+          user: string;
+        };
+        Update: {
+          created_at?: string | null;
+          id?: string;
+          invite?: string;
+          name?: string;
+          role?: string;
+          user?: string;
         };
       };
       workspace_members: {

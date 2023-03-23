@@ -1,8 +1,5 @@
 "use client";
-// import "@fontsource/roboto/300.css";
-// import "@fontsource/roboto/400.css";
-// import "@fontsource/roboto/500.css";
-// import "@fontsource/roboto/700.css";
+import "tailwindcss/tailwind.css";
 
 import { createContext, useEffect, useMemo, useState } from "react";
 import Navbar from "@/components/Navbar";
@@ -16,6 +13,8 @@ import {
 import { useRouter } from "next/navigation";
 import { Database } from "@/types/supabase";
 import useDarkMode from "@/util/useDarkMode";
+import useFeatureFlags from "@/util/useFeatureFlags";
+import FeatureFlagsProvider from "@/components/FeatureFlagsProvider";
 
 export default function RootLayout({
   children,
@@ -27,9 +26,6 @@ export default function RootLayout({
   const user = useUser();
   const session = useSession();
   const [theme, setTheme] = useDarkMode();
-
-  // Initialize router
-  const router = useRouter();
 
   return (
     <html lang="en">
@@ -46,7 +42,9 @@ export default function RootLayout({
           } dark:bg-blackA12 bg-white`}
         >
           <Navbar />
-          <main>{children}</main>
+          <FeatureFlagsProvider>
+            <main>{children}</main>
+          </FeatureFlagsProvider>
         </body>
       </SessionContextProvider>
     </html>

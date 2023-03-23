@@ -11,6 +11,7 @@ import useProfile from "@/util/useProfile";
 import WorkspaceSelector from "./WorkspaceSelector";
 import UserMenu from "./UserMenu";
 import DarkModeSwitch from "./DarkModeSwitch";
+import useFeatureFlags from "@/util/useFeatureFlags";
 
 type Route = {
   name: string;
@@ -29,6 +30,7 @@ export default function Navbar() {
   const { error, isLoading, session, supabaseClient } = useSessionContext();
   const user = useUser();
   const profile = useProfile();
+  const featureFlags = useFeatureFlags();
 
   // If the user is not logged in, redirect to the login page
   useEffect(() => {
@@ -48,27 +50,10 @@ export default function Navbar() {
       <div className="flex items-center space-x-2 flex-1">
         <span className="dark:text-white text-black font-bold text-xl px-2">
           A
-        </span>{" "}
-        {/* Logo */}
-        <span className="text-gray-600">
-          <svg
-            fill="none"
-            height="32"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1"
-            viewBox="0 0 24 24"
-            width="32"
-          >
-            <path d="M16.88 3.549L7.12 20.451"></path>
-          </svg>
         </span>
-        <WorkspaceSelector />
       </div>
 
       <div className="flex-0 flex space-x-4">
-        <DarkModeSwitch />
         <UserMenu />
       </div>
     </nav>

@@ -1,5 +1,4 @@
 "use client";
-import "tailwindcss/tailwind.css";
 import * as React from "react";
 import { Toaster, toast } from "sonner";
 import useWorkspaces from "@/util/useWorkspaces";

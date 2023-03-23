@@ -8,6 +8,8 @@ import {
   PlusIcon,
 } from "@radix-ui/react-icons";
 import useWorkspaces from "@/util/useWorkspaces";
+import DarkModeSwitch from "./DarkModeSwitch";
+import classNames from "classnames";
 
 export default function UserMenu() {
   const supabase = useSupabaseClient();
@@ -58,12 +60,13 @@ export default function UserMenu() {
             <DropdownMenu.Separator className="h-[1px] bg-[#4F66C2] bg-opacity-10 m-[5px]" />
             {/* Workspace Selector */}
             <DropdownMenu.Sub onOpenChange={setWorkspaceSelectorOpen}>
-              <DropdownMenu.SubTrigger className="py-2 px-3 space-x-1 text-sm hover:bg-gray-100 text-gray-700 flex items-center select-none outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-gray-200 data-[highlighted]:rounded data-[highlighted]:data-[state=open]:bg-gray-200 ">
-                {workspaceSelectorOpen === true ? (
-                  <ChevronDownIcon />
-                ) : (
-                  <ChevronLeftIcon />
-                )}
+              <DropdownMenu.SubTrigger className="py-2 px-3 gap-x-2 text-sm hover:bg-gray-100 text-gray-700 flex items-center select-none outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-gray-200 data-[highlighted]:rounded data-[highlighted]:data-[state=open]:bg-gray-200 ">
+                <ChevronLeftIcon
+                  className={classNames(
+                    workspaceSelectorOpen && "-rotate-90",
+                    "transition duration-100"
+                  )}
+                />
                 Change Workspace
               </DropdownMenu.SubTrigger>
               <DropdownMenu.Portal>
@@ -95,6 +98,14 @@ export default function UserMenu() {
             </DropdownMenu.Sub>
             {/* Seperator / Divider */}
             <DropdownMenu.Separator className="h-[1px] bg-[#4F66C2] bg-opacity-10 m-[5px]" />
+            {/* Dark Mode Switch */}
+            <DropdownMenu.Item
+              disabled
+              className="flex justify-between items-center px-4 py-2 text-sm hover:bg-gray-100 text-gray-700 select-none outline-none data-[highlighted]:bg-gray-200 data-[highlighted]:rounded"
+            >
+              Dark Mode
+              <DarkModeSwitch />
+            </DropdownMenu.Item>
             {/* Sign Out */}
             <DropdownMenu.Item
               className="block px-4 py-2 text-sm hover:bg-gray-100 text-gray-700 select-none outline-none data-[highlighted]:bg-gray-200 data-[highlighted]:rounded"
