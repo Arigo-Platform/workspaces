@@ -7,7 +7,7 @@ import {
 } from "@supabase/auth-helpers-react";
 import Link from "next/link";
 // import ThemeSwitcher from "./ThemeSwitcher";
-import useProfile from "@/util/useProfile";
+import useAccount from "@/util/useAccount";
 import WorkspaceSelector from "./WorkspaceSelector";
 import UserMenu from "./UserMenu";
 import DarkModeSwitch from "./DarkModeSwitch";
@@ -28,8 +28,6 @@ const pages: Route[] = [
 export default function Navbar() {
   // Initialize Supabase client
   const { error, isLoading, session, supabaseClient } = useSessionContext();
-  const user = useUser();
-  const profile = useProfile();
   const featureFlags = useFeatureFlags();
 
   // If the user is not logged in, redirect to the login page
@@ -37,6 +35,9 @@ export default function Navbar() {
     if (!session && !isLoading && !error) {
       supabaseClient.auth.signInWithOAuth({
         provider: "discord",
+        options: {
+          redirectTo: process.env.NEXT_PUBLIC_SITE,
+        },
       });
     }
     // Catch any potential errors

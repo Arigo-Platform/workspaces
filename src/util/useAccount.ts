@@ -5,9 +5,9 @@ import {
 } from "@supabase/auth-helpers-react";
 import { useEffect, useState } from "react";
 
-type Profile = Database["public"]["Tables"]["profiles"]["Row"];
+type Profile = Database["public"]["Tables"]["accounts"]["Row"];
 
-const useProfile = () => {
+const useAccount = () => {
   const [profile, setProfile] = useState<Profile>();
   const { error, isLoading, session } = useSessionContext();
   const supabaseClient = useSupabaseClient<Database>();
@@ -19,7 +19,7 @@ const useProfile = () => {
 
     if (session && !isLoading) {
       supabaseClient
-        .from("profiles")
+        .from("accounts")
         .select("*")
         .eq("id", session.user.id)
         .single()
@@ -36,4 +36,4 @@ const useProfile = () => {
   return profile;
 };
 
-export default useProfile;
+export default useAccount;

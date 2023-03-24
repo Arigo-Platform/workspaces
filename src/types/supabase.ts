@@ -9,6 +9,32 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      accounts: {
+        Row: {
+          discord_id: string | null;
+          id: string;
+          registered: string;
+          support_access: boolean;
+          suspended: boolean;
+          username: string;
+        };
+        Insert: {
+          discord_id?: string | null;
+          id: string;
+          registered?: string;
+          support_access?: boolean;
+          suspended?: boolean;
+          username: string;
+        };
+        Update: {
+          discord_id?: string | null;
+          id?: string;
+          registered?: string;
+          support_access?: boolean;
+          suspended?: boolean;
+          username?: string;
+        };
+      };
       bots: {
         Row: {
           created_at: string | null;
@@ -76,32 +102,6 @@ export interface Database {
         Update: {
           feature?: string;
           profile?: string;
-        };
-      };
-      profiles: {
-        Row: {
-          discord_id: string | null;
-          id: string;
-          registered: string;
-          support_access: boolean;
-          suspended: boolean;
-          username: string;
-        };
-        Insert: {
-          discord_id?: string | null;
-          id: string;
-          registered?: string;
-          support_access?: boolean;
-          suspended?: boolean;
-          username: string;
-        };
-        Update: {
-          discord_id?: string | null;
-          id?: string;
-          registered?: string;
-          support_access?: boolean;
-          suspended?: boolean;
-          username?: string;
         };
       };
       waitlist: {
