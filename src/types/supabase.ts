@@ -191,6 +191,12 @@ export interface Database {
         };
         Returns: boolean;
       };
+      get_workspace_member_count: {
+        Args: {
+          workspace_id: string;
+        };
+        Returns: number;
+      };
     };
     Enums: {
       workspace_member_type: "OWNER" | "ADMIN" | "MEMBER" | "VIEWER";

@@ -5,8 +5,10 @@ import {
 } from "@supabase/auth-helpers-react";
 import { useEffect, useState } from "react";
 
-const useWorkspaceMemberCount = (workspaceId: string) => {
-  const [memberCount, setMemberCount] = useState(0);
+const useWorkspace = (workspaceId: string) => {
+  const [workspace, setWorkspace] = useState<
+    Database["public"]["Tables"]["workspaces"]["Row"] | null
+  >(null);
   const [loading, setLoading] = useState(true);
   const { session } = useSessionContext();
   const supabase = useSupabaseClient<Database>();
@@ -14,10 +16,12 @@ const useWorkspaceMemberCount = (workspaceId: string) => {
   useEffect(() => {
     if (!session) return;
 
-    const fetchMemberCount = async () => {
-      const { data, error } = await supabase.rpc("get_workspace_member_count", {
-        workspace_id: workspaceId,
-      });
+    const fetchWorkspace = async () => {
+      const { data, error } = await supabase
+        .from("workspaces")
+        .select("*")
+        .eq("id", workspaceId)
+        .single();
 
       setLoading(false);
 
@@ -26,13 +30,13 @@ const useWorkspaceMemberCount = (workspaceId: string) => {
         return;
       }
 
-      setMemberCount(data || 0);
+      setWorkspace(data);
     };
 
-    fetchMemberCount();
+    fetchWorkspace();
   }, [workspaceId, session]);
 
-  return [memberCount, loading] as const;
+  return [workspace, loading] as const;
 };
 
-export default useWorkspaceMemberCount;
+export default useWorkspace;
