@@ -5,6 +5,16 @@ module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   darkMode: "class",
   theme: {
+    borderWidth: {
+      DEFAULT: "0.3px",
+      0: "0",
+      1.5: "1.5px",
+      2: "2px",
+      3: "3px",
+      4: "4px",
+      6: "6px",
+      8: "8px",
+    },
     extend: {
       colors: {
         ...mauve,

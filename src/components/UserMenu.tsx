@@ -89,7 +89,7 @@ export default function UserMenu() {
                   {/* Seperator / Divider */}
                   <DropdownMenu.Separator className="h-[1px] bg-gray-200 m-[5px]" />
                   {/* Create Workspace Button */}
-                  <DropdownMenu.Item>
+                  <DropdownMenu.Item className="outline-none">
                     <Link
                       href="/create"
                       className="flex justify-between items-center px-4 py-2 text-sm hover:bg-gray-200 rounded-md text-gray-700 outline-none select-none data-[highlighted]:bg-gray-200 data-[highlighted]:rounded-md"

@@ -157,6 +157,7 @@ export interface Database {
         Row: {
           created_at: string | null;
           guild_id: string;
+          icon: string | null;
           id: string;
           name: string | null;
           owner: string | null;
@@ -164,6 +165,7 @@ export interface Database {
         Insert: {
           created_at?: string | null;
           guild_id: string;
+          icon?: string | null;
           id?: string;
           name?: string | null;
           owner?: string | null;
@@ -171,6 +173,7 @@ export interface Database {
         Update: {
           created_at?: string | null;
           guild_id?: string;
+          icon?: string | null;
           id?: string;
           name?: string | null;
           owner?: string | null;
@@ -181,7 +184,13 @@ export interface Database {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      can_access_workspace: {
+        Args: {
+          workspaceid: string;
+          uid: string;
+        };
+        Returns: boolean;
+      };
     };
     Enums: {
       workspace_member_type: "OWNER" | "ADMIN" | "MEMBER" | "VIEWER";
