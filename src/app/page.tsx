@@ -4,7 +4,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { Database } from "@/types/supabase";
 import useWorkspaceMemberCount from "@/util/useWorkspaceMemberCount";
-import useDiscordServer from "@/util/useDiscordServer";
 
 type Workspace = Database["public"]["Tables"]["workspaces"]["Row"];
 
@@ -51,8 +50,6 @@ function WorkspaceCard({ workspace }: { workspace: Workspace }) {
     workspace.id
   );
 
-  const [discordServer, discordServerLoading] = useDiscordServer(workspace);
-
   return (
     <Link
       href={`/workspace/${workspace.id}`}
@@ -66,22 +63,12 @@ function WorkspaceCard({ workspace }: { workspace: Workspace }) {
                 {workspace.name?.at(0)?.toUpperCase()}
               </div>
             ) : (
-              <div>
-                {discordServerLoading ? (
-                  <div>...</div>
-                ) : discordServer ? (
-                  <Image
-                    src={discordServer?.icon ?? ""}
-                    alt="Server Icon"
-                    width={50}
-                    height={50}
-                  />
-                ) : (
-                  <div className="w-[50px] h-[50px] rounded-md bg-blue-400 text-blue-50 flex items-center justify-center">
-                    {workspace.name?.at(0)?.toUpperCase()}
-                  </div>
-                )}
-              </div>
+              <Image
+                src={workspace.icon}
+                alt="Server Icon"
+                width={50}
+                height={50}
+              />
             )}
           </div>
           <div className="flex-1 col-span-4">

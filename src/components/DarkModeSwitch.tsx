@@ -13,7 +13,7 @@ export default function DarkModeSwitch() {
   return (
     <div className="flex items-center">
       <Switch.Root
-        className="w-[42px] h-[25px] bg-gray-200 rounded-full relative shadow-[0_2px_10px] shadow-violet-400 focus:shadow-[0_0_0_2px] focus:shadow-violet-400 data-[state=checked]:bg-violet-400 outline-none cursor-default"
+        className="w-[42px]  bg-gray-200 rounded-full relative shadow-[0_2px_10px] shadow-violet-400 focus:shadow-[0_0_0_2px] focus:shadow-violet-400 data-[state=checked]:bg-violet-400 outline-none cursor-default"
         id="dark-mode"
         onCheckedChange={toggleDarkMode}
         defaultChecked={colorTheme === "dark"}

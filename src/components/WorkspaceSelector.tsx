@@ -11,15 +11,27 @@ import {
 import { Database } from "@/types/supabase";
 import useWorkspaces from "@/util/useWorkspaces";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import Image from "next/image";
 
 const DropdownMenuDemo = () => {
   const workspaces = useWorkspaces();
+  const pathname = usePathname();
 
   const [bookmarksChecked, setBookmarksChecked] = React.useState(true);
   const [urlsChecked, setUrlsChecked] = React.useState(false);
   const [person, setPerson] = React.useState("pedro");
   const [workspace, setWorkspace] =
     React.useState<Database["public"]["Tables"]["workspaces"]["Row"]>();
+
+  useEffect(() => {
+    const p = pathname.split("/");
+
+    if (p[1] === "workspace" && workspaces) {
+      const w = workspaces.find((ws) => ws.id === p[2]);
+      setWorkspace(w);
+    }
+  }, [pathname, workspaces]);
 
   if (!workspaces) {
     return <p>loading...</p>;
@@ -34,13 +46,13 @@ const DropdownMenuDemo = () => {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
-        <div className="flex items-center space-x-1 hover:bg-gray-900 px-2 rounded-md py-1 cursor-pointer">
+        <div className="items-center hidden px-2 py-1 space-x-1 rounded-md cursor-pointer md:flex hover:bg-slate-300 dark:hover:bg-zinc-800">
           <div>
-            <p className="text-white font-bold">
+            <p className="font-bold dark:text-white">
               {workspace ? workspace.name : "Select a workspace..."}
             </p>
           </div>
-          <button className="text-white" aria-label="Select a workspace">
+          <button className="dark:text-white" aria-label="Select a workspace">
             <CaretSortIcon />
           </button>
         </div>
@@ -54,16 +66,27 @@ const DropdownMenuDemo = () => {
         >
           {workspaces.map((workspace) => (
             <DropdownMenu.Item
+              key={workspace.id}
               onClick={() => handleWorkspaceChange(workspace)}
               className="group text-md text-semibold leading-none text-violet11 rounded-[3px] flex items-center p-[5px] relative select-none outline-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:bg-violet9 data-[highlighted]:text-violet1"
             >
               <Link
-                href={`/workspaces/${workspace.id}`}
+                href={`/workspace/${workspace.id}`}
                 className="flex items-center"
               >
-                <div className="w-12 h-12 flex font-semibold items-center justify-center rounded-sm bg-blue-400 text-blue-50">
-                  {workspace.name?.at(0)?.toUpperCase()}
-                </div>
+                {workspace.icon === null ? (
+                  <div className="flex items-center justify-center w-12 h-12 font-semibold bg-blue-400 rounded-md text-blue-50">
+                    {workspace.name?.at(0)?.toUpperCase()}
+                  </div>
+                ) : (
+                  <Image
+                    src={workspace.icon}
+                    alt="Server Icon"
+                    width={50}
+                    height={50}
+                    className="rounded-md"
+                  />
+                )}
                 <div className="ml-4">{workspace.name}</div>
               </Link>
             </DropdownMenu.Item>
@@ -72,8 +95,8 @@ const DropdownMenuDemo = () => {
           <DropdownMenu.Separator className="h-[1px] bg-violet6 m-[5px]" />
 
           <DropdownMenu.Item className="group text-md text-semibold leading-none text-violet11 rounded-[3px] p-[5px] relative select-none outline-none disabled:text-mauve8 disabled:pointer-events-none hover:bg-violet9 hover:text-violet1">
-            <Link href="/new" className="flex items-center">
-              <div className="w-12 h-12 flex font-semibold items-center justify-center rounded-sm bg-green-400 text-green-50">
+            <Link href="/create" className="flex items-center">
+              <div className="flex items-center justify-center w-12 h-12 font-semibold bg-green-400 rounded-md text-green-50">
                 <PlusIcon />
               </div>
               <div className="ml-4">Create new</div>

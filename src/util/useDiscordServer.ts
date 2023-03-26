@@ -1,21 +1,27 @@
 import { useEffect, useState } from "react";
 import { APIGuild } from "discord-api-types/v10";
-import useWorkspace from "./useWorkspace";
 import { Database } from "@/types/supabase";
-import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import {
+  useSession,
+  useSessionContext,
+  useSupabaseClient,
+  useUser,
+} from "@supabase/auth-helpers-react";
 import { toast } from "sonner";
 
 const useDiscordServer = (
-  workspace: Database["public"]["Tables"]["workspaces"]["Row"]
+  workspace: Database["public"]["Tables"]["workspaces"]["Row"] | null
 ) => {
   const [server, setServer] = useState<APIGuild | null>(null);
   const [loading, setLoading] = useState(true);
   const supabase = useSupabaseClient<Database>();
+  const { session } = useSessionContext();
 
   useEffect(() => {
     const fetchBot = async (): Promise<
       Database["public"]["Tables"]["bots"]["Row"] | null
     > => {
+      if (!workspace) return null;
       const { data, error } = await supabase
         .from("bots")
         .select("*")
@@ -32,6 +38,7 @@ const useDiscordServer = (
     };
 
     const fetchServer = async () => {
+      if (!workspace) return;
       const bot = await fetchBot();
 
       if (!bot) {
@@ -44,7 +51,7 @@ const useDiscordServer = (
         `https://discord.com/api/v10/guilds/${workspace.guild_id}?with_counts=true`,
         {
           headers: {
-            Authorization: `Bot ${bot.token}`,
+            Authorization: `Bearer ${session?.provider_token}`,
             "Content-Type": "application/json",
           },
         }
@@ -55,11 +62,13 @@ const useDiscordServer = (
       if (res.ok) {
         const server = await res.json();
         setServer(server);
+      } else {
+        toast.error("Error fetching Discord guild");
       }
     };
 
     fetchServer();
-  }, []);
+  }, [session, workspace]);
 
   return [server, loading] as const;
 };

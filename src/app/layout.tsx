@@ -15,6 +15,7 @@ import { Database } from "@/types/supabase";
 import useDarkMode from "@/util/useDarkMode";
 import useFeatureFlags from "@/util/useFeatureFlags";
 import FeatureFlagsProvider from "@/components/FeatureFlagsProvider";
+import { Toaster } from "sonner";
 
 export default function RootLayout({
   children,
@@ -23,12 +24,10 @@ export default function RootLayout({
 }) {
   // Initialize Supabase client
   const [supabase] = useState(() => createBrowserSupabaseClient<Database>());
-  const user = useUser();
   const session = useSession();
-  const [theme, setTheme] = useDarkMode();
-
+  useDarkMode();
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <head>
         <title>Arigo Dashboard</title>
       </head>
@@ -39,6 +38,7 @@ export default function RootLayout({
         <body className="bg-white dark:bg-blackA12">
           <Navbar />
           <FeatureFlagsProvider>
+            <Toaster />
             <main>{children}</main>
           </FeatureFlagsProvider>
         </body>

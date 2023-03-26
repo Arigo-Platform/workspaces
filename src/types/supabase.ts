@@ -61,6 +61,38 @@ export interface Database {
           workspace?: string | null;
         };
       };
+      command_log: {
+        Row: {
+          args: Json[];
+          channel_id: string;
+          command: string;
+          executed_at: string | null;
+          guild_id: string | null;
+          id: string;
+          message_id: string;
+          user_id: string;
+        };
+        Insert: {
+          args: Json[];
+          channel_id: string;
+          command: string;
+          executed_at?: string | null;
+          guild_id?: string | null;
+          id?: string;
+          message_id: string;
+          user_id: string;
+        };
+        Update: {
+          args?: Json[];
+          channel_id?: string;
+          command?: string;
+          executed_at?: string | null;
+          guild_id?: string | null;
+          id?: string;
+          message_id?: string;
+          user_id?: string;
+        };
+      };
       features: {
         Row: {
           created_at: string | null;
@@ -196,6 +228,10 @@ export interface Database {
           workspace_id: string;
         };
         Returns: number;
+      };
+      update_workspace_icons: {
+        Args: Record<PropertyKey, never>;
+        Returns: undefined;
       };
     };
     Enums: {
