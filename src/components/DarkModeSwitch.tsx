@@ -19,7 +19,7 @@ export default function DarkModeSwitch() {
         defaultChecked={colorTheme === "dark"}
         // style={{ "-webkit-tap-highlight-color": "rgba(0, 0, 0, 0)" }}
       >
-        <Switch.Thumb className="flex items-center cursor-pointer justify-center w-[21px] h-[21px] bg-white rounded-full shadow-[0_2px_2px] shadow-blackA7 transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]">
+        <Switch.Thumb className="flex items-center cursor-pointer justify-center w-[21px] h-[21px] bg-white rounded-full shadow-[0_2px_2px] shadow-black transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]">
           {colorTheme === "dark" ? (
             <MoonIcon className="w-3 h-3 text-gray-700" />
           ) : (

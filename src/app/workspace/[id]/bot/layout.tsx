@@ -26,7 +26,7 @@ export default function BotLayout({
           <>
             <aside
               id="sidebar"
-              className="flex flex-col w-full col-span-2 px-6 space-y-2 font-semibold dark:text-white"
+              className="flex flex-col w-full col-span-2 px-6 space-y-2 font-medium dark:text-white"
             >
               <Link
                 href={`/workspace/${workspace.id}/bot`}
@@ -36,10 +36,10 @@ export default function BotLayout({
               </Link>
 
               <Link
-                href={`/workspace/${workspace.id}/bot/commands`}
+                href={`/workspace/${workspace.id}/bot/command-log`}
                 className="w-full px-3 py-2 rounded-md dark:hover:bg-zinc-700 hover:bg-zinc-200"
               >
-                Commands
+                Command Log
               </Link>
             </aside>
 

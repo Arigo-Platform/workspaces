@@ -35,11 +35,11 @@ export default function UserMenu() {
           sideOffset={5}
           align="end"
         >
-          <p className="px-4 py-2 text-xs text-gray-600 outline-none select-none dark:text-gray-300">
+          {/* <p className="px-4 py-2 text-xs text-gray-600 outline-none select-none dark:text-gray-300">
             Hey, {user?.user_metadata.full_name}
-          </p>
+          </p> */}
           {/* Seperator / Divider */}
-          <DropdownMenu.Separator className="h-[1px] bg-gray-600 bg-opacity-10 dark:bg-opacity-40 m-[5px]" />
+          {/* <DropdownMenu.Separator className="h-[1px] bg-gray-600 bg-opacity-10 dark:bg-opacity-40 m-[5px]" /> */}
           <div className="py-1">
             {/* User Profile */}
             <DropdownMenu.Item className="outline-none">

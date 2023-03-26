@@ -23,8 +23,6 @@ export default function RootLayout({
       path: "bot",
       title: "Bot",
     },
-    // why're u leaving the rest? homepage doesnt need a topbar
-
     // {
     //   path: "/settings",
     //   title: "Settings",
