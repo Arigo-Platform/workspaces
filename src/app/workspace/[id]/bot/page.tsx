@@ -55,25 +55,40 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
 
   const updateToken = async () => {
     const updateData = async () => {
-      try {
-        const { data, error } = await supabase
-          .from("bots")
-          .update({ token: botSettings?.token })
-          .eq("id", "c92153c2-e353-4380-a744-7dd8ac75be90")
-          .select();
-        console.log("what lol", data);
-        return data;
-      } catch (error) {
-        throw error;
-      }
+      // Validate Token
+      // Make a fetch request to Discord
+      const res = await fetch("https://discord.com/api/v8/users/@me", {
+        headers: {
+          Authorization: `Bot ${botSettings?.token}`,
+        },
+      }).then(async (response) => {
+        if (response.status === 401) {
+          return Promise.reject();
+        }
+        if (response.status === 200) {
+          // Success
+          try {
+            const { data, error } = await supabase
+              .from("bots")
+              .update({ token: botSettings?.token })
+              .eq("id", "c92153c2-e353-4380-a744-7dd8ac75be90")
+              .select();
+            console.log("what lol", data);
+            return data;
+          } catch (error) {
+            throw error;
+          }
+        }
+        console.log("Response", response);
+      });
     };
     toast.promise(updateData(), {
       loading: "Loading...",
-      success: (data) => {
+      success: (returned) => {
         return `Token successfully updated`;
       },
       error:
-        "There was an unknown error, please contact Arigo Support via the messenger",
+        "There was an internal server error, please generate a new token or contact Arigo Support via the messenger",
     });
   };
 
@@ -172,9 +187,13 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
                     updateToken();
                     event.preventDefault();
                   }}
+                  className="grid"
                 >
                   <Form.Field className="grid mb-[10px] pt-6" name="token">
                     <div className="flex items-baseline justify-between">
+                      <Form.Label className="text-[15px] font-medium leading-[35px] text-white">
+                        Status
+                      </Form.Label>
                       <Form.Message
                         className="text-[13px] text-black dark:text-white opacity-[0.8]"
                         match="valueMissing"
