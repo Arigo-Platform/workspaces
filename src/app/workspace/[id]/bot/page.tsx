@@ -10,7 +10,7 @@ import * as Form from "@radix-ui/react-form";
 import Link from "next/link";
 import * as React from "react";
 import { once } from "stream";
-
+import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 type LogFilter = {
   user?: string;
   channel?: string;
@@ -85,6 +85,7 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
             Bot Settings
           </p>
         </header>
+        {/* Bot Token */}
         <div className="w-full h-full col-span-5 p-6 text-4xl font-bold bg-white border border-gray-600 rounded-md shadow-sm dark:bg-black dark:text-white dark:shadow-none">
           <div className="flex items-center justify-between space-x-4">
             <div className="grid col-span-4">
@@ -115,7 +116,7 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
                     </div>
                     <Form.Control asChild>
                       <textarea
-                        className="h-max w-full p-2 text-sm font-normal resize-none outline-none bg-white border border-gray-600 rounded-md shadow-sm dark:bg-black dark:text-white dark:shadow-none"
+                        className="focus:border-gray-300 dark: dark:focus:border-gray-400 h-max w-full p-2 text-sm font-normal resize-none outline-none bg-white border border-gray-600 rounded-md shadow-sm dark:bg-black dark:text-white dark:shadow-none"
                         required
                         defaultValue={botSettings?.token || ""}
                         onChange={(e) => {
@@ -135,13 +136,82 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
                       <p className="dark:text-white font-normal text-sm text-gray-700">
                         <Link
                           href="https://google.com"
-                          className="text-blue-400"
+                          className="text-blue-400 flex items-center space-x-1 gap-x-1"
                           target="_blank"
                         >
-                          Learn more about bot tokens
+                          Learn more about bot tokens{" "}
+                          <ArrowTopRightOnSquareIcon className="h-3 w-3" />
                         </Link>
                       </p>
-                      <button className="ml-auto font-medium dark:text-white dark:hover:bg-zinc-700 px-3 py-2 text-sm hover:bg-gray-200 text-gray-700 outline-none select-none rounded-md data-[highlighted]:bg-gray-200 data-[highlighted]:rounded">
+                      <button className="transition-colors duration-150 border hover:outline-none border-black dark:border-white ml-auto font-medium dark:text-black dark:hover:text-white dark:bg-white dark:hover:bg-opacity-0 hover:bg-opacity-0 bg-black text-white hover:text-black px-5 py-2 text-sm outline-none select-none rounded-md data-[highlighted]:bg-gray-200 data-[highlighted]:rounded">
+                        Save
+                      </button>
+                    </div>
+                  </Form.Submit>
+                </Form.Root>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Statuses */}
+        <div className="w-full h-full col-span-5 p-6 text-4xl font-bold bg-white border border-gray-600 rounded-md shadow-sm dark:bg-black dark:text-white dark:shadow-none">
+          <div className="flex items-center justify-between space-x-4">
+            <div className="grid col-span-4">
+              <h3 className="text-lg font-medium contrast-more:text-black">
+                Statuses
+              </h3>
+              <h2 className="mt-1 text-sm font-normal contrast-more:text-black">
+                Arigo offers extreme customization when it comes to statuses.
+                You're able to add up to 5 of your own rotating statuses.
+              </h2>
+
+              <div>
+                <Form.Root
+                  onSubmit={(event) => {
+                    updateToken();
+                    event.preventDefault();
+                  }}
+                >
+                  <Form.Field className="grid mb-[10px] pt-6" name="token">
+                    <div className="flex items-baseline justify-between">
+                      <Form.Message
+                        className="text-[13px] text-black dark:text-white opacity-[0.8]"
+                        match="valueMissing"
+                      >
+                        Please enter a bot token
+                      </Form.Message>
+                    </div>
+                    <Form.Control asChild>
+                      <textarea
+                        className="focus:border-gray-300 dark:focus:border-gray-400 h-max w-full p-2 text-sm font-normal resize-none outline-none bg-white border border-gray-600 rounded-md shadow-sm dark:bg-black dark:text-white dark:shadow-none"
+                        required
+                        defaultValue={botSettings?.token || ""}
+                        onChange={(e) => {
+                          if (botSettings) {
+                            const updatedBotSettings = {
+                              ...botSettings,
+                              token: e.target.value,
+                            };
+                            setBotSettings(updatedBotSettings);
+                          }
+                        }}
+                      />
+                    </Form.Control>
+                  </Form.Field>
+                  <Form.Submit asChild>
+                    <div className="flex items-center justify-between">
+                      <p className="dark:text-white font-normal text-sm text-gray-700">
+                        <Link
+                          href="https://google.com"
+                          className="text-blue-400 flex items-center space-x-1 gap-x-1"
+                          target="_blank"
+                        >
+                          Learn more about bot tokens{" "}
+                          <ArrowTopRightOnSquareIcon className="h-3 w-3" />
+                        </Link>
+                      </p>
+                      <button className="transition-colors duration-150 border hover:outline-none border-black dark:border-white ml-auto font-medium dark:text-black dark:hover:text-white dark:bg-white dark:hover:bg-opacity-0 hover:bg-opacity-0 bg-black text-white hover:text-black px-5 py-2 text-sm outline-none select-none rounded-md data-[highlighted]:bg-gray-200 data-[highlighted]:rounded">
                         Save
                       </button>
                     </div>
