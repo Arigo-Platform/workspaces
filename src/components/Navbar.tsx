@@ -60,7 +60,10 @@ export default function Navbar() {
 
       setBreadcrumbs(
         path.map((p, index) => ({
-          name: p,
+          name: p
+            .split("-")
+            .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
+            .join(" "),
           href: `/${path.slice(0, index + 1).join("/")}`,
         }))
       );
@@ -98,9 +101,9 @@ export default function Navbar() {
             ) : (
               <Link
                 href={`/workspace/${workspace.id}`}
-                className="hidden md:block"
+                className="hidden md:block animate-slideRightAndFade"
               >
-                <p className="font-semibold dark:text-white ">
+                <p className="font-semibold dark:text-white">
                   {workspace?.name || "Workspace"}
                 </p>
               </Link>
@@ -126,7 +129,7 @@ export default function Navbar() {
 
                   <Link
                     href={`/workspace/${workspace.id}${breadcrumb.href}`}
-                    className="hidden md:block"
+                    className="hidden md:block animate-slideRightAndFade"
                   >
                     <p className="font-semibold capitalize dark:text-white">
                       {breadcrumb.name}

@@ -1,6 +1,7 @@
 "use client";
 import useWorkspace from "@/util/useWorkspace";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function BotLayout({
   params,
@@ -10,6 +11,7 @@ export default function BotLayout({
   children: React.ReactNode;
 }) {
   const [workspace, loading] = useWorkspace(params.id);
+  const pathname = usePathname();
   return (
     <section id="bot">
       <section className="grid grid-cols-2 gap-4 sm:grid-cols-6 md:grid-cols-8">
@@ -30,14 +32,20 @@ export default function BotLayout({
             >
               <Link
                 href={`/workspace/${workspace.id}/bot`}
-                className="w-full px-3 py-2 rounded-md dark:hover:bg-zinc-700 hover:bg-zinc-200"
+                className={`w-full px-3 py-2 rounded-md dark:hover:bg-zinc-700 hover:bg-zinc-200 ${
+                  pathname === `/workspace/${workspace.id}/bot` &&
+                  "bg-zinc-200 dark:bg-zinc-700"
+                }`}
               >
                 General
               </Link>
 
               <Link
                 href={`/workspace/${workspace.id}/bot/command-log`}
-                className="w-full px-3 py-2 rounded-md dark:hover:bg-zinc-700 hover:bg-zinc-200"
+                className={`w-full px-3 py-2 rounded-md dark:hover:bg-zinc-700 hover:bg-zinc-200 ${
+                  pathname === `/workspace/${workspace.id}/bot/command-log` &&
+                  "bg-zinc-200 dark:bg-zinc-700"
+                }`}
               >
                 Command Log
               </Link>
