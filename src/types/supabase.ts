@@ -35,35 +35,67 @@ export interface Database {
           username?: string;
         };
       };
+      bot_commands: {
+        Row: {
+          avatar: string | null;
+          channelId: string | null;
+          command_name: string | null;
+          executed_at: string | null;
+          fields: Json | null;
+          id: number;
+          serverId: string | null;
+          userId: string | null;
+        };
+        Insert: {
+          avatar?: string | null;
+          channelId?: string | null;
+          command_name?: string | null;
+          executed_at?: string | null;
+          fields?: Json | null;
+          id?: number;
+          serverId?: string | null;
+          userId?: string | null;
+        };
+        Update: {
+          avatar?: string | null;
+          channelId?: string | null;
+          command_name?: string | null;
+          executed_at?: string | null;
+          fields?: Json | null;
+          id?: number;
+          serverId?: string | null;
+          userId?: string | null;
+        };
+      };
       bots: {
         Row: {
           created_at: string | null;
           id: string;
-          prefix: string;
           region: string | null;
+          statuses: Json[] | null;
           token: string | null;
           workspace: string | null;
         };
         Insert: {
           created_at?: string | null;
           id?: string;
-          prefix?: string;
           region?: string | null;
+          statuses?: Json[] | null;
           token?: string | null;
           workspace?: string | null;
         };
         Update: {
           created_at?: string | null;
           id?: string;
-          prefix?: string;
           region?: string | null;
+          statuses?: Json[] | null;
           token?: string | null;
           workspace?: string | null;
         };
       };
       command_log: {
         Row: {
-          args: Json[];
+          args: Json[] | null;
           channel_id: string;
           command: string;
           executed_at: string | null;
@@ -73,7 +105,7 @@ export interface Database {
           user_id: string;
         };
         Insert: {
-          args: Json[];
+          args?: Json[] | null;
           channel_id: string;
           command: string;
           executed_at?: string | null;
@@ -83,7 +115,7 @@ export interface Database {
           user_id: string;
         };
         Update: {
-          args?: Json[];
+          args?: Json[] | null;
           channel_id?: string;
           command?: string;
           executed_at?: string | null;
@@ -134,6 +166,23 @@ export interface Database {
         Update: {
           feature?: string;
           profile?: string;
+        };
+      };
+      posts: {
+        Row: {
+          created_at: string | null;
+          id: string;
+          title: string | null;
+        };
+        Insert: {
+          created_at?: string | null;
+          id?: string;
+          title?: string | null;
+        };
+        Update: {
+          created_at?: string | null;
+          id?: string;
+          title?: string | null;
         };
       };
       waitlist: {
@@ -189,6 +238,7 @@ export interface Database {
         Row: {
           created_at: string | null;
           guild_id: string;
+          guild_member_count: number | null;
           icon: string | null;
           id: string;
           name: string | null;
@@ -197,6 +247,7 @@ export interface Database {
         Insert: {
           created_at?: string | null;
           guild_id: string;
+          guild_member_count?: number | null;
           icon?: string | null;
           id?: string;
           name?: string | null;
@@ -205,6 +256,7 @@ export interface Database {
         Update: {
           created_at?: string | null;
           guild_id?: string;
+          guild_member_count?: number | null;
           icon?: string | null;
           id?: string;
           name?: string | null;
@@ -228,6 +280,10 @@ export interface Database {
           workspace_id: string;
         };
         Returns: number;
+      };
+      update_guild: {
+        Args: Record<PropertyKey, never>;
+        Returns: undefined;
       };
       update_workspace_icons: {
         Args: Record<PropertyKey, never>;
