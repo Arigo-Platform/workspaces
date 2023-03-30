@@ -7,9 +7,20 @@ import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import RealtimePosts from "@/util/useRealtimeBotCommands";
-export default function DashboardPage() {
+
+type LogFilter = {
+  user?: string;
+  channel?: string;
+  command?: string;
+  args?: Json[]; // We won't support this yet, in the future we will
+  page: number;
+  perPage: 0 | 25 | 50 | 75 | 100;
+};
+
+export default function CommandLog({ params }: { params: { id: string } }) {
   type Post = Database["public"]["Tables"]["command_log"]["Row"] | undefined;
   const [commands, setCommands] = useState<Post[]>();
+
   const supabase = useSupabaseClient<Database>();
   useEffect(() => {
     async function getData() {

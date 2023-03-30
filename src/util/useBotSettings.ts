@@ -3,7 +3,7 @@ import {
   useSessionContext,
   useSupabaseClient,
 } from "@supabase/auth-helpers-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const useBotSettings = (botId: string) => {
   type BotSettingsConfig = Database["public"]["Tables"]["bots"]["Row"];
@@ -35,7 +35,13 @@ const useBotSettings = (botId: string) => {
     fetchRole();
   }, [botId, session]);
 
-  return [botSettings, loading] as const;
+  return useMemo(
+    () => ({
+      botSettings,
+      loading,
+    }),
+    [botSettings, loading]
+  );
 };
 
 export default useBotSettings;

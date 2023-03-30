@@ -10,7 +10,7 @@ export default function BotLayout({
   params: { id: string };
   children: React.ReactNode;
 }) {
-  const [workspace, loading] = useWorkspace(params.id);
+  const { workspace, loading } = useWorkspace(params.id);
   const pathname = usePathname();
   return (
     <section id="bot">
@@ -24,36 +24,32 @@ export default function BotLayout({
           </p>
         </header>
 
-        {workspace && (
-          <>
-            <aside
-              id="sidebar"
-              className="flex flex-col w-full col-span-2 px-6 space-y-2 dark:text-white"
-            >
-              <Link
-                href={`/workspace/${workspace.id}/bot`}
-                className={`w-full px-3 py-2 rounded-md dark:hover:bg-zinc-700 hover:bg-zinc-200 ${
-                  pathname === `/workspace/${workspace.id}/bot` &&
-                  "bg-zinc-200 dark:bg-zinc-700"
-                }`}
-              >
-                General
-              </Link>
+        <aside
+          id="sidebar"
+          className="flex flex-col w-full col-span-2 px-6 space-y-2 dark:text-white"
+        >
+          <Link
+            href={`/workspace/${workspace?.id}/bot`}
+            className={`w-full px-3 py-2 rounded-md dark:hover:bg-zinc-700 hover:bg-zinc-200 ${
+              pathname === `/workspace/${workspace?.id}/bot` &&
+              "bg-zinc-200 dark:bg-zinc-700"
+            }`}
+          >
+            General
+          </Link>
 
-              <Link
-                href={`/workspace/${workspace.id}/bot/command-log`}
-                className={`w-full px-3 py-2 rounded-md dark:hover:bg-zinc-700 hover:bg-zinc-200 ${
-                  pathname === `/workspace/${workspace.id}/bot/command-log` &&
-                  "bg-zinc-200 dark:bg-zinc-700"
-                }`}
-              >
-                Command Log
-              </Link>
-            </aside>
+          <Link
+            href={`/workspace/${workspace?.id}/bot/command-log`}
+            className={`w-full px-3 py-2 rounded-md dark:hover:bg-zinc-700 hover:bg-zinc-200 ${
+              pathname === `/workspace/${workspace?.id}/bot/command-log` &&
+              "bg-zinc-200 dark:bg-zinc-700"
+            }`}
+          >
+            Command Log
+          </Link>
+        </aside>
 
-            <section className="col-span-6">{children}</section>
-          </>
-        )}
+        <section className="col-span-6">{children}</section>
       </section>
     </section>
   );
