@@ -334,9 +334,14 @@ function Statuses({
                         required
                         defaultValue={(status as unknown as Status).type}
                         onChange={(e) => {
-                          setNewStatus({
-                            ...newStatus,
-                            type: parseInt(e.target.value),
+                          let statuses = newBotSettings.statuses!;
+
+                          (statuses[index] as unknown as Status).type =
+                            parseInt(e.target.value);
+
+                          setNewBotSettings({
+                            ...newBotSettings,
+                            statuses,
                           });
                         }}
                       >
@@ -353,9 +358,14 @@ function Statuses({
                         required
                         defaultValue={(status as unknown as Status).name}
                         onChange={(e) => {
-                          setNewStatus({
-                            ...newStatus,
-                            name: e.target.value,
+                          let statuses = newBotSettings.statuses!;
+
+                          (statuses[index] as unknown as Status).name =
+                            e.target.value;
+
+                          setNewBotSettings({
+                            ...newBotSettings,
+                            statuses,
                           });
                         }}
                       />
