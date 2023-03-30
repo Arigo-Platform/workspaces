@@ -171,17 +171,17 @@ export interface Database {
       posts: {
         Row: {
           created_at: string | null;
-          id: string;
+          id: number;
           title: string | null;
         };
         Insert: {
           created_at?: string | null;
-          id?: string;
+          id?: number;
           title?: string | null;
         };
         Update: {
           created_at?: string | null;
-          id?: string;
+          id?: number;
           title?: string | null;
         };
       };

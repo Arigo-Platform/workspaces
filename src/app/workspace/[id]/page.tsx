@@ -17,7 +17,7 @@ type LogFilter = {
 };
 
 export default function DashboardPage({ params }: { params: { id: string } }) {
-  const [workspace, loading] = useWorkspace(params.id);
+  const { workspace, loading } = useWorkspace(params.id);
   const user = useUser();
   const [commandLogs, setCommandLogs] = useState<
     Database["public"]["Tables"]["command_log"]["Row"][] | null
@@ -189,7 +189,11 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
               <h3 className="text-sm font-medium contrast-more:text-black">
                 Current Server Members
               </h3>
-              <span>1205</span>
+              {workspace ? (
+                <span>{workspace.guild_member_count}</span>
+              ) : (
+                <span>...</span>
+              )}
             </div>
           </div>
         </div>

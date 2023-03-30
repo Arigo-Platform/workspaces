@@ -3,7 +3,7 @@ import {
   useSessionContext,
   useSupabaseClient,
 } from "@supabase/auth-helpers-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const useWorkspace = (workspaceId: string) => {
   const [workspace, setWorkspace] = useState<
@@ -36,7 +36,13 @@ const useWorkspace = (workspaceId: string) => {
     fetchWorkspace();
   }, [workspaceId, session]);
 
-  return [workspace, loading] as const;
+  return useMemo(
+    () => ({
+      workspace,
+      loading,
+    }),
+    [workspace, loading]
+  );
 };
 
 export default useWorkspace;

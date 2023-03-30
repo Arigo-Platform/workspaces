@@ -30,7 +30,7 @@ export default function Navbar() {
   const featureFlags = useFeatureFlags();
 
   const isWorkspace = pathname.split("/")[1] === "workspace";
-  const [workspace, loading] = useWorkspace(
+  const { workspace, loading } = useWorkspace(
     isWorkspace ? pathname.split("/")[2] : ""
   );
 
