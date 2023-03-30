@@ -97,32 +97,41 @@ export interface Database {
         Row: {
           args: Json[] | null;
           channel_id: string;
-          command: string;
-          executed_at: string | null;
-          guild_id: string | null;
+          channel_name: string;
+          command_name: string;
+          executed_at: string;
+          guild_id: string;
           id: string;
           message_id: string;
+          user_avatar: string;
           user_id: string;
+          username: string;
         };
         Insert: {
           args?: Json[] | null;
           channel_id: string;
-          command: string;
-          executed_at?: string | null;
-          guild_id?: string | null;
+          channel_name: string;
+          command_name: string;
+          executed_at: string;
+          guild_id: string;
           id?: string;
           message_id: string;
+          user_avatar: string;
           user_id: string;
+          username: string;
         };
         Update: {
           args?: Json[] | null;
           channel_id?: string;
-          command?: string;
-          executed_at?: string | null;
-          guild_id?: string | null;
+          channel_name?: string;
+          command_name?: string;
+          executed_at?: string;
+          guild_id?: string;
           id?: string;
           message_id?: string;
+          user_avatar?: string;
           user_id?: string;
+          username?: string;
         };
       };
       features: {

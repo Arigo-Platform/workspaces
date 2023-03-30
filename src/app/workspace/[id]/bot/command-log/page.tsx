@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import RealtimePosts from "@/util/useRealtimeBotCommands";
 export default function DashboardPage() {
   type Post = Database["public"]["Tables"]["command_log"]["Row"] | undefined;
-  const [posts, setPosts] = useState<Post[]>();
+  const [commands, setCommands] = useState<Post[]>();
   const supabase = useSupabaseClient<Database>();
   useEffect(() => {
     async function getData() {
@@ -19,13 +19,25 @@ export default function DashboardPage() {
         return;
       }
 
-      setPosts(data);
+      setCommands(data);
     }
 
     getData();
-  }, [posts]);
+  }, [commands]);
 
-  return <RealtimePosts serverPosts={posts ?? []} />;
+  return (
+    <section id="dashboard" className="p-6">
+      <section className="grid grid-cols-1 gap-4 sm:grid-cols-4 md:grid-cols-6">
+        <header className="col-span-full">
+          <p className="text-2xl font-medium dark:text-white animate-slideRightAndFade">
+            Command Log
+          </p>
+        </header>
+        <RealtimePosts commandLog={commands ?? []} />;
+      </section>
+    </section>
+  );
+  // return <RealtimePosts serverPosts={posts ?? []} />;
 }
 
 // type LogFilter = {
