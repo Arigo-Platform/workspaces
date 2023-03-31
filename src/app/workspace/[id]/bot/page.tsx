@@ -29,13 +29,6 @@ type LogFilter = {
 export default function DashboardPage({ params }: { params: { id: string } }) {
   const { workspace, loading } = useWorkspace(params.id);
   const user = useUser();
-  const [commandLogs, setCommandLogs] = useState<
-    Database["public"]["Tables"]["command_log"]["Row"][] | null
-  >();
-  const [logFilters, setLogFilters] = useState<LogFilter>({
-    page: 0,
-    perPage: 25,
-  });
 
   const supabase = useSupabaseClient<Database>();
 
@@ -255,7 +248,7 @@ function Statuses({
                   <select
                     className="w-full p-2 text-sm font-normal bg-white border border-gray-600 rounded-md shadow-sm outline-none resize-none focus:border-gray-300 dark:focus:border-gray-400 h-max dark:bg-black dark:text-white dark:shadow-none"
                     defaultValue={0}
-                    value={newStatus.type}
+                    // value={newStatus.type} -- Doesn't properly update values
                     onChange={(e) => {
                       setNewStatus({
                         ...newStatus,
@@ -377,9 +370,7 @@ function Statuses({
                             let temp = newBotSettings;
 
                             temp.statuses!.splice(index, 1);
-
                             setNewBotSettings(temp);
-
                             forceUpdate();
                           }
                         }}
@@ -404,9 +395,6 @@ function Statuses({
                       <ArrowTopRightOnSquareIcon className="w-3 h-3" />
                     </Link>
                   </p>
-                  <button className="transition-colors duration-150 border hover:outline-none border-black dark:border-white ml-auto font-medium dark:text-black dark:hover:text-white dark:bg-white dark:hover:bg-opacity-0 hover:bg-opacity-0 bg-black text-white hover:text-black px-5 py-2 text-sm outline-none select-none rounded-md data-[highlighted]:bg-gray-200 data-[highlighted]:rounded">
-                    Save
-                  </button>
                 </div>
               </Form.Submit>
             </Form.Root>
