@@ -374,9 +374,9 @@ function Statuses({
                             forceUpdate();
                           }
                         }}
-                        className="flex p-2 transition-colors duration-150 rounded-md w-min h-min dark:hover:bg-slate-900 justify-self-end"
+                        className="flex p-2 transition-colors duration-150 rounded-md w-min h-min dark:hover:bg-slate-900 "
                       >
-                        <TrashIcon className="w-5 h-5 justify-self-end dark:text-slate-200 text-slate-800" />
+                        <TrashIcon className="w-5 h-5  dark:text-slate-200 text-slate-800" />
                       </button>
                     </div>
                   ))}
@@ -395,6 +395,9 @@ function Statuses({
                       <ArrowTopRightOnSquareIcon className="w-3 h-3" />
                     </Link>
                   </p>
+                  <button className="transition-colors duration-150 border hover:outline-none border-black dark:border-white ml-auto font-medium dark:text-black dark:hover:text-white dark:bg-white dark:hover:bg-opacity-0 hover:bg-opacity-0 bg-black text-white hover:text-black px-5 py-2 text-sm outline-none select-none rounded-md data-[highlighted]:bg-gray-200 data-[highlighted]:rounded">
+                    Save Changes
+                  </button>
                 </div>
               </Form.Submit>
             </Form.Root>
