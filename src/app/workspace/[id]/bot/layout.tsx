@@ -51,7 +51,8 @@ export default function BotLayout({
           <Link
             href={`/workspace/${workspace?.id}/bot/suggestions-suite`}
             className={`w-full px-3 py-2 rounded-md dark:hover:bg-zinc-700 hover:bg-zinc-200 ${
-              pathname === `/workspace/${workspace?.id}/bot/command-log` &&
+              pathname ===
+                `/workspace/${workspace?.id}/bot/suggestions-suite` &&
               "bg-zinc-200 dark:bg-zinc-700"
             }`}
           >
@@ -61,7 +62,7 @@ export default function BotLayout({
           <Link
             href={`/workspace/${workspace?.id}/bot/utility-suite`}
             className={`w-full px-3 py-2 rounded-md dark:hover:bg-zinc-700 hover:bg-zinc-200 ${
-              pathname === `/workspace/${workspace?.id}/bot/command-log` &&
+              pathname === `/workspace/${workspace?.id}/bot/utility-suite` &&
               "bg-zinc-200 dark:bg-zinc-700"
             }`}
           >

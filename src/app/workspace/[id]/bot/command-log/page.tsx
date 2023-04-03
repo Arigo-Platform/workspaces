@@ -44,7 +44,9 @@ export default function CommandLog({ params }: { params: { id: string } }) {
             Command Log
           </p>
         </header>
-        <RealtimePosts commandLog={commands ?? []} />;
+        <div className="w-max">
+          <RealtimePosts commandLog={commands ?? []} />
+        </div>
       </section>
     </section>
   );
