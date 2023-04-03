@@ -175,7 +175,7 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
           <div className="flex items-center justify-between space-x-4">
             <div className="grid col-span-4">
               <h3 className="text-sm font-medium contrast-more:text-black">
-                It&apos;s currently:
+                It&apos;s currently
               </h3>
               <Time />
               <span className="text-xs font-light">{timeText}</span>{" "}

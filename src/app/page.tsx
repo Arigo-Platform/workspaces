@@ -72,6 +72,7 @@ function WorkspaceCard({ workspace }: { workspace: Workspace }) {
                 alt="Server Icon"
                 width={50}
                 height={50}
+                className="rounded-md"
               />
             )}
           </div>

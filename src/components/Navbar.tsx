@@ -75,7 +75,7 @@ export default function Navbar() {
       <div className="flex items-center flex-1 space-x-2">
         <Link href="/">
           <span className="px-2 text-xl font-bold text-black dark:text-white">
-            A
+            Arigo
           </span>
         </Link>
 
