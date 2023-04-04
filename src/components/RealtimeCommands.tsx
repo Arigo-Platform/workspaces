@@ -6,6 +6,7 @@ import {
   useSupabaseClient,
 } from "@supabase/auth-helpers-react";
 import {
+  ArrowPathIcon,
   CalendarIcon,
   ChatBubbleBottomCenterTextIcon,
   ChevronUpDownIcon,
@@ -20,6 +21,7 @@ import {
   CheckIcon,
   ChevronRightIcon,
   ChevronLeftIcon,
+  ReloadIcon,
 } from "@radix-ui/react-icons";
 
 import Moment from "react-moment";
@@ -41,6 +43,7 @@ type LogFilter = {
 export default function RealtimeCommands() {
   const supabase = useSupabaseClient<Database>();
   const [commands, setCommands] = useState<CommandType[]>([]);
+  const [areCommandsPending, setAreCommandsPending] = useState(false);
   const [uniqueCommands, setUniqueCommands] = useState<
     Database["public"]["Views"]["unique_commands"]["Row"][]
   >([]);
@@ -118,7 +121,19 @@ export default function RealtimeCommands() {
           table: "command_log",
         },
         (payload) => {
-          setCommands((prev) => [(payload as any).new, ...prev]);
+          if (
+            filter.page === 0 &&
+            filter.perPage === 25 &&
+            !filter.user &&
+            !filter.channel &&
+            !filter.commands &&
+            !filter.args
+          ) {
+            // If we are on the first page, and no filters are set, we can just add the new command to the list
+            setCommands((commands) => [(payload as any).new, ...commands]);
+          } else {
+            setAreCommandsPending(true);
+          }
         }
       )
       .subscribe();
@@ -133,6 +148,8 @@ export default function RealtimeCommands() {
         filter={filter}
         setFilter={setFilter}
         uniqueCommands={uniqueCommands}
+        areCommandsPending={areCommandsPending}
+        setAreCommandsPending={setAreCommandsPending}
       />
       {commands &&
         commands.map((command) => (
@@ -289,20 +306,38 @@ function Filter({
   filter,
   setFilter,
   uniqueCommands,
+  areCommandsPending,
+  setAreCommandsPending,
 }: {
   filter: LogFilter;
   setFilter: (filter: LogFilter) => void;
   uniqueCommands: Database["public"]["Views"]["unique_commands"]["Row"][];
+  areCommandsPending: boolean;
+  setAreCommandsPending: (value: boolean) => void;
 }) {
   console.log(filter, uniqueCommands);
   return (
-    <div className="">
+    <div className="grid grid-cols-12 gap-2">
+      {areCommandsPending && (
+        <Tooltip content="Reload to see new commands">
+          <button
+            className="col-span-1 h-full relative rounded-md flex items-center justify-center dark:text-white text-black shadow-[0_2px_10px] shadow-blackA7 outline-none border border-gray-600 dark:hover:bg-gray-900 hover:bg-gray-200 focus:shadow-[0_0_0_2px] focus:shadow-black"
+            onClick={() => {
+              setAreCommandsPending(false);
+              setFilter({ page: filter.page, perPage: filter.perPage });
+            }}
+          >
+            <ArrowPathIcon className="w-3 h-3" />
+          </button>
+        </Tooltip>
+      )}
+
       <Listbox
         value={filter.commands}
         onChange={(value) => setFilter({ ...filter, commands: value })}
         multiple
       >
-        <div className="relative mt-1">
+        <div className="relative col-span-6">
           <Listbox.Button className="relative w-full py-2 pl-3 pr-10 text-left bg-white rounded-lg shadow-md cursor-default focus:border-gray-300 focus:dark:border-gray-400 dark:text-white dark:bg-black dark:border dark:border-gray-600 focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
             <span className="block truncate">
               {filter.commands && filter.commands.length > 0
@@ -322,7 +357,7 @@ function Filter({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Listbox.Options className="absolute z-50 grid w-full grid-cols-3 gap-2 px-1 py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg md:grid-cols-6 dark:bg-black dark:text-white dark:border dark:border-gray-600 max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+            <Listbox.Options className="absolute z-50 grid w-full grid-cols-3 gap-2 px-1 py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg dark:bg-black dark:text-white dark:border dark:border-gray-600 max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
               {uniqueCommands.map((cmd, cmdIdx) => (
                 <Listbox.Option
                   key={cmdIdx}
