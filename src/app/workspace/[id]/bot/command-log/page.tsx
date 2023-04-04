@@ -15,8 +15,8 @@ export default function CommandLog({ params }: { params: { id: string } }) {
             Command Log
           </p>
 
-          <p className="text-sm font-light text-gray-400 dark:text-gray-200">
-            Note: Channel names may not be accurate. We save the channel name on
+          <p className="text-sm italic font-light text-gray-400 dark:text-gray-200">
+            Note: User or Channel names may not be accurate; they're saved on
             execution to prevent excessive API calls.
           </p>
         </header>

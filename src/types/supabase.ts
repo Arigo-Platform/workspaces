@@ -35,38 +35,6 @@ export interface Database {
           username?: string;
         };
       };
-      bot_commands: {
-        Row: {
-          avatar: string | null;
-          channelId: string | null;
-          command_name: string | null;
-          executed_at: string | null;
-          fields: Json | null;
-          id: number;
-          serverId: string | null;
-          userId: string | null;
-        };
-        Insert: {
-          avatar?: string | null;
-          channelId?: string | null;
-          command_name?: string | null;
-          executed_at?: string | null;
-          fields?: Json | null;
-          id?: number;
-          serverId?: string | null;
-          userId?: string | null;
-        };
-        Update: {
-          avatar?: string | null;
-          channelId?: string | null;
-          command_name?: string | null;
-          executed_at?: string | null;
-          fields?: Json | null;
-          id?: number;
-          serverId?: string | null;
-          userId?: string | null;
-        };
-      };
       bots: {
         Row: {
           created_at: string | null;
@@ -274,7 +242,13 @@ export interface Database {
       };
     };
     Views: {
-      [_ in never]: never;
+      unique_commands: {
+        Row: {
+          command_name: string | null;
+          guild_id: string | null;
+          id: string | null;
+        };
+      };
     };
     Functions: {
       can_access_workspace: {
