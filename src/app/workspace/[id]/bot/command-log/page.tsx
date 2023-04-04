@@ -4,38 +4,9 @@ import { getPagination } from "@/util/pagination";
 import useDiscordServer from "@/util/useDiscordServer";
 import useWorkspace from "@/util/useWorkspace";
 import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
-import RealtimePosts from "@/util/useRealtimeBotCommands";
-
-type LogFilter = {
-  user?: string;
-  channel?: string;
-  command?: string;
-  args?: Json[]; // We won't support this yet, in the future we will
-  page: number;
-  perPage: 0 | 25 | 50 | 75 | 100;
-};
+import RealtimeCommands from "@/components/RealtimeCommands";
 
 export default function CommandLog({ params }: { params: { id: string } }) {
-  type Post = Database["public"]["Tables"]["command_log"]["Row"] | undefined;
-  const [commands, setCommands] = useState<Post[]>();
-
-  const supabase = useSupabaseClient<Database>();
-  useEffect(() => {
-    async function getData() {
-      const { data, error } = await supabase.from("command_log").select();
-
-      if (error) {
-        return;
-      }
-
-      setCommands(data);
-    }
-
-    getData();
-  }, [commands]);
-
   return (
     <section id="dashboard" className="p-6">
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-4 md:grid-cols-6">
@@ -43,9 +14,14 @@ export default function CommandLog({ params }: { params: { id: string } }) {
           <p className="text-2xl font-medium dark:text-white animate-slideRightAndFade">
             Command Log
           </p>
+
+          <p className="text-sm font-light text-gray-400 dark:text-gray-200">
+            Note: Channel names may not be accurate. We save the channel name on
+            execution to prevent excessive API calls.
+          </p>
         </header>
-        <div className="w-max">
-          <RealtimePosts commandLog={commands ?? []} />
+        <div className="w-full col-span-full">
+          <RealtimeCommands />
         </div>
       </section>
     </section>
