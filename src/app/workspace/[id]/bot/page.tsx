@@ -58,7 +58,7 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
     const updateData = async () => {
       // Validate Token
       // Make a fetch request to Discord
-      const res = await fetch("https://discord.com/api/v10/users/@me", {
+      await fetch("https://discord.com/api/v10/users/@me", {
         headers: {
           Authorization: `Bot ${botSettings?.token}`,
         },
@@ -74,13 +74,11 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
               .update({ token: botSettings?.token })
               .eq("id", "c92153c2-e353-4380-a744-7dd8ac75be90")
               .select();
-            console.log("what lol", data);
             return data;
           } catch (error) {
             throw error;
           }
         }
-        console.log("Response", response);
       });
     };
     toast.promise(updateData(), {

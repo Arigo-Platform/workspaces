@@ -41,6 +41,7 @@ export interface Database {
           id: string;
           region: string | null;
           statuses: Json[] | null;
+          suggestions_channel: string | null;
           token: string | null;
           workspace: string | null;
         };
@@ -49,6 +50,7 @@ export interface Database {
           id?: string;
           region?: string | null;
           statuses?: Json[] | null;
+          suggestions_channel?: string | null;
           token?: string | null;
           workspace?: string | null;
         };
@@ -57,6 +59,7 @@ export interface Database {
           id?: string;
           region?: string | null;
           statuses?: Json[] | null;
+          suggestions_channel?: string | null;
           token?: string | null;
           workspace?: string | null;
         };
