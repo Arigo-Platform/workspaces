@@ -79,8 +79,10 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
         Math.floor(Math.random() * greetingHeaderOptions.length)
       ]
     );
+
     // Time Text
     const date = new Date();
+    const hours = date.getHours();
     const day = date
       .getDay()
       .toString()
@@ -91,8 +93,9 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
       .replaceAll("4", "Thursday")
       .replaceAll("5", "Friday")
       .replaceAll("6", "Saturday");
-    if (date.getHours() < 12) {
-      //12 AM to 12 PM
+
+    if (hours >= 0 && hours < 12) {
+      // 12 AM to 12 PM
       const morningTerms = [
         "Good morning!",
         "Have a productive day!",
@@ -107,8 +110,8 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
       setTimeText(
         `${morningTerms[Math.floor(Math.random() * morningTerms.length)]} ☀️`
       );
-    } else if (date.getHours() >= 12 && date.getHours() < 17) {
-      // 12 PM to 5 PM
+    } else if (hours >= 12 && hours < 16) {
+      // 12 PM to 4 PM
       const afternoonTerms = [
         "Good afternoon!",
         `Having a good ${day} afternoon?`,
@@ -123,8 +126,8 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
           afternoonTerms[Math.floor(Math.random() * afternoonTerms.length)]
         } 🌻`
       );
-    } else if (date.getHours() >= 17 || date.getHours() < 0) {
-      // 5 PM to 12 AM
+    } else if (hours >= 16 && hours < 21) {
+      // 4 PM to 9 PM
       const eveningTerms = [
         "Good evening!",
         "Hope you had a great day!",
@@ -138,8 +141,8 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
         `${eveningTerms[Math.floor(Math.random() * eveningTerms.length)]} 🌙`
       );
     } else {
+      // 9 PM to 12 AM
       const sleepTerms = [
-        // After 5 PM before 9 AM
         "Sleep well!",
         "Night night!",
         "See you tomorrow!",
@@ -148,7 +151,7 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
         "Sleep tight!",
       ];
       if (day === "Sunday") {
-        sleepTerms.push("Get some sleep, tomorrows Monday!");
+        sleepTerms.push("Get some sleep, tomorrow's Monday!");
       }
       if (day === "Friday") {
         sleepTerms.push("It's time for the weekend!");
@@ -187,10 +190,10 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
           <div className="flex items-center justify-between space-x-4">
             <div className="grid col-span-4">
               <h3 className="text-sm font-medium contrast-more:text-black">
-                Current Server Members
+                Server Members
               </h3>
               {workspace ? (
-                <span>{workspace.guild_member_count}</span>
+                <span>{workspace.guild_member_count?.toLocaleString()}</span>
               ) : (
                 <span>...</span>
               )}
