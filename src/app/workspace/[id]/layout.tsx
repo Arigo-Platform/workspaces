@@ -51,7 +51,7 @@ export default function RootLayout({
 
   return (
     <div>
-      <nav className="flex w-full px-6 pt-2 space-x-2 overflow-x-scroll dark:bg-black">
+      <nav className="flex w-full px-6 pt-4 space-x-0 overflow-x-scroll dark:bg-black">
         {routes.map((route) => (
           <Link
             href={`/workspace/${params.id}/${route.path}`}

@@ -153,7 +153,7 @@ export default function RealtimeCommands() {
       />
       {commands &&
         commands.map((command) => (
-          <div className="relative flex flex-row flex-wrap items-stretch justify-between max-w-full p-6 text-4xl bg-white border border-gray-600 rounded-md shadow-sm dark:shadow-none gap-x-4 dark:bg-black dark:text-white">
+          <div className="animate-slideRightAndFade  relative flex flex-row flex-wrap items-stretch justify-between max-w-full p-6 text-4xl bg-white border border-gray-600 rounded-md shadow-sm dark:shadow-none gap-x-4 dark:bg-black dark:text-white">
             <div className="grid w-full max-w-lg grid-cols-3 gap-x-4">
               <h3 className="flex items-center text-sm font-medium gap-x-1">
                 <CommandLineIcon className="w-4 h-4" />
@@ -362,7 +362,7 @@ function Filter({
                 <Listbox.Option
                   key={cmdIdx}
                   className={({ active, selected }) =>
-                    `relative cursor-default select-none rounded-md dark:text-white py-2 pl-10 pr-4 dark:hover:bg-zinc-700 hover:bg-gray-200 hover:rounded-md ${
+                    `text-center relative cursor-default select-none rounded-md dark:text-white py-2 pl-10 pr-4 dark:hover:bg-zinc-700 hover:bg-gray-200 hover:rounded-md ${
                       active ? "bg-zinc-700 text-white" : "text-gray-900"
                     } ${
                       selected

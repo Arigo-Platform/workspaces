@@ -38,6 +38,16 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
     "c92153c2-e353-4380-a744-7dd8ac75be90"
   );
 
+  // fetch(`/api/discord/guilds/864016187107966996/channels`, {
+  //   method: "GET",
+  //   headers: {
+  //     Authorization: `Bot ${botSettings?.token}`,
+  //   },
+  // })
+  //   .then((res) => res.json())
+  //   .then((data) => {
+  //     console.log("Data", data);
+  //   });
   useEffect(() => {
     if (botSettings) {
       setNewBotSettings(botSettings);
@@ -422,9 +432,7 @@ function Statuses({
                     <button className="transition-colors duration-150 border hover:outline-none border-black dark:border-white ml-auto font-medium dark:text-black dark:hover:text-white dark:bg-white dark:hover:bg-opacity-0 hover:bg-opacity-0 bg-black text-white hover:text-black px-5 py-2 text-sm outline-none select-none rounded-md data-[highlighted]:bg-gray-200 data-[highlighted]:rounded">
                       Save
                     </button>
-                  ) : (
-                    <p></p>
-                  )}
+                  ) : null}
                 </div>
               </Form.Submit>
             </Form.Root>
