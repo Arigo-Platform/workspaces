@@ -153,7 +153,7 @@ export default function RealtimeCommands() {
       />
       {commands &&
         commands.map((command) => (
-          <div className="relative flex flex-row flex-wrap items-stretch justify-between max-w-full p-6 text-4xl bg-white border border-gray-600 rounded-md shadow-sm dark:shadow-none gap-x-4 dark:bg-blackA8 dark:text-white">
+          <div className="relative flex flex-row flex-wrap items-stretch justify-between max-w-full p-6 text-4xl bg-white border border-gray-600 rounded-md shadow-sm dark:shadow-none gap-x-4 dark:bg-black dark:text-white">
             <div className="grid w-full max-w-lg grid-cols-3 gap-x-4">
               <h3 className="flex items-center text-sm font-medium gap-x-1">
                 <CommandLineIcon className="w-4 h-4" />
@@ -357,7 +357,7 @@ function Filter({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Listbox.Options className="absolute z-50 grid w-full grid-cols-3 gap-2 px-1 py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg dark:bg-black dark:text-white dark:border dark:border-gray-600 max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+            <Listbox.Options className="absolute z-50 grid w-full grid-cols-2 gap-0 px-1 py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg dark:bg-black dark:text-white dark:border dark:border-gray-600 max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
               {uniqueCommands.map((cmd, cmdIdx) => (
                 <Listbox.Option
                   key={cmdIdx}

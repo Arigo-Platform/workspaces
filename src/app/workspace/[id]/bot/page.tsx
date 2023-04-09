@@ -34,7 +34,6 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
 
   const [newBotSettings, setNewBotSettings] =
     useState<Database["public"]["Tables"]["bots"]["Row"]>();
-
   const { botSettings, loading: botSettingsLoading } = useBotSettings(
     "c92153c2-e353-4380-a744-7dd8ac75be90"
   );
@@ -195,6 +194,7 @@ function Statuses({
   // Force rerender
   const [, updateState] = React.useState<{}>();
   const forceUpdate = React.useCallback(() => updateState({}), []);
+  const [change, setChange] = useState(false);
 
   return (
     <div className="w-full h-full col-span-5 p-6 text-4xl font-bold bg-white border border-gray-600 rounded-md shadow-sm dark:bg-black dark:text-white dark:shadow-none">
@@ -229,12 +229,13 @@ function Statuses({
                   }),
                   {
                     success: "Updated!",
-                    loading: "Updating bot...",
+                    loading: "Saving changes...",
                     error(error) {
-                      return `Error updating bot: ${error}`;
+                      return `Error saving changes: ${error}`;
                     },
                   }
                 );
+                setChange(false);
               }}
               className="grid items-end grid-cols-7 gap-2"
             >
@@ -289,6 +290,15 @@ function Statuses({
 
               <button
                 onClick={() => {
+                  // Validate Status
+                  if (
+                    newStatus.name === undefined ||
+                    "" ||
+                    newStatus.name.replace(/\s/g, "").length === 0
+                  ) {
+                    // No text provided
+                    return toast.error("Please enter a status");
+                  }
                   if (newBotSettings) {
                     const updatedBotSettings = {
                       ...newBotSettings,
@@ -306,6 +316,7 @@ function Statuses({
                       name: "",
                       type: 0,
                     });
+                    setChange(true);
                   }
                 }}
                 type="button"
@@ -336,6 +347,7 @@ function Statuses({
                             ...newBotSettings,
                             statuses,
                           });
+                          setChange(true);
                         }}
                       >
                         <option value={0}>Playing</option>
@@ -360,6 +372,7 @@ function Statuses({
                             ...newBotSettings,
                             statuses,
                           });
+                          setChange(true);
                         }}
                       />
 
@@ -372,6 +385,7 @@ function Statuses({
                             temp.statuses!.splice(index, 1);
                             setNewBotSettings(temp);
                             forceUpdate();
+                            setChange(true);
                           }
                         }}
                         className="flex p-2 transition-colors duration-150 rounded-md w-min h-min dark:hover:bg-slate-900 "
@@ -383,9 +397,10 @@ function Statuses({
                 </div>
               </div>
 
-              <Form.Submit asChild>
+              <Form.Submit asChild className="flex justify-between">
                 <div className="flex items-center justify-between col-span-full">
-                  <p className="text-sm font-normal text-gray-700 dark:text-white">
+                  <p className="text-sm font-normal text-gray-700 dark:text-white flex">
+                    {" "}
                     <Link
                       href="https://google.com"
                       className="flex items-center space-x-1 text-blue-400 gap-x-1"
@@ -394,10 +409,22 @@ function Statuses({
                       Learn more about statuses
                       <ArrowTopRightOnSquareIcon className="w-3 h-3" />
                     </Link>
+                    &nbsp;
+                    {change === true ? (
+                      <p className="flex justify-between items-center text-sm font-normal italic">
+                        &#183; Changes not saved
+                      </p>
+                    ) : (
+                      <p></p>
+                    )}
                   </p>
-                  <button className="transition-colors duration-150 border hover:outline-none border-black dark:border-white ml-auto font-medium dark:text-black dark:hover:text-white dark:bg-white dark:hover:bg-opacity-0 hover:bg-opacity-0 bg-black text-white hover:text-black px-5 py-2 text-sm outline-none select-none rounded-md data-[highlighted]:bg-gray-200 data-[highlighted]:rounded">
-                    Save Changes
-                  </button>
+                  {change === true ? (
+                    <button className="transition-colors duration-150 border hover:outline-none border-black dark:border-white ml-auto font-medium dark:text-black dark:hover:text-white dark:bg-white dark:hover:bg-opacity-0 hover:bg-opacity-0 bg-black text-white hover:text-black px-5 py-2 text-sm outline-none select-none rounded-md data-[highlighted]:bg-gray-200 data-[highlighted]:rounded">
+                      Save
+                    </button>
+                  ) : (
+                    <p></p>
+                  )}
                 </div>
               </Form.Submit>
             </Form.Root>
