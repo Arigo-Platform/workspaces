@@ -1,4 +1,5 @@
 const { mauve, violet, blackA } = require("@radix-ui/colors");
+const defaultTheme = require("tailwindcss/defaultTheme");
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -14,6 +15,10 @@ module.exports = {
       4: "4px",
       6: "6px",
       8: "8px",
+    },
+    borderRadius: {
+      ...defaultTheme.borderRadius,
+      md: ".22rem",
     },
     extend: {
       colors: {

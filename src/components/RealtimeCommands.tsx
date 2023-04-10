@@ -153,7 +153,7 @@ export default function RealtimeCommands() {
       />
       {commands &&
         commands.map((command) => (
-          <div className="animate-slideRightAndFade  relative flex flex-row flex-wrap items-stretch justify-between max-w-full p-6 text-4xl bg-white border border-gray-600 rounded-md shadow-sm dark:shadow-none gap-x-4 dark:bg-black dark:text-white">
+          <div className="relative flex flex-row flex-wrap items-stretch justify-between max-w-full p-6 text-4xl bg-white border border-gray-600 rounded-md shadow-sm animate-slideRightAndFade dark:shadow-none gap-x-4 dark:bg-black dark:text-white">
             <div className="grid w-full max-w-lg grid-cols-3 gap-x-4">
               <h3 className="flex items-center text-sm font-medium gap-x-1">
                 <CommandLineIcon className="w-4 h-4" />
@@ -196,7 +196,7 @@ export default function RealtimeCommands() {
       <div>
         <DropdownMenu.Separator className="h-[1px] bg-gray-500 bg-opacity-10 dark:bg-opacity-40 m-[5px]" />
         <div className="flex items-center">
-          <p className="text-sm text-white">Rows per page:</p>
+          <p className="text-sm text-black dark:text-white">Rows per page:</p>
           <div>
             {/* Rows Per Page */}
             <div className="px-1 rounded-md outline-none hover:bg-gray-200 dark:hover:bg-black">
@@ -217,7 +217,7 @@ export default function RealtimeCommands() {
               </select>
             </div>
           </div>
-          <p className="px-3 text-sm text-gray-200">
+          <p className="px-3 text-sm text-gray-800 dark:text-gray-200">
             {filter.page * filter.perPage + 1} -{" "}
             {commands.length < filter.page * filter.perPage + filter.perPage
               ? commands.length
@@ -229,13 +229,13 @@ export default function RealtimeCommands() {
               className="rounded-md p-2 inline-flex items-center justify-center dark:text-white text-black shadow-[0_2px_10px] shadow-blackA7 outline-none border border-gray-600 dark:hover:bg-gray-900 hover:bg-gray-200 focus:shadow-[0_0_0_2px] focus:shadow-black"
               aria-label="Next Page"
             >
-              <ChevronLeftIcon className="w-4 h-4 text-white " />
+              <ChevronLeftIcon className="w-4 h-4 text-black dark:text-white " />
             </button>
             <button
               className="rounded-md p-2 inline-flex items-center justify-center dark:text-white text-black shadow-[0_2px_10px] shadow-blackA7 outline-none border border-gray-600 dark:hover:bg-gray-900 hover:bg-gray-200 focus:shadow-[0_0_0_2px] focus:shadow-black"
               aria-label="Next Page"
             >
-              <ChevronRightIcon className="w-4 h-4 text-white " />
+              <ChevronRightIcon className="w-4 h-4 text-black dark:text-white " />
             </button>
           </div>
         </div>
@@ -338,7 +338,7 @@ function Filter({
         multiple
       >
         <div className="relative col-span-6">
-          <Listbox.Button className="relative w-full py-2 pl-3 pr-10 text-left bg-white rounded-lg shadow-md cursor-default focus:border-gray-300 focus:dark:border-gray-400 dark:text-white dark:bg-black dark:border dark:border-gray-600 focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+          <Listbox.Button className="relative w-full px-10 py-2 pl-3 text-left bg-white rounded-lg shadow-md cursor-default focus:border-gray-300 focus:dark:border-gray-400 dark:text-white dark:bg-black dark:border dark:border-gray-600 focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
             <span className="block truncate">
               {filter.commands && filter.commands.length > 0
                 ? filter.commands.join(", ")
@@ -362,7 +362,7 @@ function Filter({
                 <Listbox.Option
                   key={cmdIdx}
                   className={({ active, selected }) =>
-                    `text-center relative cursor-default select-none rounded-md dark:text-white py-2 pl-10 pr-4 dark:hover:bg-zinc-700 hover:bg-gray-200 hover:rounded-md ${
+                    `text-center relative cursor-default select-none rounded-md dark:text-white py-2 px-10 dark:hover:bg-zinc-700 hover:bg-gray-200 hover:rounded-md ${
                       active ? "bg-zinc-700 text-white" : "text-gray-900"
                     } ${
                       selected

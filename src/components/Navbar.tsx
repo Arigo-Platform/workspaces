@@ -71,7 +71,7 @@ export default function Navbar() {
   }, [pathname]);
 
   return (
-    <nav className="flex flex-wrap items-center justify-between p-6 mx-auto dark:bg-blackA9 bg-slate-100">
+    <nav className="flex flex-wrap items-center justify-between p-6 mx-auto dark:bg-blackA12 bg-slate-100">
       <div className="flex items-center flex-1 space-x-2">
         <Link href="/">
           <span className="px-2 text-xl font-bold text-black dark:text-white">

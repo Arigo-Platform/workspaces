@@ -14,34 +14,37 @@ const useBotSettings = (botId: string) => {
   const { session } = useSessionContext();
   const supabase = useSupabaseClient<Database>();
 
+  const fetchBot = async () => {
+    const { data, error } = await supabase
+      .from("bots")
+      .select()
+      .eq("id", botId)
+      .single();
+
+    if (error) {
+      console.error("There was an error!", error);
+      return;
+    }
+    setBotSettings(data);
+    setLoading(false);
+  };
+
   useEffect(() => {
     if (!session) return;
 
-    const fetchRole = async () => {
-      const { data, error } = await supabase
-        .from("bots")
-        .select()
-        .eq("id", botId)
-        .single();
-
-      if (error) {
-        console.error("There was an error!", error);
-        return;
-      }
-      setBotSettings(data);
-      setLoading(false);
-    };
-
-    fetchRole();
+    fetchBot();
   }, [botId, session]);
 
-  return useMemo(
-    () => ({
-      botSettings,
-      loading,
-    }),
-    [botSettings, loading]
-  );
+  return {
+    ...useMemo(
+      () => ({
+        botSettings,
+        loading,
+      }),
+      [botSettings, loading]
+    ),
+    refresh: fetchBot,
+  };
 };
 
 export default useBotSettings;

@@ -38,16 +38,6 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
     "c92153c2-e353-4380-a744-7dd8ac75be90"
   );
 
-  // fetch(`/api/discord/guilds/864016187107966996/channels`, {
-  //   method: "GET",
-  //   headers: {
-  //     Authorization: `Bot ${botSettings?.token}`,
-  //   },
-  // })
-  //   .then((res) => res.json())
-  //   .then((data) => {
-  //     console.log("Data", data);
-  //   });
   useEffect(() => {
     if (botSettings) {
       setNewBotSettings(botSettings);
@@ -398,7 +388,7 @@ function Statuses({
                         }}
                         className="flex p-2 transition-colors duration-150 rounded-md w-min h-min dark:hover:bg-slate-900 "
                       >
-                        <TrashIcon className="w-5 h-5  dark:text-slate-200 text-slate-800" />
+                        <TrashIcon className="w-5 h-5 dark:text-slate-200 text-slate-800" />
                       </button>
                     </div>
                   ))}
@@ -407,7 +397,7 @@ function Statuses({
 
               <Form.Submit asChild className="flex justify-between">
                 <div className="flex items-center justify-between col-span-full">
-                  <p className="text-sm font-normal text-gray-700 dark:text-white flex">
+                  <p className="flex text-sm font-normal text-gray-700 dark:text-white">
                     {" "}
                     <Link
                       href="https://google.com"
@@ -419,7 +409,7 @@ function Statuses({
                     </Link>
                     &nbsp;
                     {change === true ? (
-                      <p className="flex justify-between items-center text-sm font-normal italic">
+                      <p className="flex items-center justify-between text-sm italic font-normal">
                         &#183; Changes not saved
                       </p>
                     ) : (

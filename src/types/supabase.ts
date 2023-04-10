@@ -41,7 +41,9 @@ export interface Database {
           id: string;
           region: string | null;
           statuses: Json[] | null;
+          suggestion_modify_roles: Json[] | null;
           suggestions_channel: string | null;
+          suggestions_emoji: string | null;
           token: string | null;
           workspace: string | null;
         };
@@ -50,7 +52,9 @@ export interface Database {
           id?: string;
           region?: string | null;
           statuses?: Json[] | null;
+          suggestion_modify_roles?: Json[] | null;
           suggestions_channel?: string | null;
+          suggestions_emoji?: string | null;
           token?: string | null;
           workspace?: string | null;
         };
@@ -59,7 +63,9 @@ export interface Database {
           id?: string;
           region?: string | null;
           statuses?: Json[] | null;
+          suggestion_modify_roles?: Json[] | null;
           suggestions_channel?: string | null;
+          suggestions_emoji?: string | null;
           token?: string | null;
           workspace?: string | null;
         };
@@ -245,6 +251,13 @@ export interface Database {
       };
     };
     Views: {
+      unique_command_arguments: {
+        Row: {
+          args: Json[] | null;
+          guild_id: string | null;
+          id: string | null;
+        };
+      };
       unique_commands: {
         Row: {
           command_name: string | null;
