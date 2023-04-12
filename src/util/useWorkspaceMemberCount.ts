@@ -3,7 +3,7 @@ import {
   useSessionContext,
   useSupabaseClient,
 } from "@supabase/auth-helpers-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const useWorkspaceMemberCount = (workspaceId: string) => {
   const [memberCount, setMemberCount] = useState(0);
@@ -32,7 +32,13 @@ const useWorkspaceMemberCount = (workspaceId: string) => {
     fetchMemberCount();
   }, [workspaceId, session]);
 
-  return [memberCount, loading] as const;
+  return useMemo(
+    () => ({
+      memberCount,
+      loading,
+    }),
+    [memberCount, loading]
+  );
 };
 
 export default useWorkspaceMemberCount;

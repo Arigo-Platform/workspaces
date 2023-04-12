@@ -3,7 +3,7 @@ import {
   useSessionContext,
   useSupabaseClient,
 } from "@supabase/auth-helpers-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 type Feature = Database["public"]["Tables"]["features"]["Row"];
 
@@ -72,7 +72,7 @@ const useFeatureFlags = () => {
     }
   }, [features]);
 
-  return userFeatures;
+  return useMemo(() => userFeatures, [userFeatures]);
 };
 
 export default useFeatureFlags;

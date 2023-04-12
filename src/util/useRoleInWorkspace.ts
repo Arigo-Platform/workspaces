@@ -3,7 +3,7 @@ import {
   useSessionContext,
   useSupabaseClient,
 } from "@supabase/auth-helpers-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const useRoleInWorkspace = (workspaceId: string) => {
   type WorkspaceMembers =
@@ -39,7 +39,13 @@ const useRoleInWorkspace = (workspaceId: string) => {
     fetchRole();
   }, [workspaceId, session]);
 
-  return [role, loading] as const;
+  return useMemo(
+    () => ({
+      role,
+      loading,
+    }),
+    [role, loading]
+  );
 };
 
 export default useRoleInWorkspace;

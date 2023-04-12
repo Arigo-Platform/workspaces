@@ -3,7 +3,7 @@ import {
   useSessionContext,
   useSupabaseClient,
 } from "@supabase/auth-helpers-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 type Profile = Database["public"]["Tables"]["accounts"]["Row"];
 
@@ -33,7 +33,14 @@ const useAccount = () => {
     }
   }, [session, isLoading]);
 
-  return profile;
+  return useMemo(
+    () => ({
+      profile,
+      isLoading,
+      error,
+    }),
+    [profile, isLoading, error]
+  );
 };
 
 export default useAccount;

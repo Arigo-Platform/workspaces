@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { APIGuild } from "discord-api-types/v10";
 import { Database } from "@/types/supabase";
 import {
@@ -48,7 +48,7 @@ const useDiscordServer = (
       }
 
       const res = await fetch(
-        `https://discord.com/api/v10/guilds/${workspace.guild_id}?with_counts=true`,
+        `/api/discord/guilds/${workspace.guild_id}?with_counts=true`,
         {
           headers: {
             Authorization: `Bearer ${session?.provider_token}`,
@@ -70,7 +70,13 @@ const useDiscordServer = (
     fetchServer();
   }, [session, workspace]);
 
-  return [server, loading] as const;
+  return useMemo(
+    () => ({
+      server,
+      loading,
+    }),
+    [server, loading]
+  );
 };
 
 export default useDiscordServer;

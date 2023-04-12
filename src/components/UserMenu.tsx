@@ -14,7 +14,7 @@ import classNames from "classnames";
 export default function UserMenu() {
   const supabase = useSupabaseClient();
   const user = useUser();
-  const workspaces = useWorkspaces();
+  const { workspaces } = useWorkspaces();
   const [workspaceSelectorOpen, setWorkspaceSelectorOpen] = useState(false);
   return (
     <DropdownMenu.Root>
