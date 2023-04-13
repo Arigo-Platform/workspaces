@@ -37,7 +37,7 @@ export default function CommandLog({ params }: { params: { id: string } }) {
     botSettings,
     loading: botSettingsLoading,
     refresh,
-  } = useBotSettings("c92153c2-e353-4380-a744-7dd8ac75be90");
+  } = useBotSettings(params.id);
 
   const { workspace, loading: workspaceLoading } = useWorkspace(params.id);
 

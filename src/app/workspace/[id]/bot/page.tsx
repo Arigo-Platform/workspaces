@@ -33,7 +33,7 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
   const [newBotSettings, setNewBotSettings] =
     useState<Database["public"]["Tables"]["bots"]["Row"]>();
   const { botSettings, loading: botSettingsLoading } = useBotSettings(
-    "c92153c2-e353-4380-a744-7dd8ac75be90"
+    params.id
   );
 
   const [saving, setSaving] = useState(false);
@@ -149,7 +149,7 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
                           <ArrowTopRightOnSquareIcon className="w-3 h-3" />
                         </Link>
                       </p>
-                      <Button saving={saving} />
+                      <Button saving={saving}>Save</Button>
                     </div>
                   </Form.Submit>
                 </Form.Root>
@@ -420,7 +420,7 @@ function Statuses({
                       <p></p>
                     )}
                   </p>
-                  <Button saving={saving} />
+                  <Button saving={saving}>Save</Button>{" "}
                 </div>
               </Form.Submit>
             </Form.Root>

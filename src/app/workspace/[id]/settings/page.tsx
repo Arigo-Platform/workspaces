@@ -104,7 +104,7 @@ export default function SettingsPage({ params }: { params: { id: string } }) {
                     </Form.Field>
                     <Form.Submit asChild>
                       <div className="flex items-center justify-between">
-                        <Button saving={saving} />
+                        <Button saving={saving}>Save</Button>{" "}
                       </div>
                     </Form.Submit>
                   </Form.Root>

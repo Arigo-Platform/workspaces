@@ -5,7 +5,7 @@ import {
 } from "@supabase/auth-helpers-react";
 import { useEffect, useMemo, useState } from "react";
 
-const useBotSettings = (botId: string) => {
+const useBotSettings = (workspaceId: string) => {
   type BotSettingsConfig = Database["public"]["Tables"]["bots"]["Row"];
 
   const [botSettings, setBotSettings] = useState<BotSettingsConfig>();
@@ -18,7 +18,7 @@ const useBotSettings = (botId: string) => {
     const { data, error } = await supabase
       .from("bots")
       .select()
-      .eq("id", botId)
+      .eq("workspace", workspaceId)
       .single();
 
     if (error) {
@@ -33,7 +33,7 @@ const useBotSettings = (botId: string) => {
     if (!session) return;
 
     fetchBot();
-  }, [botId, session]);
+  }, [workspaceId, session]);
 
   return {
     ...useMemo(

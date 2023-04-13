@@ -220,6 +220,23 @@ export interface Database {
           workspace?: string;
         };
       };
+      workspace_permissions: {
+        Row: {
+          permissions: string[];
+          role: string;
+          workspace: string;
+        };
+        Insert: {
+          permissions: string[];
+          role: string;
+          workspace: string;
+        };
+        Update: {
+          permissions?: string[];
+          role?: string;
+          workspace?: string;
+        };
+      };
       workspaces: {
         Row: {
           created_at: string | null;

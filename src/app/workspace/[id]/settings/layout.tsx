@@ -39,6 +39,16 @@ export default function SettingsLayout({
           </Link>
 
           <Link
+            href={`/workspace/${workspace?.id}/settings/permissions`}
+            className={`w-full px-3 py-2 rounded-md dark:hover:bg-zinc-700 hover:bg-zinc-200 ${
+              pathname === `/workspace/${workspace?.id}/settings/permissions` &&
+              "bg-zinc-200 dark:bg-zinc-700"
+            }`}
+          >
+            Permissions
+          </Link>
+
+          <Link
             href={`/workspace/${workspace?.id}/settings/billing`}
             className={`w-full px-3 py-2 rounded-md dark:hover:bg-zinc-700 hover:bg-zinc-200 ${
               pathname === `/workspace/${workspace?.id}/settings/billing` &&
@@ -49,7 +59,7 @@ export default function SettingsLayout({
           </Link>
         </aside>
 
-        <section className="col-span-6">{children}</section>
+        <section className="col-span-6 pr-4">{children}</section>
       </section>
     </section>
   );
