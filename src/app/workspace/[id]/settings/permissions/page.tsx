@@ -21,6 +21,7 @@ import ChipInput from "@/components/ChipInput";
 import Link from "next/link";
 import { toast } from "sonner";
 import Tooltip from "@/components/Tooltip";
+import * as Separator from "@radix-ui/react-separator";
 
 type PermissionsSet =
   Database["public"]["Tables"]["workspace_permissions"]["Row"];
@@ -184,24 +185,33 @@ export default function PemissionsPage({ params }: { params: { id: string } }) {
         </div>
 
         <ul className="grid grid-cols-1 gap-2 col-span-full">
+          {currentPermissions.length === 0 && (
+            <div>
+              <Separator.Root className="my-6 bg-gray-300 dark:bg-zinc-700 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px" />
+              <p className="text-center	font-medium dark:text-white">
+                There's nothing to show right now, add a permission above to get
+                started
+              </p>
+            </div>
+          )}
           {roles.length > 0 &&
             currentPermissions.map((perm) => {
               const role = roles.find((r) => r.id === perm.role);
               return (
                 <li key={perm.role}>
                   <div className="flex items-center justify-between p-2 space-x-2 border rounded-lg dark:border-zinc-700 dark:bg-black">
-                    <div className="flex items-center space-x-2 ">
-                      <span className="text-lg font-medium dark:text-white">
-                        {role?.name}
-                      </span>
-                      <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                        {role?.id}
-                      </span>
+                    <div className="flex items-center space-x-2 pl-2">
+                      <Tooltip content={role?.id}>
+                        <span className="text-sm font-medium dark:text-white">
+                          {role?.name}
+                        </span>
+                      </Tooltip>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Tooltip content={perm.permissions.join(", ")}>
-                        <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                          {perm.permissions.length} permissions
+                        <span className="text-sm text-gray-500 dark:text-gray-400">
+                          {perm.permissions.length} permission
+                          {perm.permissions.length > 1 ? "s" : ""}
                         </span>
                       </Tooltip>
                       <Button
@@ -307,17 +317,18 @@ function PermissionsDialog({
       <Dialog.Portal>
         <Dialog.Overlay className="bg-blackA9 data-[state=open]:animate-overlayShow fixed inset-0" />
         <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-[50%] space-y-2 left-[50%] max-h-[85vh] w-[90vw] max-w-5xl translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
-          <Dialog.Title className="text-mauve12 m-0 text-[17px] font-medium">
+          <Dialog.Title className="text-mauve12 m-0 text-[17px] font-medium pb-2">
             {existing ? "Modify" : "New"} Permission Set
           </Dialog.Title>
-          <Dialog.Description className="text-mauve11 mt-[10px] mb-5 text-[15px] leading-normal">
+          {/* Not really needed as of now */}
+          {/* <Dialog.Description className="text-mauve11 mt-[10px] mb-5 text-[15px] leading-normal">
             Create a new permission set for your workspace.
-          </Dialog.Description>
+          </Dialog.Description> */}
 
           {!existing && (
             <fieldset>
               <label
-                className="text-violet11 w-[90px] text-right text-[15px]"
+                className="text-zinc-700 w-[90px] text-right text-[15px]"
                 htmlFor="role"
               >
                 Role
@@ -403,7 +414,7 @@ function PermissionsDialog({
 
           <fieldset>
             <label
-              className="text-violet11 w-[90px] text-right text-[15px]"
+              className="text-zinc-700 w-[90px] text-right text-[15px]"
               htmlFor="permissions"
             >
               Permissions
@@ -422,7 +433,7 @@ function PermissionsDialog({
             )}
           </fieldset>
 
-          <div className="mt-[25px] flex w-full justify-between items-center">
+          <div className="mt-[25px] flex w-full justify-between items-center pt-5">
             <p className="text-sm font-normal text-gray-700 dark:text-white">
               <Link
                 href="https://google.com"
@@ -433,16 +444,18 @@ function PermissionsDialog({
                 <ArrowTopRightOnSquareIcon className="w-3 h-3" />
               </Link>
             </p>
-            <button
-              onClick={handleOnClose}
-              className="bg-green4 text-green11 hover:bg-green5 transition-colors duration-150 focus:shadow-green7 inline-flex py-2 items-center justify-center rounded-md px-4 font-medium leading-none focus:shadow-[0_0_0_2px] focus:outline-none"
-            >
-              {existing ? "Save" : "Create"}
-            </button>
+            <div className="col-span-full">
+              <Button
+                className="flex justify-center w-full py-2 items-center px-4"
+                onClick={handleOnClose}
+              >
+                {existing ? "Save" : "Create"}
+              </Button>
+            </div>
           </div>
           <Dialog.Close asChild>
             <button
-              className="text-violet11 hover:bg-violet4 focus:shadow-violet7 absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:shadow-[0_0_0_2px] focus:outline-none"
+              className="dark:text-black dark:hover:bg-zinc-300 hover:bg-violet4 absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:outline-none"
               aria-label="Close"
             >
               <Cross2Icon />
