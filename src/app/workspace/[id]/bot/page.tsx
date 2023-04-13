@@ -17,6 +17,7 @@ import {
   ArrowTopRightOnSquareIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
+import Button from "@/components/Button";
 type LogFilter = {
   user?: string;
   channel?: string;
@@ -27,9 +28,6 @@ type LogFilter = {
 };
 
 export default function DashboardPage({ params }: { params: { id: string } }) {
-  const { workspace, loading } = useWorkspace(params.id);
-  const user = useUser();
-
   const supabase = useSupabaseClient<Database>();
 
   const [newBotSettings, setNewBotSettings] =
@@ -38,46 +36,45 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
     "c92153c2-e353-4380-a744-7dd8ac75be90"
   );
 
+  const [saving, setSaving] = useState(false);
+
   useEffect(() => {
     if (botSettings) {
       setNewBotSettings(botSettings);
     }
   }, [botSettings]);
 
-  const updateToken = async () => {
-    const updateData = async () => {
-      // Validate Token
-      // Make a fetch request to Discord
-      await fetch("https://discord.com/api/v10/users/@me", {
-        headers: {
-          Authorization: `Bot ${botSettings?.token}`,
-        },
-      }).then(async (response) => {
-        if (response.status === 401) {
-          return Promise.reject();
-        }
-        if (response.status === 200) {
-          // Success
-          try {
-            const { data, error } = await supabase
-              .from("bots")
-              .update({ token: botSettings?.token })
-              .eq("id", "c92153c2-e353-4380-a744-7dd8ac75be90")
-              .select();
-            return data;
-          } catch (error) {
+  const updateData = async () => {
+    setSaving(true);
+    // Validate Token
+    // Make a fetch request to Discord
+    await fetch("https://discord.com/api/v10/users/@me", {
+      headers: {
+        Authorization: `Bot ${botSettings?.token}`,
+      },
+    }).then(async (response) => {
+      if (response.status === 401) {
+        return Promise.reject();
+      }
+      if (response.status === 200) {
+        // Success
+        try {
+          const { data, error } = await supabase
+            .from("bots")
+            .update({ token: botSettings?.token })
+            .eq("id", "c92153c2-e353-4380-a744-7dd8ac75be90")
+            .select();
+
+          if (error) {
             throw error;
           }
+
+          setSaving(false);
+          return data;
+        } catch (error) {
+          throw error;
         }
-      });
-    };
-    toast.promise(updateData(), {
-      loading: "Loading...",
-      success: (returned) => {
-        return `Token successfully updated`;
-      },
-      error:
-        "There was an internal server error, please generate a new token or contact Arigo Support via the messenger",
+      }
     });
   };
 
@@ -105,7 +102,12 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
               <div>
                 <Form.Root
                   onSubmit={(event) => {
-                    updateToken();
+                    toast.promise(updateData(), {
+                      loading: "Loading...",
+                      success: "Token updated!",
+                      error:
+                        "There was an error updating your bot token. Please try again later.",
+                    });
                     event.preventDefault();
                   }}
                 >
@@ -147,9 +149,7 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
                           <ArrowTopRightOnSquareIcon className="w-3 h-3" />
                         </Link>
                       </p>
-                      <button className="transition-colors duration-150 border hover:outline-none border-black dark:border-white ml-auto font-medium dark:text-black dark:hover:text-white dark:bg-white dark:hover:bg-opacity-0 hover:bg-opacity-0 bg-black text-white hover:text-black px-5 py-2 text-sm outline-none select-none rounded-md data-[highlighted]:bg-gray-200 data-[highlighted]:rounded">
-                        Save
-                      </button>
+                      <Button saving={saving} />
                     </div>
                   </Form.Submit>
                 </Form.Root>
@@ -193,6 +193,7 @@ function Statuses({
   const [, updateState] = React.useState<{}>();
   const forceUpdate = React.useCallback(() => updateState({}), []);
   const [change, setChange] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   return (
     <div className="w-full h-full col-span-5 p-6 text-4xl font-bold bg-white border border-gray-600 rounded-md shadow-sm dark:bg-black dark:text-white dark:shadow-none">
@@ -213,10 +214,13 @@ function Statuses({
 
                 toast.promise(
                   new Promise(async (res, rej) => {
+                    setSaving(true);
                     const { error } = await supabase
                       .from("bots")
                       .update(newBotSettings)
                       .eq("id", newBotSettings.id);
+
+                    setSaving(false);
 
                     if (error) {
                       rej(error);
@@ -226,7 +230,7 @@ function Statuses({
                     res(true);
                   }),
                   {
-                    success: "Updated!",
+                    success: "Statuses updated!",
                     loading: "Saving changes...",
                     error(error) {
                       return `Error saving changes: ${error}`;
@@ -416,11 +420,7 @@ function Statuses({
                       <p></p>
                     )}
                   </p>
-                  {change === true ? (
-                    <button className="transition-colors duration-150 border hover:outline-none border-black dark:border-white ml-auto font-medium dark:text-black dark:hover:text-white dark:bg-white dark:hover:bg-opacity-0 hover:bg-opacity-0 bg-black text-white hover:text-black px-5 py-2 text-sm outline-none select-none rounded-md data-[highlighted]:bg-gray-200 data-[highlighted]:rounded">
-                      Save
-                    </button>
-                  ) : null}
+                  <Button saving={saving} />
                 </div>
               </Form.Submit>
             </Form.Root>

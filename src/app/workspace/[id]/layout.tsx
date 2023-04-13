@@ -23,10 +23,10 @@ export default function RootLayout({
       path: "bot",
       title: "Bot",
     },
-    // {
-    //   path: "/settings",
-    //   title: "Settings",
-    // },
+    {
+      path: "settings",
+      title: "Settings",
+    },
     // {
     //   path: "moderation",
     //   title: "Moderation",
@@ -52,7 +52,7 @@ export default function RootLayout({
   return (
     <div>
       {/* Removed overflow-x-scroll to prevent weird white space */}
-      <nav className="flex w-full px-6 pt-2 space-x-2  bg-slate-100 dark:bg-black">
+      <nav className="flex w-full px-6 pt-2 space-x-2 bg-slate-100 dark:bg-black">
         {routes.map((route) => (
           <Link
             href={`/workspace/${params.id}/${route.path}`}

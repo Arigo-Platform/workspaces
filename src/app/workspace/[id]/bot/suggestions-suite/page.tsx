@@ -29,6 +29,7 @@ import {
 } from "@radix-ui/react-icons";
 import { toast } from "sonner";
 import type { APIChannel, APIRole } from "discord-api-types/v10";
+import ListboxSkeletonLoader from "@/components/ListboxSkeletonLoader";
 
 export default function CommandLog({ params }: { params: { id: string } }) {
   const supabase = useSupabaseClient<Database>();
@@ -64,9 +65,7 @@ export default function CommandLog({ params }: { params: { id: string } }) {
       }
     ).then((res) => res.json());
 
-    const temp = c;
-    console.log("Hm", temp);
-    const filtered = temp.filter((channel: APIChannel) => {
+    const filtered = c.filter((channel: APIChannel) => {
       return channel.type === 0;
     });
 
@@ -86,9 +85,7 @@ export default function CommandLog({ params }: { params: { id: string } }) {
       }
     ).then((res) => res.json());
 
-    const temp = c;
-
-    const filtered = temp
+    const filtered = c
       .filter((role) => {
         return role.name !== "@everyone";
       })
@@ -128,12 +125,10 @@ export default function CommandLog({ params }: { params: { id: string } }) {
           }
         },
         {
-          loading: "Loading...",
-          success: (returned) => {
-            return `Changes saved`;
-          },
+          loading: "Saving...",
+          success: "Channel updated!",
           error:
-            "There was an internal server error, please try again or contact Arigo Support via the messenger",
+            "An error occurred, please try again or contact Arigo Support via the messenger",
         }
       );
     }
@@ -159,12 +154,10 @@ export default function CommandLog({ params }: { params: { id: string } }) {
           }
         },
         {
-          loading: "Loading...",
-          success: (returned) => {
-            return `Changes saved`;
-          },
+          loading: "Saving...",
+          success: "Emoji updated!",
           error:
-            "There was an internal server error, please try again or contact Arigo Support via the messenger",
+            "An error occurred, please try again or contact Arigo Support via the messenger",
         }
       );
     }
@@ -190,12 +183,10 @@ export default function CommandLog({ params }: { params: { id: string } }) {
           }
         },
         {
-          loading: "Loading...",
-          success: (returned) => {
-            return `Changes saved`;
-          },
+          loading: "Saving...",
+          success: "Roles updated!",
           error:
-            "There was an internal server error, please try again or contact Arigo Support via the messenger",
+            "An error occurred, please try again or contact Arigo Support via the messenger",
         }
       );
     }
@@ -221,7 +212,7 @@ export default function CommandLog({ params }: { params: { id: string } }) {
               </h2>
 
               <div className="mt-3">
-                {channels && (
+                {channels ? (
                   <Listbox
                     value={newBotSettings?.suggestions_channel}
                     onChange={(value) => updateChannel(value as string)}
@@ -296,6 +287,9 @@ export default function CommandLog({ params }: { params: { id: string } }) {
                       </Transition>
                     </div>
                   </Listbox>
+                ) : (
+                  // skeleton loader
+                  <ListboxSkeletonLoader />
                 )}
                 <div className="flex items-center justify-between pt-3">
                   <p className="text-sm font-normal text-gray-700 dark:text-white">
@@ -430,85 +424,87 @@ export default function CommandLog({ params }: { params: { id: string } }) {
 
               <div className="mt-3">
                 {roles &&
-                  newBotSettings &&
-                  newBotSettings.suggestion_modify_roles && (
-                    <Listbox
-                      value={newBotSettings.suggestion_modify_roles}
-                      onChange={(value) => updateModifyRoles(value)}
-                      multiple
-                    >
-                      <div className="relative col-span-6">
-                        <Listbox.Button className="relative w-full px-10 py-2 pl-3 text-left bg-white rounded-lg shadow-md cursor-default focus:border-gray-300 focus:dark:border-gray-400 dark:text-white dark:bg-black dark:border dark:border-gray-600 focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
-                          <span className="block truncate">
-                            {newBotSettings.suggestion_modify_roles &&
-                            newBotSettings.suggestion_modify_roles.length > 0
-                              ? roles
-                                  .filter((role) => {
-                                    return newBotSettings.suggestion_modify_roles?.includes(
-                                      role.id
-                                    );
-                                  })
-                                  .map((role) => role.name)
-                                  .join(", ")
-                              : "Select roles"}
-                          </span>
-                          <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                            <ChevronUpDownIcon
-                              className="w-5 h-5 text-gray-400"
-                              aria-hidden="true"
-                            />
-                          </span>
-                        </Listbox.Button>
-                        <Transition
-                          as={Fragment}
-                          leave="transition ease-in duration-100"
-                          leaveFrom="opacity-100"
-                          leaveTo="opacity-0"
-                        >
-                          <Listbox.Options className="absolute z-50 grid w-full grid-cols-2 gap-0 px-1 py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg dark:bg-black dark:text-white dark:border dark:border-gray-600 max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                            {roles.map((role, index) => (
-                              <Listbox.Option
-                                key={role.id}
-                                className={({ active, selected }) =>
-                                  `text-center relative cursor-default select-none rounded-md dark:text-white py-2 px-10 dark:hover:bg-zinc-700 hover:bg-gray-200 hover:rounded-md ${
-                                    active
-                                      ? "bg-zinc-700 text-white"
-                                      : "text-gray-900"
-                                  } ${
-                                    selected
-                                      ? "bg-zinc-900 text-white font-bold"
-                                      : "font-normal"
-                                  }`
-                                }
-                                value={role.id}
-                                id={role.id}
-                              >
-                                {({ selected }) => (
-                                  <>
-                                    <span
-                                      className={`block truncate ${
-                                        selected ? "font-medium" : "font-normal"
-                                      }`}
-                                    >
-                                      {role.name}
+                newBotSettings &&
+                newBotSettings.suggestion_modify_roles ? (
+                  <Listbox
+                    value={newBotSettings.suggestion_modify_roles}
+                    onChange={(value) => updateModifyRoles(value)}
+                    multiple
+                  >
+                    <div className="relative col-span-6">
+                      <Listbox.Button className="relative w-full px-10 py-2 pl-3 text-left bg-white rounded-lg shadow-md cursor-default focus:border-gray-300 focus:dark:border-gray-400 dark:text-white dark:bg-black dark:border dark:border-gray-600 focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+                        <span className="block truncate">
+                          {newBotSettings.suggestion_modify_roles &&
+                          newBotSettings.suggestion_modify_roles.length > 0
+                            ? roles
+                                .filter((role) => {
+                                  return newBotSettings.suggestion_modify_roles?.includes(
+                                    role.id
+                                  );
+                                })
+                                .map((role) => role.name)
+                                .join(", ")
+                            : "Select roles"}
+                        </span>
+                        <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                          <ChevronUpDownIcon
+                            className="w-5 h-5 text-gray-400"
+                            aria-hidden="true"
+                          />
+                        </span>
+                      </Listbox.Button>
+                      <Transition
+                        as={Fragment}
+                        leave="transition ease-in duration-100"
+                        leaveFrom="opacity-100"
+                        leaveTo="opacity-0"
+                      >
+                        <Listbox.Options className="absolute z-50 grid w-full grid-cols-2 gap-0 px-1 py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg dark:bg-black dark:text-white dark:border dark:border-gray-600 max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                          {roles.map((role, index) => (
+                            <Listbox.Option
+                              key={role.id}
+                              className={({ active, selected }) =>
+                                `text-center relative cursor-default select-none rounded-md dark:text-white py-2 px-10 dark:hover:bg-zinc-700 hover:bg-gray-200 hover:rounded-md ${
+                                  active
+                                    ? "bg-zinc-700 text-white"
+                                    : "text-gray-900"
+                                } ${
+                                  selected
+                                    ? "bg-zinc-900 text-white font-bold"
+                                    : "font-normal"
+                                }`
+                              }
+                              value={role.id}
+                              id={role.id}
+                            >
+                              {({ selected }) => (
+                                <>
+                                  <span
+                                    className={`block truncate ${
+                                      selected ? "font-medium" : "font-normal"
+                                    }`}
+                                  >
+                                    {role.name}
+                                  </span>
+                                  {selected ? (
+                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-800 dark:text-gray-200">
+                                      <CheckIcon
+                                        className="w-5 h-5"
+                                        aria-hidden="true"
+                                      />
                                     </span>
-                                    {selected ? (
-                                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-800 dark:text-gray-200">
-                                        <CheckIcon
-                                          className="w-5 h-5"
-                                          aria-hidden="true"
-                                        />
-                                      </span>
-                                    ) : null}
-                                  </>
-                                )}
-                              </Listbox.Option>
-                            ))}
-                          </Listbox.Options>
-                        </Transition>
-                      </div>
-                    </Listbox>
-                  )}
+                                  ) : null}
+                                </>
+                              )}
+                            </Listbox.Option>
+                          ))}
+                        </Listbox.Options>
+                      </Transition>
+                    </div>
+                  </Listbox>
+                ) : (
+                  <ListboxSkeletonLoader />
+                )}
                 <div className="flex items-center justify-between pt-3">
                   <p className="text-sm font-normal text-gray-700 dark:text-white">
                     <Link
