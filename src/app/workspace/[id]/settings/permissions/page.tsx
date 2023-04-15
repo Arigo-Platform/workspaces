@@ -22,9 +22,12 @@ import Link from "next/link";
 import { toast } from "sonner";
 import Tooltip from "@/components/Tooltip";
 import * as Separator from "@radix-ui/react-separator";
+import Switch from "@/components/Switch";
 
 type PermissionsSet =
   Database["public"]["Tables"]["workspace_permissions"]["Row"];
+
+type Permission = Database["public"]["Tables"]["permissions"]["Row"];
 export default function PemissionsPage({ params }: { params: { id: string } }) {
   const { workspace } = useWorkspace(params.id);
   const { botSettings } = useBotSettings(params.id);
@@ -36,6 +39,8 @@ export default function PemissionsPage({ params }: { params: { id: string } }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedPermission, setSelectedPermission] =
     useState<PermissionsSet>();
+
+  const [permissionsList, setPermissionsList] = useState<Permission[]>([]);
 
   const supabase = useSupabaseClient<Database>();
 
@@ -82,6 +87,19 @@ export default function PemissionsPage({ params }: { params: { id: string } }) {
       });
 
       setAvailableRoles(available);
+    }
+  };
+
+  const getPermissionsList = async () => {
+    const { data, error } = await supabase.from("permissions").select("*");
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    if (data) {
+      setPermissionsList(data);
     }
   };
 
@@ -153,6 +171,10 @@ export default function PemissionsPage({ params }: { params: { id: string } }) {
   };
 
   useEffect(() => {
+    getPermissionsList();
+  }, []);
+
+  useEffect(() => {
     getRoles();
   }, [workspace, botSettings]);
 
@@ -188,7 +210,7 @@ export default function PemissionsPage({ params }: { params: { id: string } }) {
           {currentPermissions.length === 0 && (
             <div>
               <Separator.Root className="my-6 bg-gray-300 dark:bg-zinc-700 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px" />
-              <p className="text-center	font-medium dark:text-white">
+              <p className="font-medium text-center dark:text-gray-400">
                 There's nothing to show right now, add a permission above to get
                 started
               </p>
@@ -200,7 +222,7 @@ export default function PemissionsPage({ params }: { params: { id: string } }) {
               return (
                 <li key={perm.role}>
                   <div className="flex items-center justify-between p-2 space-x-2 border rounded-lg dark:border-zinc-700 dark:bg-black">
-                    <div className="flex items-center space-x-2 pl-2">
+                    <div className="flex items-center pl-2 space-x-2">
                       <Tooltip content={role?.id}>
                         <span className="text-sm font-medium dark:text-white">
                           {role?.name}
@@ -208,12 +230,10 @@ export default function PemissionsPage({ params }: { params: { id: string } }) {
                       </Tooltip>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <Tooltip content={perm.permissions.join(", ")}>
-                        <span className="text-sm text-gray-500 dark:text-gray-400">
-                          {perm.permissions.length} permission
-                          {perm.permissions.length > 1 ? "s" : ""}
-                        </span>
-                      </Tooltip>
+                      <span className="text-sm text-gray-500 dark:text-gray-400">
+                        {perm.permissions.length} permission
+                        {perm.permissions.length > 1 ? "s" : ""}
+                      </span>
                       <Button
                         className="flex items-center justify-center"
                         onClick={() => {
@@ -255,6 +275,7 @@ export default function PemissionsPage({ params }: { params: { id: string } }) {
         }
         roles={availableRoles}
         existing={selectedPermission}
+        permissionsList={permissionsList}
       />
     </section>
   );
@@ -266,12 +287,14 @@ function PermissionsDialog({
   onClose,
   roles,
   existing,
+  permissionsList,
 }: {
   open: boolean;
   setOpen: (open: boolean) => void;
   onClose: (p: Partial<PermissionsSet>, existing?: boolean) => void;
   roles: APIRole[];
   existing?: PermissionsSet;
+  permissionsList: Permission[];
 }) {
   const [selectedRole, setSelectedRole] = useState<string>();
   const [permissions, setPermissions] = useState<string[]>([]);
@@ -303,11 +326,16 @@ function PermissionsDialog({
       );
 
       setOpen(false);
+
+      setSelectedRole(undefined);
+      setPermissions([]);
     } else {
       setErrors({
         role: selectedRole ? undefined : "Role is required",
         permissions:
-          permissions.length > 0 ? undefined : "Permissions are required",
+          permissions.length > 0
+            ? undefined
+            : "At least one permission is required",
       });
     }
   };
@@ -316,19 +344,15 @@ function PermissionsDialog({
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Portal>
         <Dialog.Overlay className="bg-blackA9 data-[state=open]:animate-overlayShow fixed inset-0" />
-        <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-[50%] space-y-2 left-[50%] max-h-[85vh] w-[90vw] max-w-5xl translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
-          <Dialog.Title className="text-mauve12 m-0 text-[17px] font-medium pb-2">
+        <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-[50%] space-y-2 left-[50%] max-h-[85vh] w-[90vw] max-w-5xl translate-x-[-50%] translate-y-[-50%] rounded-[6px] dark:bg-zinc-900 bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
+          <Dialog.Title className="text-mauve12 dark:text-white m-0 text-[17px] font-medium pb-2">
             {existing ? "Modify" : "New"} Permission Set
           </Dialog.Title>
-          {/* Not really needed as of now */}
-          {/* <Dialog.Description className="text-mauve11 mt-[10px] mb-5 text-[15px] leading-normal">
-            Create a new permission set for your workspace.
-          </Dialog.Description> */}
 
           {!existing && (
             <fieldset>
               <label
-                className="text-zinc-700 w-[90px] text-right text-[15px]"
+                className="text-zinc-700 dark:text-gray-100 w-[90px] text-right text-[15px]"
                 htmlFor="role"
               >
                 Role
@@ -412,25 +436,68 @@ function PermissionsDialog({
             </fieldset>
           )}
 
-          <fieldset>
+          <fieldset className="space-y-2">
             <label
-              className="text-zinc-700 w-[90px] text-right text-[15px]"
+              className="text-zinc-700 dark:text-gray-100 w-[90px] text-right text-[15px]"
               htmlFor="permissions"
             >
               Permissions
             </label>
-
-            <ChipInput
-              chips={permissions}
-              onChange={(chips) => setPermissions(chips)}
-              placeholder="Add permissions"
-            />
 
             {errors.permissions && (
               <p className="mt-2 text-sm text-red-600" id="permissions-errorr">
                 {errors.permissions}
               </p>
             )}
+
+            {/* TODO: Permission Templates */}
+
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              {/* separate permissions by the second item when the id is split by "." */}
+              {permissionsList
+                .reduce((acc: Permission[][], curr: Permission) => {
+                  const key = curr.id.split(".")[1];
+                  const index = acc.findIndex(
+                    (a) => a[0].id.split(".")[1] === key
+                  );
+                  if (index === -1) {
+                    acc.push([curr]);
+                  } else {
+                    acc[index].push(curr);
+                  }
+                  return acc;
+                }, [])
+                .map((ps: Permission[], index: number) => (
+                  <div key={index}>
+                    <p className="text-gray-500 dark:text-gray-400 capitalize text-[15px] font-medium">
+                      {ps[0].id.split(".")[1]}
+                    </p>
+                    <div className="flex flex-col space-y-2">
+                      {ps.map((permission) => (
+                        <div
+                          key={index}
+                          className="flex items-center justify-between w-full"
+                        >
+                          <Switch
+                            label={permission.name || permission.id}
+                            defaultChecked={permissions.includes(permission.id)}
+                            checked={permissions.includes(permission.id)}
+                            onChange={(e) => {
+                              if (e) {
+                                setPermissions([...permissions, permission.id]);
+                              } else {
+                                setPermissions(
+                                  permissions.filter((p) => p !== permission.id)
+                                );
+                              }
+                            }}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+            </div>
           </fieldset>
 
           <div className="mt-[25px] flex w-full justify-between items-center pt-5">
@@ -446,7 +513,7 @@ function PermissionsDialog({
             </p>
             <div className="col-span-full">
               <Button
-                className="flex justify-center w-full py-2 items-center px-4"
+                className="flex items-center justify-center w-full px-4 py-2"
                 onClick={handleOnClose}
               >
                 {existing ? "Save" : "Create"}
