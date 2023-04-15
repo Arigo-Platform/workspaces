@@ -1,35 +1,21 @@
 "use client";
 import { Database, Json } from "@/types/supabase";
-import useWorkspace from "@/util/useWorkspace";
-import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
 import useBotSettings from "@/util/useBotSettings";
-import * as RadioGroup from "@radix-ui/react-radio-group";
-import { useEffect, useState, Fragment } from "react";
-import Link from "next/link";
 import { Listbox, Transition } from "@headlessui/react";
-import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 import {
-  ArrowPathIcon,
-  CalendarIcon,
-  ChatBubbleBottomCenterTextIcon,
+  ArrowTopRightOnSquareIcon,
   ChevronUpDownIcon,
-  CommandLineIcon,
-  HashtagIcon,
-  InformationCircleIcon,
-  UserIcon,
 } from "@heroicons/react/24/outline";
+import * as RadioGroup from "@radix-ui/react-radio-group";
+import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import Link from "next/link";
+import { Fragment, useEffect, useState } from "react";
 
-import {
-  HamburgerMenuIcon,
-  DotFilledIcon,
-  CheckIcon,
-  ChevronRightIcon,
-  ChevronLeftIcon,
-  ReloadIcon,
-} from "@radix-ui/react-icons";
-import { toast } from "sonner";
-import type { APIChannel, APIRole } from "discord-api-types/v10";
 import ListboxSkeletonLoader from "@/components/ListboxSkeletonLoader";
+import { useWorkspaceContext } from "@/util/providers/WorkspaceProvider";
+import { CheckIcon } from "@radix-ui/react-icons";
+import type { APIChannel, APIRole } from "discord-api-types/v10";
+import { toast } from "sonner";
 
 export default function CommandLog({ params }: { params: { id: string } }) {
   const supabase = useSupabaseClient<Database>();
@@ -39,7 +25,7 @@ export default function CommandLog({ params }: { params: { id: string } }) {
     refresh,
   } = useBotSettings(params.id);
 
-  const { workspace, loading: workspaceLoading } = useWorkspace(params.id);
+  const { workspace, loading: workspaceLoading } = useWorkspaceContext();
 
   const [newBotSettings, setNewBotSettings] =
     useState<Database["public"]["Tables"]["bots"]["Row"]>();

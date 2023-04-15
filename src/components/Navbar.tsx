@@ -1,19 +1,12 @@
-import { useContext, useEffect, useState } from "react";
-import { createBrowserSupabaseClient } from "@supabase/auth-helpers-nextjs";
-import {
-  useUser,
-  useSession,
-  useSessionContext,
-} from "@supabase/auth-helpers-react";
+import { useSessionContext } from "@supabase/auth-helpers-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 // import ThemeSwitcher from "./ThemeSwitcher";
-import useAccount from "@/util/useAccount";
-import WorkspaceSelector from "./WorkspaceSelector";
-import UserMenu from "./UserMenu";
-import DarkModeSwitch from "./DarkModeSwitch";
+import { useWorkspaceContext } from "@/util/providers/WorkspaceProvider";
 import useFeatureFlags from "@/util/useFeatureFlags";
 import { usePathname } from "next/navigation";
-import useWorkspace from "@/util/useWorkspace";
+import UserMenu from "./UserMenu";
+import WorkspaceSelector from "./WorkspaceSelector";
 
 type Breadcrumb = {
   name: string;
@@ -30,9 +23,7 @@ export default function Navbar() {
   const featureFlags = useFeatureFlags();
 
   const isWorkspace = pathname.split("/")[1] === "workspace";
-  const { workspace, loading } = useWorkspace(
-    isWorkspace ? pathname.split("/")[2] : ""
-  );
+  const { workspace, loading } = useWorkspaceContext();
 
   // If the user is not logged in, redirect to the login page
   useEffect(() => {

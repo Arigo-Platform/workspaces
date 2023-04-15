@@ -1,14 +1,11 @@
 "use client";
-import { Database, Json } from "@/types/supabase";
-import { getPagination } from "@/util/pagination";
+import { useWorkspaceContext } from "@/util/providers/WorkspaceProvider";
 import useDiscordServer from "@/util/useDiscordServer";
-import useWorkspace from "@/util/useWorkspace";
-import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
+import { useUser } from "@supabase/auth-helpers-react";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
 
 export default function DashboardPage({ params }: { params: { id: string } }) {
-  const { workspace } = useWorkspace(params.id);
+  const { workspace } = useWorkspaceContext();
   const user = useUser();
 
   const { server: discordServer } = useDiscordServer(workspace);

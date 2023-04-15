@@ -1,5 +1,5 @@
 "use client";
-import useWorkspace from "@/util/useWorkspace";
+import { useWorkspaceContext } from "@/util/providers/WorkspaceProvider";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -10,12 +10,12 @@ export default function BotLayout({
   params: { id: string };
   children: React.ReactNode;
 }) {
-  const { workspace, loading } = useWorkspace(params.id);
+  const { workspace, loading } = useWorkspaceContext();
   const pathname = usePathname();
   return (
     <section id="bot">
       <section className="grid grid-cols-2 gap-4 sm:grid-cols-6 md:grid-cols-8">
-        <header className="p-6 py-7 border-b col-span-full border-zinc-200 dark:border-zinc-700">
+        <header className="p-6 border-b py-7 col-span-full border-zinc-200 dark:border-zinc-700">
           <h1 className="text-2xl font-medium dark:text-white animate-slideRightAndFade">
             Bot Management
           </h1>

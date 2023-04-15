@@ -1,31 +1,20 @@
 "use client";
-import { Database, Json } from "@/types/supabase";
-import { getPagination } from "@/util/pagination";
+import Button from "@/components/Button";
+import { Database } from "@/types/supabase";
 import useBotSettings from "@/util/useBotSettings";
-import useWorkspace from "@/util/useWorkspace";
-import {
-  SupabaseClient,
-  useSupabaseClient,
-  useUser,
-} from "@supabase/auth-helpers-react";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
-import * as Form from "@radix-ui/react-form";
-import Link from "next/link";
-import * as React from "react";
 import {
   ArrowTopRightOnSquareIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
-import Button from "@/components/Button";
-type LogFilter = {
-  user?: string;
-  channel?: string;
-  command?: string;
-  args?: Json[]; // We won't support this yet, in the future we will
-  page: number;
-  perPage: 0 | 25 | 50 | 75 | 100;
-};
+import * as Form from "@radix-ui/react-form";
+import {
+  SupabaseClient,
+  useSupabaseClient,
+} from "@supabase/auth-helpers-react";
+import Link from "next/link";
+import * as React from "react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export default function DashboardPage({ params }: { params: { id: string } }) {
   const supabase = useSupabaseClient<Database>();

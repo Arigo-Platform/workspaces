@@ -1,12 +1,12 @@
 "use client";
 
 import Button from "@/components/Button";
+import Switch from "@/components/Switch";
+import Tooltip from "@/components/Tooltip";
+import { Database } from "@/types/supabase";
+import { useWorkspaceContext } from "@/util/providers/WorkspaceProvider";
 import useBotSettings from "@/util/useBotSettings";
-import useWorkspace from "@/util/useWorkspace";
-import { APIRole } from "discord-api-types/v10";
-import { Fragment, useEffect, useReducer, useState } from "react";
-import * as Dialog from "@radix-ui/react-dialog";
-import { CheckIcon, Cross2Icon } from "@radix-ui/react-icons";
+import { Listbox, Transition } from "@headlessui/react";
 import {
   ArrowTopRightOnSquareIcon,
   ChevronUpDownIcon,
@@ -14,22 +14,21 @@ import {
   PlusCircleIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
-import { Listbox, Transition } from "@headlessui/react";
-import { Database } from "@/types/supabase";
-import { useSupabaseClient } from "@supabase/auth-helpers-react";
-import ChipInput from "@/components/ChipInput";
-import Link from "next/link";
-import { toast } from "sonner";
-import Tooltip from "@/components/Tooltip";
+import * as Dialog from "@radix-ui/react-dialog";
+import { CheckIcon, Cross2Icon } from "@radix-ui/react-icons";
 import * as Separator from "@radix-ui/react-separator";
-import Switch from "@/components/Switch";
+import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import { APIRole } from "discord-api-types/v10";
+import Link from "next/link";
+import { Fragment, useEffect, useState } from "react";
+import { toast } from "sonner";
 
 type PermissionsSet =
   Database["public"]["Tables"]["workspace_permissions"]["Row"];
 
 type Permission = Database["public"]["Tables"]["permissions"]["Row"];
 export default function PemissionsPage({ params }: { params: { id: string } }) {
-  const { workspace } = useWorkspace(params.id);
+  const { workspace } = useWorkspaceContext();
   const { botSettings } = useBotSettings(params.id);
   const [roles, setRoles] = useState<APIRole[]>([]);
   const [availableRoles, setAvailableRoles] = useState<APIRole[]>([]);

@@ -2,24 +2,16 @@
 
 import Button from "@/components/Button";
 import { Database } from "@/types/supabase";
-import useWorkspace from "@/util/useWorkspace";
-import {
-  ArrowPathIcon,
-  ArrowTopRightOnSquareIcon,
-} from "@heroicons/react/24/outline";
+import { useWorkspaceContext } from "@/util/providers/WorkspaceProvider";
 import * as Form from "@radix-ui/react-form";
-import {
-  useSessionContext,
-  useSupabaseClient,
-} from "@supabase/auth-helpers-react";
-import Link from "next/link";
+import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 type Workspace = Database["public"]["Tables"]["workspaces"]["Row"];
 
 export default function SettingsPage({ params }: { params: { id: string } }) {
-  const { workspace } = useWorkspace(params.id);
+  const { workspace } = useWorkspaceContext();
   const supabase = useSupabaseClient<Database>();
   const [saving, setSaving] = useState(false);
   const [newWorkspace, setNewWorkspace] = useState<Workspace | null>();

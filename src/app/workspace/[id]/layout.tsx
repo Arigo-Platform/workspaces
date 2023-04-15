@@ -1,9 +1,9 @@
 "use client";
 
+import { WorkspaceProvider } from "@/util/providers/WorkspaceProvider";
 import useWorkspace from "@/util/useWorkspace";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
 
 export default function RootLayout({
   children,
@@ -13,6 +13,7 @@ export default function RootLayout({
   params: { id: string };
 }) {
   const pathname = usePathname();
+  const { workspace, loading } = useWorkspace(params.id);
 
   const routes = [
     {
@@ -69,7 +70,9 @@ export default function RootLayout({
           </Link>
         ))}
       </nav>
-      <div>{children}</div>
+      <WorkspaceProvider workspace={workspace} loading={loading}>
+        <div>{children}</div>
+      </WorkspaceProvider>
     </div>
   );
 }

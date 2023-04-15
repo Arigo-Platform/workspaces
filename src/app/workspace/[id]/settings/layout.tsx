@@ -1,5 +1,5 @@
 "use client";
-import useWorkspace from "@/util/useWorkspace";
+import { useWorkspaceContext } from "@/util/providers/WorkspaceProvider";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -10,7 +10,7 @@ export default function SettingsLayout({
   params: { id: string };
   children: React.ReactNode;
 }) {
-  const { workspace, loading } = useWorkspace(params.id);
+  const { workspace, loading } = useWorkspaceContext();
   const pathname = usePathname();
   return (
     <section id="bot">
