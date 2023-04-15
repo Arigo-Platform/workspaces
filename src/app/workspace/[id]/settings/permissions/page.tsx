@@ -196,6 +196,7 @@ export default function PemissionsPage({ params }: { params: { id: string } }) {
         <div className="col-span-full">
           <Button
             className="flex justify-center w-full "
+            aria-label="Add Permission Set"
             onClick={() => {
               setSelectedPermission(undefined);
               setModalOpen(true);
@@ -236,6 +237,7 @@ export default function PemissionsPage({ params }: { params: { id: string } }) {
                       </span>
                       <Button
                         className="flex items-center justify-center"
+                        aria-label="Edit"
                         onClick={() => {
                           setSelectedPermission(perm);
                           setModalOpen(true);
@@ -245,6 +247,7 @@ export default function PemissionsPage({ params }: { params: { id: string } }) {
                       </Button>
                       <Button
                         className="flex items-center justify-center"
+                        aria-label="Delete"
                         onClick={() => {
                           deletePermissionSet(perm);
                         }}
@@ -350,7 +353,7 @@ function PermissionsDialog({
           </Dialog.Title>
 
           {!existing && (
-            <fieldset>
+            <section aria-label="Role selection">
               <label
                 className="text-zinc-700 dark:text-gray-100 w-[90px] text-right text-[15px]"
                 htmlFor="role"
@@ -433,10 +436,10 @@ function PermissionsDialog({
                   </Transition>
                 </div>
               </Listbox>
-            </fieldset>
+            </section>
           )}
 
-          <fieldset className="space-y-2">
+          <section className="space-y-2" aria-label="Permissions List">
             <label
               className="text-zinc-700 dark:text-gray-100 w-[90px] text-right text-[15px]"
               htmlFor="permissions"
@@ -498,7 +501,7 @@ function PermissionsDialog({
                   </div>
                 ))}
             </div>
-          </fieldset>
+          </section>
 
           <div className="mt-[25px] flex w-full justify-between items-center pt-5">
             <p className="text-sm font-normal text-gray-700 dark:text-white">
@@ -515,18 +518,19 @@ function PermissionsDialog({
               <Button
                 className="flex items-center justify-center w-full px-4 py-2"
                 onClick={handleOnClose}
+                aria-label={existing ? "Save" : "Create"}
               >
                 {existing ? "Save" : "Create"}
               </Button>
             </div>
           </div>
           <Dialog.Close asChild>
-            <button
-              className="dark:text-black dark:hover:bg-zinc-300 hover:bg-violet4 absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:outline-none"
+            <Button
+              className="dark:text-white text-black dark:hover:bg-zinc-300 hover:bg-violet4 absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:outline-none"
               aria-label="Close"
             >
-              <Cross2Icon />
-            </button>
+              <Cross2Icon aria-label="Close Icon" />
+            </Button>
           </Dialog.Close>
         </Dialog.Content>
       </Dialog.Portal>

@@ -92,6 +92,7 @@ export default function Navbar() {
               strokeWidth="1"
               viewBox="0 0 24 24"
               width="32"
+              aria-label="Slash"
             >
               <path d="M16.88 3.549L7.12 20.451"></path>
             </svg>
@@ -123,6 +124,7 @@ export default function Navbar() {
                     strokeWidth="1"
                     viewBox="0 0 24 24"
                     width="32"
+                    aria-label="Slash"
                   >
                     <path d="M16.88 3.549L7.12 20.451"></path>
                   </svg>

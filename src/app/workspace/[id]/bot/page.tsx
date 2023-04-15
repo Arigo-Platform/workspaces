@@ -90,9 +90,12 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
         <div className="w-full h-full col-span-5 p-6 text-4xl font-bold bg-white border border-gray-600 rounded-md shadow-sm dark:bg-black dark:text-white dark:shadow-none">
           <div className="flex items-center justify-between space-x-4">
             <div className="grid col-span-4">
-              <h3 className="text-lg font-medium contrast-more:text-black">
+              <label
+                className="text-lg font-medium contrast-more:text-black"
+                htmlFor="token"
+              >
                 Bot Token
-              </h3>
+              </label>
               <h2 className="mt-1 text-sm font-normal contrast-more:text-black">
                 Your bot token is used to authenticate your bot with Discord.
                 This is how Arigo is able to provide your community with a
@@ -125,6 +128,9 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
                         className="w-full p-2 text-sm font-normal bg-white border border-gray-600 rounded-md shadow-sm outline-none resize-none focus:border-gray-300 dark:focus:border-gray-400 h-max dark:bg-black dark:text-white dark:shadow-none"
                         required
                         defaultValue={botSettings?.token || ""}
+                        id="token"
+                        name="token"
+                        aria-label="Bot Token"
                         onChange={(e) => {
                           if (botSettings) {
                             const updatedBotSettings = {
@@ -149,7 +155,9 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
                           <ArrowTopRightOnSquareIcon className="w-3 h-3" />
                         </Link>
                       </p>
-                      <Button saving={saving}>Save</Button>
+                      <Button saving={saving} aria-label="Save Button">
+                        Save
+                      </Button>
                     </div>
                   </Form.Submit>
                 </Form.Root>
@@ -290,7 +298,8 @@ function Statuses({
                 </Form.Control>
               </Form.Field>
 
-              <button
+              <Button
+                aria-label="Add Status Button"
                 onClick={() => {
                   // Validate Status
                   if (
@@ -321,12 +330,11 @@ function Statuses({
                     setChange(true);
                   }
                 }}
-                type="button"
                 disabled={(newBotSettings?.statuses || []).length >= 5}
                 className="w-full h-min transition-colors duration-150 border disabled:opacity-75 disabled:cursor-not-allowed dark:hover:disabled:text-black dark:hover:disabled:bg-white hover:outline-none border-black dark:border-white ml-auto font-medium dark:text-black dark:hover:text-white dark:bg-white dark:hover:bg-opacity-0 hover:bg-opacity-0 bg-black text-white hover:text-black px-5 py-2 text-sm outline-none select-none rounded-md data-[highlighted]:bg-gray-200 data-[highlighted]:rounded"
               >
                 Add
-              </button>
+              </Button>
 
               <div className="col-span-full">
                 <div className="grid gap-2 mt-4">
@@ -420,7 +428,9 @@ function Statuses({
                       <p></p>
                     )}
                   </p>
-                  <Button saving={saving}>Save</Button>{" "}
+                  <Button saving={saving} aria-label="Save Button">
+                    Save
+                  </Button>{" "}
                 </div>
               </Form.Submit>
             </Form.Root>

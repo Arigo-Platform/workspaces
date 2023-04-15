@@ -7,61 +7,11 @@ import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-type LogFilter = {
-  user?: string;
-  channel?: string;
-  command?: string;
-  args?: Json[]; // We won't support this yet, in the future we will
-  page: number;
-  perPage: 0 | 25 | 50 | 75 | 100;
-};
-
 export default function DashboardPage({ params }: { params: { id: string } }) {
-  const { workspace, loading } = useWorkspace(params.id);
+  const { workspace } = useWorkspace(params.id);
   const user = useUser();
-  const [commandLogs, setCommandLogs] = useState<
-    Database["public"]["Tables"]["command_log"]["Row"][] | null
-  >();
-  const [logFilters, setLogFilters] = useState<LogFilter>({
-    page: 0,
-    perPage: 25,
-  });
 
-  const supabase = useSupabaseClient<Database>();
-
-  async function getCommandLogs(): Promise<void> {
-    const { from, to } = getPagination(logFilters.page, logFilters.perPage);
-    let query = supabase.from("command_log").select("*");
-
-    query = query.order("executed_at", { ascending: true });
-
-    if (logFilters.user) {
-      query = query.eq("user_id", logFilters.user);
-    }
-
-    if (logFilters.channel) {
-      query = query.eq("channel_id", logFilters.channel);
-    }
-
-    if (logFilters.command) {
-      query = query.eq("command", logFilters.command);
-    }
-
-    query = query.range(from, to);
-
-    const { data, error } = await query;
-
-    if (error) {
-      toast.error("Error fetching command logs");
-      return;
-    }
-
-    setCommandLogs(data);
-  }
-
-  useEffect(() => {
-    getCommandLogs();
-  }, [workspace, logFilters]);
+  const { server: discordServer } = useDiscordServer(workspace);
 
   const [timeText, setTimeText] = useState("");
   const [greetingHeaderText, setGreetingHeaderText] = useState("");
@@ -192,8 +142,10 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
               <h3 className="text-sm font-medium contrast-more:text-black">
                 Server Members
               </h3>
-              {workspace ? (
-                <span>{workspace.guild_member_count?.toLocaleString()}</span>
+              {discordServer ? (
+                <span>
+                  {discordServer.approximate_member_count?.toLocaleString()}
+                </span>
               ) : (
                 <span>...</span>
               )}

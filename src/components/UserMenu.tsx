@@ -24,6 +24,7 @@ export default function UserMenu() {
             <img
               className="w-8 h-8 rounded-full"
               src={user?.user_metadata.avatar_url}
+              alt="User avatar"
             />
           </div>
         </div>

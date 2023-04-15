@@ -330,9 +330,10 @@ export default function CommandLog({ params }: { params: { id: string } }) {
                     {/* 1 */}
                     <div className="flex items-center">
                       <RadioGroup.Item
-                        className="bg-white border border-gray-600 shadow-sm dark:bg-black dark:text-white dark:shadow-none w-[25px] h-[25px] rounded-full dark:hover:bg-zinc-700 hover:bg-gray-200 focus:shadow-[0_0_0_2px] focus:shadow-black outline-none cursor-default"
+                        className="bg-white border border-gray-600 shadow-sm dark:bg-black dark:text-white dark:shadow-none w-[25px] h-[25px] rounded-full dark:hover:bg-zinc-700 hover:bg-gray-200 focus:ring-1 ring-blue-500 outline-none cursor-default"
                         value="1"
                         id="1"
+                        tabIndex={0}
                       >
                         <RadioGroup.Indicator className="flex items-center justify-center w-full h-full relative after:content-[''] after:block after:w-[11px] after:h-[11px] after:rounded-[50%] after:bg-gray-400" />
                       </RadioGroup.Item>
@@ -346,9 +347,10 @@ export default function CommandLog({ params }: { params: { id: string } }) {
                     {/* 2 */}
                     <div className="flex items-center">
                       <RadioGroup.Item
-                        className="bg-white border border-gray-600 shadow-sm dark:bg-black dark:text-white dark:shadow-none w-[25px] h-[25px] rounded-full dark:hover:bg-zinc-700 hover:bg-gray-200 focus:shadow-[0_0_0_2px] focus:shadow-black outline-none cursor-default"
+                        className="bg-white border border-gray-600 shadow-sm dark:bg-black dark:text-white dark:shadow-none w-[25px] h-[25px] rounded-full dark:hover:bg-zinc-700 hover:bg-gray-200 focus:ring-1 ring-blue-500 outline-none cursor-default"
                         value="2"
                         id="2"
+                        tabIndex={1}
                       >
                         <RadioGroup.Indicator className="flex items-center justify-center w-full h-full relative after:content-[''] after:block after:w-[11px] after:h-[11px] after:rounded-[50%] after:bg-gray-400" />
                       </RadioGroup.Item>
@@ -362,9 +364,10 @@ export default function CommandLog({ params }: { params: { id: string } }) {
                     {/* 3 */}
                     <div className="flex items-center">
                       <RadioGroup.Item
-                        className="bg-white border border-gray-600 shadow-sm dark:bg-black dark:text-white dark:shadow-none w-[25px] h-[25px] rounded-full dark:hover:bg-zinc-700 hover:bg-gray-200 focus:shadow-[0_0_0_2px] focus:shadow-black outline-none cursor-default"
+                        className="bg-white border border-gray-600 shadow-sm dark:bg-black dark:text-white dark:shadow-none w-[25px] h-[25px] rounded-full dark:hover:bg-zinc-700 hover:bg-gray-200 focus:ring-1 ring-blue-500 outline-none cursor-default"
                         value="3"
                         id="3"
+                        tabIndex={2}
                       >
                         <RadioGroup.Indicator className="flex items-center justify-center w-full h-full relative after:content-[''] after:block after:w-[11px] after:h-[11px] after:rounded-[50%] after:bg-gray-400" />
                       </RadioGroup.Item>
@@ -378,9 +381,10 @@ export default function CommandLog({ params }: { params: { id: string } }) {
                     {/* 4 */}
                     <div className="flex items-center">
                       <RadioGroup.Item
-                        className="bg-white border border-gray-600 shadow-sm dark:bg-black dark:text-white dark:shadow-none w-[25px] h-[25px] rounded-full dark:hover:bg-zinc-700 hover:bg-gray-200 focus:shadow-[0_0_0_2px] focus:shadow-black outline-none cursor-default"
+                        className="bg-white border border-gray-600 shadow-sm dark:bg-black dark:text-white dark:shadow-none w-[25px] h-[25px] rounded-full dark:hover:bg-zinc-700 hover:bg-gray-200 focus:ring-1 ring-blue-500 outline-none cursor-default"
                         value="4"
                         id="4"
+                        tabIndex={3}
                       >
                         <RadioGroup.Indicator className="flex items-center justify-center w-full h-full relative after:content-[''] after:block after:w-[11px] after:h-[11px] after:rounded-[50%] after:bg-gray-400" />
                       </RadioGroup.Item>

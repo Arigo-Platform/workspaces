@@ -51,7 +51,7 @@ const useDiscordServer = (
         `/api/discord/guilds/${workspace.guild_id}?with_counts=true`,
         {
           headers: {
-            Authorization: `Bearer ${session?.provider_token}`,
+            Authorization: `Bot ${bot.token}`,
             "Content-Type": "application/json",
           },
         }

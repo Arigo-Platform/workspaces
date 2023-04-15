@@ -25,7 +25,7 @@ export default function Switch({
         defaultChecked={defaultChecked}
         onCheckedChange={onChange}
         checked={checked}
-        className="w-[42px] h-[25px] bg-blackA9 rounded-full relative shadow-[0_2px_10px] shadow-blackA7 dark:shadow-none focus:shadow-[0_0_0_2px] focus:shadow-black dark:focus:shadow-none data-[state=checked]:bg-blue-500 outline-none cursor-default"
+        className="w-[42px] h-[25px] bg-blackA9 rounded-full relative shadow-[0_2px_10px] shadow-blackA7 dark:shadow-none focus:ring-1 ring-blue-500 data-[state=checked]:bg-green-500 outline-none cursor-default"
         id={`switch-${label.split(" ").join("-").toLowerCase()}`}
       >
         <RadixSwitch.Thumb className="block w-[21px] h-[21px] bg-white rounded-full shadow-[0_2px_2px] shadow-blackA7 transition-transform duration-200 ease-out translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]" />

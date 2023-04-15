@@ -59,9 +59,12 @@ export default function SettingsPage({ params }: { params: { id: string } }) {
         <div className="w-full h-full col-span-5 p-6 text-4xl font-bold bg-white border border-gray-600 rounded-md shadow-sm dark:bg-black dark:text-white dark:shadow-none">
           <div className="flex items-center justify-between space-x-4">
             <div className="grid w-full col-span-4">
-              <h3 className="text-lg font-medium contrast-more:text-black">
+              <label
+                className="text-lg font-medium contrast-more:text-black"
+                htmlFor="workspace-name"
+              >
                 Workspace Name
-              </h3>
+              </label>
 
               {workspace && (
                 <div>
@@ -90,8 +93,10 @@ export default function SettingsPage({ params }: { params: { id: string } }) {
                       <Form.Control asChild>
                         <input
                           type="text"
+                          id="workspace-name"
                           className="w-full p-2 text-sm font-normal bg-white border border-gray-600 rounded-md shadow-sm outline-none resize-none focus:border-gray-300 dark:focus:border-gray-400 h-max dark:bg-black dark:text-white dark:shadow-none"
                           required
+                          aria-label="Workspace Name"
                           defaultValue={workspace.name!}
                           onChange={(e) => {
                             setNewWorkspace({
@@ -104,7 +109,9 @@ export default function SettingsPage({ params }: { params: { id: string } }) {
                     </Form.Field>
                     <Form.Submit asChild>
                       <div className="flex items-center justify-between">
-                        <Button saving={saving}>Save</Button>{" "}
+                        <Button saving={saving} aria-label="Save">
+                          Save
+                        </Button>
                       </div>
                     </Form.Submit>
                   </Form.Root>

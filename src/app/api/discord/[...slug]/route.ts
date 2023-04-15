@@ -6,8 +6,11 @@ export default async function handler(
   { params }: { params: { slug: string[] } }
 ) {
   const h = headers();
+
   const discordRes = await fetch(
-    `https://discord.com/api/v10/${params.slug.join("/")}`,
+    `https://discord.com/api/v10/${params.slug.join("/")}${
+      new URL(req.url).search
+    }`,
     {
       method: "GET",
       headers: new Headers({

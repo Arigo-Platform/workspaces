@@ -200,9 +200,14 @@ export default function RealtimeCommands() {
           <div>
             {/* Rows Per Page */}
             <div className="px-1 rounded-md outline-none hover:bg-gray-200 dark:hover:bg-black">
+              <label htmlFor="perPage" className="sr-only">
+                Rows per page
+              </label>
               <select
                 className="items-center px-2 py-1 text-sm font-normal bg-white border border-gray-600 rounded-md shadow-sm outline-none resize-none dark:bg-black dark:text-white dark:shadow-none"
                 defaultValue={10}
+                name="perPage"
+                id="perPage"
                 onChange={(e) => {
                   setFilter((prev) => ({
                     ...prev,
@@ -227,15 +232,21 @@ export default function RealtimeCommands() {
           <div className="flex items-center space-x-2">
             <button
               className="rounded-md p-2 inline-flex items-center justify-center dark:text-white text-black shadow-[0_2px_10px] shadow-blackA7 outline-none border border-gray-600 dark:hover:bg-gray-900 hover:bg-gray-200 focus:shadow-[0_0_0_2px] focus:shadow-black"
-              aria-label="Next Page"
+              aria-label="Previous Page"
             >
-              <ChevronLeftIcon className="w-4 h-4 text-black dark:text-white " />
+              <ChevronLeftIcon
+                aria-label="Previous Page Icon"
+                className="w-4 h-4 text-black dark:text-white "
+              />
             </button>
             <button
               className="rounded-md p-2 inline-flex items-center justify-center dark:text-white text-black shadow-[0_2px_10px] shadow-blackA7 outline-none border border-gray-600 dark:hover:bg-gray-900 hover:bg-gray-200 focus:shadow-[0_0_0_2px] focus:shadow-black"
               aria-label="Next Page"
             >
-              <ChevronRightIcon className="w-4 h-4 text-black dark:text-white " />
+              <ChevronRightIcon
+                aria-label="Next Page Icon"
+                className="w-4 h-4 text-black dark:text-white "
+              />
             </button>
           </div>
         </div>
@@ -246,10 +257,6 @@ export default function RealtimeCommands() {
 }
 
 const Dropdown = ({ username }: { username: string }) => {
-  const [bookmarksChecked, setBookmarksChecked] = useState(true);
-  const [urlsChecked, setUrlsChecked] = useState(false);
-  const [person, setPerson] = useState("pedro");
-
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
@@ -257,7 +264,7 @@ const Dropdown = ({ username }: { username: string }) => {
           className="rounded-lg w-[35px] h-[35px] inline-flex items-center justify-center dark:text-white text-black shadow-[0_2px_10px] shadow-blackA7 outline-none border border-gray-600 dark:hover:bg-gray-900 hover:bg-gray-200 focus:shadow-[0_0_0_2px] focus:shadow-black"
           aria-label="Customise options"
         >
-          <HamburgerMenuIcon />
+          <HamburgerMenuIcon aria-label="Hamburger Menu Icon" />
         </button>
       </DropdownMenu.Trigger>
 
