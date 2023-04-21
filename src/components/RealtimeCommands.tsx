@@ -1,34 +1,27 @@
 "use client";
 import { Database, Json } from "@/types/supabase";
-import { Fragment, useEffect, useState } from "react";
-import {
-  useSessionContext,
-  useSupabaseClient,
-} from "@supabase/auth-helpers-react";
 import {
   ArrowPathIcon,
   CalendarIcon,
-  ChatBubbleBottomCenterTextIcon,
   ChevronUpDownIcon,
   CommandLineIcon,
   HashtagIcon,
-  InformationCircleIcon,
   UserIcon,
 } from "@heroicons/react/24/outline";
 import {
-  HamburgerMenuIcon,
-  DotFilledIcon,
   CheckIcon,
-  ChevronRightIcon,
   ChevronLeftIcon,
-  ReloadIcon,
+  ChevronRightIcon,
+  HamburgerMenuIcon,
 } from "@radix-ui/react-icons";
+import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import { Fragment, useEffect, useState } from "react";
 
-import Moment from "react-moment";
 import Tooltip from "@/components/Tooltip";
 import { getPagination } from "@/util/pagination";
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { Listbox, Transition } from "@headlessui/react";
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import Moment from "react-moment";
 
 type CommandType = Database["public"]["Tables"]["command_log"]["Row"];
 type LogFilter = {

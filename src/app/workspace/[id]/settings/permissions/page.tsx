@@ -232,26 +232,31 @@ export default function PemissionsPage({ params }: { params: { id: string } }) {
                     <div className="flex items-center space-x-2">
                       <span className="text-sm text-gray-500 dark:text-gray-400">
                         {perm.permissions.length} permission
-                        {perm.permissions.length > 1 ? "s" : ""}
+                        {perm.permissions.length > 1 ? "s" : "\u00a0\u00a0"}
                       </span>
+
                       <Button
-                        className="flex items-center justify-center"
+                        className="text-white hover:text-black dark:text-black dark:hover:text-black dark:hover:bg-zinc-300 hover:bg-violet4  inline-flex h-[26px] w-[0px] appearance-none items-center justify-center rounded-full focus:outline-none"
                         aria-label="Edit"
                         onClick={() => {
                           setSelectedPermission(perm);
                           setModalOpen(true);
                         }}
                       >
-                        <PencilIcon className="w-5 h-5" />
+                        <div>
+                          <PencilIcon className="w-5 h-5" />
+                        </div>
                       </Button>
                       <Button
-                        className="flex items-center justify-center"
+                        className="text-white hover:text-black dark:text-black dark:hover:text-black dark:hover:bg-zinc-300 hover:bg-violet4  inline-flex h-[26px] w-[0px] appearance-none items-center justify-center rounded-full focus:outline-none"
                         aria-label="Delete"
                         onClick={() => {
                           deletePermissionSet(perm);
                         }}
                       >
-                        <TrashIcon className="w-5 h-5" />
+                        <div>
+                          <TrashIcon className="w-5 h-5" />
+                        </div>
                       </Button>
                     </div>
                   </div>
@@ -525,10 +530,15 @@ function PermissionsDialog({
           </div>
           <Dialog.Close asChild>
             <Button
-              className="dark:text-white text-black dark:hover:bg-zinc-300 hover:bg-violet4 absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:outline-none"
+              className="text-white hover:text-black dark:text-black dark:hover:text-black dark:hover:bg-zinc-300 hover:bg-violet4 absolute top-[10px] right-[10px] inline-flex h-[30px] w-[25px] appearance-none items-center justify-center rounded-full focus:outline-none"
               aria-label="Close"
             >
-              <Cross2Icon aria-label="Close Icon" />
+              <div className="flex items-center justify-center">
+                <Cross2Icon
+                  aria-label="Close Icon"
+                  // className=""
+                />
+              </div>
             </Button>
           </Dialog.Close>
         </Dialog.Content>

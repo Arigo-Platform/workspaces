@@ -57,6 +57,10 @@ export default function SettingsPage({ params }: { params: { id: string } }) {
               >
                 Workspace Name
               </label>
+              <h2 className="mt-1 text-sm font-normal contrast-more:text-black">
+                This is the name of your Arigo Workspace, changes will save
+                immediately and reflect on all workspace users.
+              </h2>
 
               {workspace && (
                 <div>
