@@ -1,20 +1,16 @@
 "use client";
 import "tailwindcss/tailwind.css";
 
-import { createContext, useEffect, useMemo, useState } from "react";
+import FeatureFlagsProvider from "@/components/FeatureFlagsProvider";
 import Navbar from "@/components/Navbar";
+import { Database } from "@/types/supabase";
+import useDarkMode from "@/util/useDarkMode";
 import { createBrowserSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import {
   SessionContextProvider,
-  Session,
-  useUser,
   useSession,
 } from "@supabase/auth-helpers-react";
-import { useRouter } from "next/navigation";
-import { Database } from "@/types/supabase";
-import useDarkMode from "@/util/useDarkMode";
-import useFeatureFlags from "@/util/useFeatureFlags";
-import FeatureFlagsProvider from "@/components/FeatureFlagsProvider";
+import { useState } from "react";
 import { Toaster } from "sonner";
 
 export default function RootLayout({
@@ -27,7 +23,7 @@ export default function RootLayout({
   const session = useSession();
   useDarkMode();
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="h-screen dark">
       <head>
         <title>Arigo Dashboard</title>
       </head>
@@ -35,11 +31,11 @@ export default function RootLayout({
         supabaseClient={supabase}
         initialSession={session}
       >
-        <body className="bg-white dark:bg-blackA12">
+        <body className="flex flex-col h-full bg-white dark:bg-blackA12">
           <Navbar />
           <FeatureFlagsProvider>
             <Toaster />
-            <main>{children}</main>
+            <main className="flex-grow h-full">{children}</main>
           </FeatureFlagsProvider>
         </body>
       </SessionContextProvider>

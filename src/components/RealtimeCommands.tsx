@@ -19,6 +19,7 @@ import { Fragment, useEffect, useState } from "react";
 
 import Tooltip from "@/components/Tooltip";
 import { getPagination } from "@/util/pagination";
+import { useBotContext } from "@/util/providers/BotProvider";
 import { Listbox, Transition } from "@headlessui/react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import Moment from "react-moment";
@@ -35,6 +36,7 @@ type LogFilter = {
 
 export default function RealtimeCommands() {
   const supabase = useSupabaseClient<Database>();
+  const { bot } = useBotContext();
   const [commands, setCommands] = useState<CommandType[]>([]);
   const [areCommandsPending, setAreCommandsPending] = useState(false);
   const [uniqueCommands, setUniqueCommands] = useState<
@@ -49,6 +51,8 @@ export default function RealtimeCommands() {
   async function getData() {
     const { from, to } = getPagination(filter.page, filter.perPage);
     let query = supabase.from("command_log").select();
+
+    query = query.eq("bot_id", bot!.id);
 
     if (filter.user) {
       query = query.eq("user_id", filter.user);
@@ -88,9 +92,11 @@ export default function RealtimeCommands() {
   }
 
   useEffect(() => {
-    getData();
-    getCommandList();
-  }, []);
+    if (bot) {
+      getData();
+      getCommandList();
+    }
+  }, [bot]);
 
   // debounce the filter
   useEffect(() => {

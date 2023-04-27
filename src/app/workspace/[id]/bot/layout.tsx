@@ -1,5 +1,7 @@
 "use client";
+import { BotProvider } from "@/util/providers/BotProvider";
 import { useWorkspaceContext } from "@/util/providers/WorkspaceProvider";
+import useBotSettings from "@/util/useBotSettings";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -10,7 +12,10 @@ export default function BotLayout({
   params: { id: string };
   children: React.ReactNode;
 }) {
-  const { workspace, loading } = useWorkspaceContext();
+  const { workspace } = useWorkspaceContext();
+  const { botSettings, loading: botSettingsLoading } = useBotSettings(
+    params.id
+  );
   const pathname = usePathname();
   return (
     <section id="bot">
@@ -70,7 +75,9 @@ export default function BotLayout({
           </Link>
         </aside>
 
-        <section className="col-span-6">{children}</section>
+        <BotProvider bot={botSettings || null} loading={botSettingsLoading}>
+          <section className="col-span-6">{children}</section>
+        </BotProvider>
       </section>
     </section>
   );

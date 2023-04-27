@@ -1,10 +1,10 @@
 "use client";
-import useWorkspaces from "@/util/useWorkspaces";
-import Link from "next/link";
-import Image from "next/image";
 import { Database } from "@/types/supabase";
-import useWorkspaceMemberCount from "@/util/useWorkspaceMemberCount";
 import useRoleInWorkspace from "@/util/useRoleInWorkspace";
+import useWorkspaceMemberCount from "@/util/useWorkspaceMemberCount";
+import useWorkspaces from "@/util/useWorkspaces";
+import Image from "next/image";
+import Link from "next/link";
 
 type Workspace = Database["public"]["Tables"]["workspaces"]["Row"];
 
@@ -37,7 +37,9 @@ export default function Home() {
                     </div>
                     <div className="flex-1 col-span-4">
                       <h3 className="text-xl font-bold">Create a workspace</h3>
-                      <p>Get started with Arigo today</p>
+                      <p className="text-gray-500">
+                        Get started with Arigo today
+                      </p>
                     </div>
                   </div>
                 </div>

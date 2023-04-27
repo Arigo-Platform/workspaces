@@ -1,6 +1,5 @@
 "use client";
 import { Database, Json } from "@/types/supabase";
-import useBotSettings from "@/util/useBotSettings";
 import { Listbox, Transition } from "@headlessui/react";
 import {
   ArrowTopRightOnSquareIcon,
@@ -12,6 +11,7 @@ import Link from "next/link";
 import { Fragment, useEffect, useState } from "react";
 
 import ListboxSkeletonLoader from "@/components/ListboxSkeletonLoader";
+import { useBotContext } from "@/util/providers/BotProvider";
 import { useWorkspaceContext } from "@/util/providers/WorkspaceProvider";
 import { CheckIcon } from "@radix-ui/react-icons";
 import type { APIChannel, APIRole } from "discord-api-types/v10";
@@ -19,15 +19,11 @@ import { toast } from "sonner";
 
 export default function CommandLog({ params }: { params: { id: string } }) {
   const supabase = useSupabaseClient<Database>();
-  const {
-    botSettings,
-    loading: botSettingsLoading,
-    refresh,
-  } = useBotSettings(params.id);
+  const { bot } = useBotContext();
 
   const { workspace, loading: workspaceLoading } = useWorkspaceContext();
 
-  const [newBotSettings, setNewBotSettings] =
+  const [newBot, setNewBot] =
     useState<Database["public"]["Tables"]["bots"]["Row"]>();
 
   const [channels, setChannels] = useState<APIChannel[]>();
@@ -35,10 +31,10 @@ export default function CommandLog({ params }: { params: { id: string } }) {
   const [roles, setRoles] = useState<APIRole[]>();
 
   const getChannels = async () => {
-    if (!workspace || !botSettings) return;
+    if (!workspace || !bot) return;
     console.log("Huh", {
       hi: workspace.guild_id,
-      hu: botSettings.token,
+      hu: bot.token,
     });
     const c = await fetch(
       `/api/discord/guilds/${workspace.guild_id}/channels`,
@@ -46,7 +42,7 @@ export default function CommandLog({ params }: { params: { id: string } }) {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bot ${botSettings.token}`,
+          Authorization: `Bot ${bot.token}`,
         },
       }
     ).then((res) => res.json());
@@ -59,14 +55,14 @@ export default function CommandLog({ params }: { params: { id: string } }) {
   };
 
   const getRoles = async () => {
-    if (!workspace || !botSettings) return;
+    if (!workspace || !bot) return;
     const c: APIRole[] = await fetch(
       `/api/discord/guilds/${workspace.guild_id}/roles`,
       {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bot ${botSettings.token}`,
+          Authorization: `Bot ${bot.token}`,
         },
       }
     ).then((res) => res.json());
@@ -83,19 +79,19 @@ export default function CommandLog({ params }: { params: { id: string } }) {
   };
 
   useEffect(() => {
-    if (botSettings && workspace) {
-      setNewBotSettings(botSettings);
+    if (bot && workspace) {
+      setNewBot(bot);
 
       getChannels();
       getRoles();
     }
-  }, [botSettings, workspace]);
+  }, [bot, workspace]);
 
   // Suggestions Channel
   const updateChannel = async (value: string | null) => {
-    if (newBotSettings) {
-      setNewBotSettings({
-        ...newBotSettings,
+    if (newBot) {
+      setNewBot({
+        ...newBot,
         suggestions_channel: value,
       });
 
@@ -105,7 +101,7 @@ export default function CommandLog({ params }: { params: { id: string } }) {
             await supabase
               .from("bots")
               .update({ suggestions_channel: value })
-              .eq("id", newBotSettings.id);
+              .eq("id", newBot.id);
           } catch (error) {
             throw error;
           }
@@ -122,9 +118,9 @@ export default function CommandLog({ params }: { params: { id: string } }) {
 
   // Suggestions Emoji
   const updateEmoji = async (value: string | null) => {
-    if (newBotSettings) {
-      setNewBotSettings({
-        ...newBotSettings,
+    if (newBot) {
+      setNewBot({
+        ...newBot,
         suggestions_emoji: value,
       });
 
@@ -134,7 +130,7 @@ export default function CommandLog({ params }: { params: { id: string } }) {
             await supabase
               .from("bots")
               .update({ suggestions_emoji: value })
-              .eq("id", newBotSettings.id);
+              .eq("id", newBot.id);
           } catch (error) {
             throw error;
           }
@@ -150,9 +146,9 @@ export default function CommandLog({ params }: { params: { id: string } }) {
   };
 
   const updateModifyRoles = async (value: Json[] | null) => {
-    if (newBotSettings) {
-      setNewBotSettings({
-        ...newBotSettings,
+    if (newBot) {
+      setNewBot({
+        ...newBot,
         suggestion_modify_roles: value,
       });
       toast.promise(
@@ -163,7 +159,7 @@ export default function CommandLog({ params }: { params: { id: string } }) {
               .update({
                 suggestion_modify_roles: value,
               })
-              .eq("id", newBotSettings.id);
+              .eq("id", newBot.id);
           } catch (error) {
             throw error;
           }
@@ -200,17 +196,16 @@ export default function CommandLog({ params }: { params: { id: string } }) {
               <div className="mt-3">
                 {channels ? (
                   <Listbox
-                    value={newBotSettings?.suggestions_channel}
+                    value={newBot?.suggestions_channel}
                     onChange={(value) => updateChannel(value as string)}
                   >
                     <div className="relative col-span-6">
                       <Listbox.Button className="relative w-full py-2 pl-3 pr-10 text-left bg-white rounded-lg shadow-md cursor-default focus:border-gray-300 focus:dark:border-gray-400 dark:text-white dark:bg-black dark:border dark:border-gray-600 focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
                         <span className="block truncate">
-                          {newBotSettings?.suggestions_channel ? (
+                          {newBot?.suggestions_channel ? (
                             channels.find(
                               (channel) =>
-                                channel.id ===
-                                newBotSettings?.suggestions_channel
+                                channel.id === newBot?.suggestions_channel
                             )?.name
                           ) : (
                             <span className="text-gray-400">
@@ -309,7 +304,7 @@ export default function CommandLog({ params }: { params: { id: string } }) {
                 {channels ? (
                   <RadioGroup.Root
                     className="flex gap-10"
-                    defaultValue={botSettings?.suggestions_emoji ?? undefined}
+                    defaultValue={bot?.suggestions_emoji ?? undefined}
                     aria-label="Select emoji"
                     onValueChange={(value) => updateEmoji(value)}
                   >
@@ -415,22 +410,20 @@ export default function CommandLog({ params }: { params: { id: string } }) {
               </h2>
 
               <div className="mt-3">
-                {roles &&
-                newBotSettings &&
-                newBotSettings.suggestion_modify_roles ? (
+                {roles && newBot && newBot.suggestion_modify_roles ? (
                   <Listbox
-                    value={newBotSettings.suggestion_modify_roles}
+                    value={newBot.suggestion_modify_roles}
                     onChange={(value) => updateModifyRoles(value)}
                     multiple
                   >
                     <div className="relative col-span-6">
                       <Listbox.Button className="relative w-full px-10 py-2 pl-3 text-left bg-white rounded-lg shadow-md cursor-default focus:border-gray-300 focus:dark:border-gray-400 dark:text-white dark:bg-black dark:border dark:border-gray-600 focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
                         <span className="block truncate">
-                          {newBotSettings.suggestion_modify_roles &&
-                          newBotSettings.suggestion_modify_roles.length > 0
+                          {newBot.suggestion_modify_roles &&
+                          newBot.suggestion_modify_roles.length > 0
                             ? roles
                                 .filter((role) => {
-                                  return newBotSettings.suggestion_modify_roles?.includes(
+                                  return newBot.suggestion_modify_roles?.includes(
                                     role.id
                                   );
                                 })

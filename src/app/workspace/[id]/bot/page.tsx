@@ -1,7 +1,7 @@
 "use client";
 import Button from "@/components/Button";
 import { Database } from "@/types/supabase";
-import useBotSettings from "@/util/useBotSettings";
+import { useBotContext } from "@/util/providers/BotProvider";
 import {
   ArrowTopRightOnSquareIcon,
   TrashIcon,
@@ -19,19 +19,17 @@ import { toast } from "sonner";
 export default function DashboardPage({ params }: { params: { id: string } }) {
   const supabase = useSupabaseClient<Database>();
 
-  const [newBotSettings, setNewBotSettings] =
+  const [newBot, setNewBot] =
     useState<Database["public"]["Tables"]["bots"]["Row"]>();
-  const { botSettings, loading: botSettingsLoading } = useBotSettings(
-    params.id
-  );
+  const { bot } = useBotContext();
 
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    if (botSettings) {
-      setNewBotSettings(botSettings);
+    if (bot) {
+      setNewBot(bot);
     }
-  }, [botSettings]);
+  }, [bot]);
 
   const updateData = async () => {
     setSaving(true);
@@ -39,7 +37,7 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
     // Make a fetch request to Discord
     await fetch("https://discord.com/api/v10/users/@me", {
       headers: {
-        Authorization: `Bot ${botSettings?.token}`,
+        Authorization: `Bot ${bot?.token}`,
       },
     }).then(async (response) => {
       if (response.status === 401) {
@@ -50,7 +48,7 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
         try {
           const { data, error } = await supabase
             .from("bots")
-            .update({ token: botSettings?.token })
+            .update({ token: bot?.token })
             .eq("id", "c92153c2-e353-4380-a744-7dd8ac75be90")
             .select();
 
@@ -116,17 +114,17 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
                       <textarea
                         className="w-full p-2 text-sm font-normal bg-white border border-gray-600 rounded-md shadow-sm outline-none resize-none focus:border-gray-300 dark:focus:border-gray-400 h-max dark:bg-black dark:text-white dark:shadow-none"
                         required
-                        defaultValue={botSettings?.token || ""}
+                        defaultValue={bot?.token || ""}
                         id="token"
                         name="token"
                         aria-label="Bot Token"
                         onChange={(e) => {
-                          if (botSettings) {
-                            const updatedBotSettings = {
-                              ...botSettings,
+                          if (bot) {
+                            const updatedBot = {
+                              ...bot,
                               token: e.target.value,
                             };
-                            setNewBotSettings(updatedBotSettings);
+                            setNewBot(updatedBot);
                           }
                         }}
                       />
@@ -156,12 +154,8 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
         </div>
 
         {/* Statuses */}
-        {newBotSettings && (
-          <Statuses
-            newBotSettings={newBotSettings}
-            setNewBotSettings={setNewBotSettings}
-            supabase={supabase}
-          />
+        {newBot && (
+          <Statuses newBot={newBot} setNewBot={setNewBot} supabase={supabase} />
         )}
       </section>
     </section>
@@ -171,14 +165,12 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
 type Status = { type: number; name: string };
 
 function Statuses({
-  newBotSettings,
-  setNewBotSettings,
+  newBot,
+  setNewBot,
   supabase,
 }: {
-  newBotSettings: Database["public"]["Tables"]["bots"]["Row"];
-  setNewBotSettings: (
-    botSettings: Database["public"]["Tables"]["bots"]["Row"]
-  ) => void;
+  newBot: Database["public"]["Tables"]["bots"]["Row"];
+  setNewBot: (bot: Database["public"]["Tables"]["bots"]["Row"]) => void;
   supabase: SupabaseClient<Database>;
 }) {
   const [newStatus, setNewStatus] = useState<Status>({
@@ -214,8 +206,8 @@ function Statuses({
                     setSaving(true);
                     const { error } = await supabase
                       .from("bots")
-                      .update(newBotSettings)
-                      .eq("id", newBotSettings.id);
+                      .update(newBot)
+                      .eq("id", newBot.id);
 
                     setSaving(false);
 
@@ -299,11 +291,11 @@ function Statuses({
                     // No text provided
                     return toast.error("Please enter a status");
                   }
-                  if (newBotSettings) {
-                    const updatedBotSettings = {
-                      ...newBotSettings,
+                  if (newBot) {
+                    const updatedBot = {
+                      ...newBot,
                       statuses: [
-                        ...(newBotSettings.statuses || []),
+                        ...(newBot.statuses || []),
                         {
                           type: newStatus.type,
                           name: newStatus.name,
@@ -311,7 +303,7 @@ function Statuses({
                       ],
                     };
 
-                    setNewBotSettings(updatedBotSettings);
+                    setNewBot(updatedBot);
                     setNewStatus({
                       name: "",
                       type: 0,
@@ -320,7 +312,7 @@ function Statuses({
                   }
                 }}
                 disabled={
-                  (newBotSettings?.statuses || []).length >= 5 ||
+                  (newBot?.statuses || []).length >= 5 ||
                   newStatus.name.length === 0
                 }
                 className="w-full h-min transition-colors duration-150 border disabled:opacity-75 disabled:cursor-not-allowed dark:hover:disabled:text-black dark:hover:disabled:bg-white hover:outline-none border-black dark:border-white ml-auto font-medium dark:text-black dark:hover:text-white dark:bg-white dark:hover:bg-opacity-0 hover:bg-opacity-0 bg-black text-white hover:text-black px-5 py-2 text-sm outline-none select-none rounded-md data-[highlighted]:bg-gray-200 data-[highlighted]:rounded"
@@ -330,7 +322,7 @@ function Statuses({
 
               <div className="col-span-full">
                 <div className="grid gap-2 mt-4">
-                  {(newBotSettings?.statuses || []).map((status, index) => (
+                  {(newBot?.statuses || []).map((status, index) => (
                     <div
                       key={index}
                       className="grid items-center grid-cols-7 gap-2"
@@ -340,13 +332,13 @@ function Statuses({
                         required
                         defaultValue={(status as unknown as Status).type}
                         onChange={(e) => {
-                          let statuses = newBotSettings.statuses!;
+                          let statuses = newBot.statuses!;
 
                           (statuses[index] as unknown as Status).type =
                             parseInt(e.target.value);
 
-                          setNewBotSettings({
-                            ...newBotSettings,
+                          setNewBot({
+                            ...newBot,
                             statuses,
                           });
                           setChange(true);
@@ -365,13 +357,13 @@ function Statuses({
                         required
                         defaultValue={(status as unknown as Status).name}
                         onChange={(e) => {
-                          let statuses = newBotSettings.statuses!;
+                          let statuses = newBot.statuses!;
 
                           (statuses[index] as unknown as Status).name =
                             e.target.value;
 
-                          setNewBotSettings({
-                            ...newBotSettings,
+                          setNewBot({
+                            ...newBot,
                             statuses,
                           });
                           setChange(true);
@@ -381,11 +373,11 @@ function Statuses({
                       {/* icon button to remove */}
                       <button
                         onClick={() => {
-                          if (newBotSettings) {
-                            let temp = newBotSettings;
+                          if (newBot) {
+                            let temp = newBot;
 
                             temp.statuses!.splice(index, 1);
-                            setNewBotSettings(temp);
+                            setNewBot(temp);
                             forceUpdate();
                             setChange(true);
                           }
