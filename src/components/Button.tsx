@@ -20,7 +20,7 @@ export default function Button({
       onClick={onClick}
       disabled={saving || disabled}
       aria-label={ariaLabel}
-      className={`transition-colors disabled:opacity-75 disabled:cursor-not-allowed disabled:dark:hover:bg-white duration-150 border hover:outline-none border-black disabled:dark:border-black dark:border-white focus:ring-2 ring-blue-500 ml-auto font-medium dark:text-black disabled:dark:hover:text-black dark:hover:text-white dark:bg-white dark:hover:bg-opacity-0 hover:bg-opacity-0 bg-black text-white hover:text-black px-5 py-2 text-sm outline-none select-none rounded-md data-[highlighted]:bg-gray-200 data-[highlighted]:rounded ${className}`}
+      className={`delay-[30ms] transition-colors disabled:opacity-75 disabled:cursor-not-allowed disabled:dark:hover:bg-white duration-150 border hover:outline-none border-black disabled:dark:border-black dark:border-white focus:ring-2 ring-blue-500 ml-auto font-medium dark:text-black disabled:dark:hover:text-black dark:hover:text-white dark:bg-white dark:hover:bg-opacity-0 hover:bg-opacity-0 bg-black text-white hover:text-black px-5 py-2 text-sm outline-none select-none rounded-md data-[highlighted]:bg-gray-200 data-[highlighted]:rounded ${className}`}
     >
       {!saving ? (
         children

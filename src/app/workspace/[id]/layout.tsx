@@ -4,7 +4,6 @@ import { WorkspaceProvider } from "@/util/providers/WorkspaceProvider";
 import useWorkspace from "@/util/useWorkspace";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
 export default function RootLayout({
   children,
   params,
@@ -53,7 +52,7 @@ export default function RootLayout({
   return (
     <div>
       {/* Removed overflow-x-scroll to prevent weird white space */}
-      <nav className="flex w-full px-6 pt-2 space-x-2 bg-slate-100 dark:bg-black">
+      <nav className="flex w-full px-6 pt-2 bg-slate-100 dark:bg-black delay-[5ms]">
         {routes.map((route) => (
           <Link
             href={`/workspace/${params.id}/${route.path}`}
@@ -64,7 +63,7 @@ export default function RootLayout({
                 : "dark:text-slate-400 font-medium"
             } pb-4 relative inline-block text-sm `}
           >
-            <span className="px-4 py-2 transition-colors duration-150 rounded-md hover:bg-zinc-200 dark:hover:bg-zinc-700 dark:hover:text-white">
+            <span className="px-4 py-2 transition-colors duration-150 rounded-md hover:bg-zinc-200 dark:hover:bg-zinc-800 dark:hover:text-white">
               {route.title}
             </span>
           </Link>

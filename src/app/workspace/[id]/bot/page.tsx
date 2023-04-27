@@ -319,7 +319,10 @@ function Statuses({
                     setChange(true);
                   }
                 }}
-                disabled={(newBotSettings?.statuses || []).length >= 5}
+                disabled={
+                  (newBotSettings?.statuses || []).length >= 5 ||
+                  newStatus.name.length === 0
+                }
                 className="w-full h-min transition-colors duration-150 border disabled:opacity-75 disabled:cursor-not-allowed dark:hover:disabled:text-black dark:hover:disabled:bg-white hover:outline-none border-black dark:border-white ml-auto font-medium dark:text-black dark:hover:text-white dark:bg-white dark:hover:bg-opacity-0 hover:bg-opacity-0 bg-black text-white hover:text-black px-5 py-2 text-sm outline-none select-none rounded-md data-[highlighted]:bg-gray-200 data-[highlighted]:rounded"
               >
                 Add
@@ -417,9 +420,11 @@ function Statuses({
                       <p></p>
                     )}
                   </p>
-                  <Button saving={saving} aria-label="Save Button">
-                    Save
-                  </Button>{" "}
+                  {change === true ? (
+                    <Button saving={saving} aria-label="Save Button">
+                      Save
+                    </Button>
+                  ) : null}
                 </div>
               </Form.Submit>
             </Form.Root>

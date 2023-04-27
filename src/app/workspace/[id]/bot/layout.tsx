@@ -60,13 +60,13 @@ export default function BotLayout({
           </Link>
 
           <Link
-            href={`/workspace/${workspace?.id}/bot/utility-suite`}
+            href={`/workspace/${workspace?.id}/bot/moderation-suite`}
             className={`w-full px-3 py-2 rounded-md dark:hover:bg-zinc-700 hover:bg-zinc-200 ${
-              pathname === `/workspace/${workspace?.id}/bot/utility-suite` &&
+              pathname === `/workspace/${workspace?.id}/bot/moderation-suite` &&
               "bg-zinc-200 dark:bg-zinc-700"
             }`}
           >
-            Utility Suite
+            Moderation Suite
           </Link>
         </aside>
 
