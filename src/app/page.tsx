@@ -12,55 +12,87 @@ export default function Home() {
   const { workspaces, refresh, workspacesLoading } = useWorkspaces();
   return (
     <div>
-      <section className="p-4 space-y-6">
-        <h2 className="text-3xl font-bold text-black dark:text-white animate-slideLeftAndFade">
-          Workspaces
-        </h2>
-        <h3 className="text-lg text-black dark:text-white animate-slideLeftAndFade">
-          "The greatest glory in living lies not in never falling, but in rising
-          every time we fall." - Nelson Mandela
+      <section className="p-4">
+        <h1 className="pt-5 text-4xl font-bold text-black dark:text-white animate-slideLeftAndFade pb-2">
+          Welcome back, itilva8630! 👋
+        </h1>
+        <h3 className="flex text-lg text-gray-800 dark:text-gray-200 animate-slideLeftAndFade pb-5">
+          The greatest glory in living lies not in never falling, but in rising
+          every time we fall &bull; Nelson Mandela
         </h3>
-        {!workspacesLoading ? (
-          workspaces ? (
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 animate-slideLeftAndFade">
-              {workspaces.map((workspace) => (
-                <WorkspaceCard key={workspace.id} workspace={workspace} />
-              ))}
+        <h2 className="text-3xl font-bold text-black dark:text-white animate-slideLeftAndFade pb-2">
+          Your Workspaces
+        </h2>
+        <div>
+          {!workspacesLoading ? (
+            workspaces ? (
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 animate-slideLeftAndFade">
+                {workspaces.map((workspace) => (
+                  <WorkspaceCard key={workspace.id} workspace={workspace} />
+                ))}
 
-              <Link href="/create" className="w-full h-full max-h-32">
-                <div className="p-4 transition duration-100 bg-white border border-gray-600 rounded-md shadow-sm hover:bg-gray-100 dark:bg-black dark:hover:bg-zinc-900 dark:text-white dark:shadow-none ">
-                  <div className="flex items-center justify-between space-x-4">
-                    <div className="flex items-center justify-center w-12 h-12 col-span-1 font-semibold rounded-md">
-                      <div className="flex items-center justify-center w-12 h-12 col-span-1 font-semibold bg-green-400 rounded-md text-blue-50">
-                        +
+                <Link href="/create" className="w-full h-full max-h-32">
+                  <div className="p-4 transition duration-100 bg-white border border-gray-600 rounded-md shadow-sm hover:bg-gray-100 dark:bg-black dark:hover:bg-zinc-900 dark:text-white dark:shadow-none ">
+                    <div className="flex items-center justify-between space-x-4">
+                      <div className="flex items-center justify-center w-12 h-12 col-span-1 font-semibold rounded-md">
+                        <div className="flex items-center justify-center w-12 h-12 col-span-1 font-semibold bg-green-400 rounded-md text-blue-50">
+                          +
+                        </div>
+                      </div>
+                      <div className="flex-1 col-span-4">
+                        <h3 className="text-xl font-bold">
+                          Create a workspace
+                        </h3>
+                        <p className="text-gray-500">
+                          Get started with Arigo today
+                        </p>
                       </div>
                     </div>
-                    <div className="flex-1 col-span-4">
-                      <h3 className="text-xl font-bold">Create a workspace</h3>
-                      <p className="text-gray-500">
-                        Get started with Arigo today
-                      </p>
-                    </div>
                   </div>
-                </div>
-              </Link>
-            </div>
+                </Link>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center w-full h-full p-4 space-y-4 text-center animate-slideLeftAndFade">
+                <h3 className="text-xl font-bold">No workspaces found</h3>
+                <p>Get started with Arigo today</p>
+                <Link href="/create">
+                  <button className="px-4 py-2 font-semibold text-white bg-green-400 rounded-md">
+                    Create a workspace
+                  </button>
+                </Link>
+              </div>
+            )
           ) : (
             <div className="flex flex-col items-center justify-center w-full h-full p-4 space-y-4 text-center animate-slideLeftAndFade">
-              <h3 className="text-xl font-bold">No workspaces found</h3>
-              <p>Get started with Arigo today</p>
-              <Link href="/create">
-                <button className="px-4 py-2 font-semibold text-white bg-green-400 rounded-md">
-                  Create a workspace
-                </button>
-              </Link>
+              <h3 className="text-xl font-bold">Loading workspaces...</h3>
             </div>
-          )
-        ) : (
-          <div className="flex flex-col items-center justify-center w-full h-full p-4 space-y-4 text-center animate-slideLeftAndFade">
-            <h3 className="text-xl font-bold">Loading workspaces...</h3>
+          )}
+        </div>
+        <div>
+          <h2 className="pt-5 text-3xl font-bold text-black dark:text-white animate-slideLeftAndFade pb-2">
+            Recent News &#38; Updates
+          </h2>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 animate-slideLeftAndFade">
+            <Link
+              href={`news.arigoapp.com/news/14772-introducing-arigo-ai---support`}
+              className="w-full h-full max-h-32"
+            >
+              <div className="p-4 transition duration-100 bg-white border border-gray-600 rounded-md shadow-sm hover:bg-gray-100 dark:bg-black dark:hover:bg-zinc-900 dark:text-white dark:shadow-none ">
+                <div className="flex items-center justify-between space-x-4">
+                  <div className="flex items-center justify-center w-12 h-12 col-span-1 font-semibold bg-blue-400 rounded-md text-blue-50">
+                    🤖
+                  </div>
+                  <div className="flex-1 col-span-4">
+                    <h3 className="text-xl font-bold">Arigo AI</h3>
+                    <p className="text-gray-500">
+                      Revolutionizing community support
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </Link>
           </div>
-        )}
+        </div>
       </section>
     </div>
   );
