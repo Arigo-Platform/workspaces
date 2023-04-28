@@ -11,8 +11,8 @@ export default function CommandLog({ params }: { params: { id: string } }) {
           </p>
 
           <p className="text-sm italic font-light text-gray-400 dark:text-gray-200">
-            Note: user and/or channel names may inaccurate; they're saved upon
-            command execution for preformance purposes.
+            Note: user and/or channel names may inaccurate; they&apos;re saved
+            upon command execution for preformance purposes.
           </p>
         </header>
         <div className="w-full col-span-full">

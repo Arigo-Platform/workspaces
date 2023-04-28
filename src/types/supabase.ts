@@ -17,6 +17,7 @@ export interface Database {
           support_access: boolean;
           suspended: boolean;
           username: string;
+          waitlist_status: boolean | null;
         };
         Insert: {
           discord_id?: string | null;
@@ -25,6 +26,7 @@ export interface Database {
           support_access?: boolean;
           suspended?: boolean;
           username: string;
+          waitlist_status?: boolean | null;
         };
         Update: {
           discord_id?: string | null;
@@ -33,6 +35,27 @@ export interface Database {
           support_access?: boolean;
           suspended?: boolean;
           username?: string;
+          waitlist_status?: boolean | null;
+        };
+      };
+      bot_moderation_settings: {
+        Row: {
+          bot: string | null;
+          created_at: string | null;
+          id: number;
+          perm_ban: string[] | null;
+        };
+        Insert: {
+          bot?: string | null;
+          created_at?: string | null;
+          id?: number;
+          perm_ban?: string[] | null;
+        };
+        Update: {
+          bot?: string | null;
+          created_at?: string | null;
+          id?: number;
+          perm_ban?: string[] | null;
         };
       };
       bots: {
@@ -73,6 +96,7 @@ export interface Database {
       command_log: {
         Row: {
           args: Json[] | null;
+          bot_id: string | null;
           channel_id: string;
           channel_name: string;
           command_name: string;
@@ -86,6 +110,7 @@ export interface Database {
         };
         Insert: {
           args?: Json[] | null;
+          bot_id?: string | null;
           channel_id: string;
           channel_name: string;
           command_name: string;
@@ -99,6 +124,7 @@ export interface Database {
         };
         Update: {
           args?: Json[] | null;
+          bot_id?: string | null;
           channel_id?: string;
           channel_name?: string;
           command_name?: string;
@@ -159,22 +185,22 @@ export interface Database {
           category: string | null;
           description: string | null;
           id: string;
-          is_app: boolean;
-          name: string | null;
+          is_app: boolean | null;
+          name: string;
         };
         Insert: {
           category?: string | null;
           description?: string | null;
           id: string;
-          is_app: boolean;
-          name?: string | null;
+          is_app?: boolean | null;
+          name: string;
         };
         Update: {
           category?: string | null;
           description?: string | null;
           id?: string;
-          is_app?: boolean;
-          name?: string | null;
+          is_app?: boolean | null;
+          name?: string;
         };
       };
       posts: {
@@ -200,6 +226,7 @@ export interface Database {
           id: string;
           invite: string;
           name: string;
+          refId: string | null;
           role: string;
           user: string;
         };
@@ -208,6 +235,7 @@ export interface Database {
           id?: string;
           invite: string;
           name: string;
+          refId?: string | null;
           role: string;
           user: string;
         };
@@ -216,6 +244,7 @@ export interface Database {
           id?: string;
           invite?: string;
           name?: string;
+          refId?: string | null;
           role?: string;
           user?: string;
         };

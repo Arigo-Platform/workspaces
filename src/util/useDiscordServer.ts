@@ -1,12 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
-import { APIGuild } from "discord-api-types/v10";
 import { Database } from "@/types/supabase";
 import {
-  useSession,
   useSessionContext,
   useSupabaseClient,
-  useUser,
 } from "@supabase/auth-helpers-react";
+import { APIGuild } from "discord-api-types/v10";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 const useDiscordServer = (
