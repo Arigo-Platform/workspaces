@@ -3,6 +3,7 @@ import { Database } from "@/types/supabase";
 import useRoleInWorkspace from "@/util/useRoleInWorkspace";
 import useWorkspaceMemberCount from "@/util/useWorkspaceMemberCount";
 import useWorkspaces from "@/util/useWorkspaces";
+import { useUser } from "@supabase/auth-helpers-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -10,17 +11,18 @@ type Workspace = Database["public"]["Tables"]["workspaces"]["Row"];
 
 export default function Home() {
   const { workspaces, refresh, workspacesLoading } = useWorkspaces();
+  const user = useUser();
   return (
     <div>
       <section className="p-4">
-        <h1 className="pt-5 text-4xl font-bold text-black dark:text-white animate-slideLeftAndFade pb-2">
-          Welcome back, itilva8630! 👋
+        <h1 className="pt-5 pb-2 text-4xl font-bold text-black dark:text-white animate-slideLeftAndFade">
+          Welcome back, {user?.user_metadata.full_name}! 👋
         </h1>
-        <h3 className="flex text-lg text-gray-800 dark:text-gray-200 animate-slideLeftAndFade pb-5">
+        <h3 className="flex pb-5 text-lg text-gray-800 dark:text-gray-200 animate-slideLeftAndFade">
           The greatest glory in living lies not in never falling, but in rising
           every time we fall &bull; Nelson Mandela
         </h3>
-        <h2 className="text-3xl font-bold text-black dark:text-white animate-slideLeftAndFade pb-2">
+        <h2 className="pb-2 text-3xl font-bold text-black dark:text-white animate-slideLeftAndFade">
           Your Workspaces
         </h2>
         <div>
@@ -69,7 +71,7 @@ export default function Home() {
           )}
         </div>
         <div>
-          <h2 className="pt-5 text-3xl font-bold text-black dark:text-white animate-slideLeftAndFade pb-2">
+          <h2 className="pt-5 pb-2 text-3xl font-bold text-black dark:text-white animate-slideLeftAndFade">
             Recent News &#38; Updates
           </h2>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 animate-slideLeftAndFade">

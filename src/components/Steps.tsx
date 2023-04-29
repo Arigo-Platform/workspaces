@@ -14,8 +14,9 @@ type StepStatus = "complete" | "current" | "upcoming";
 type StepProps = {
   id?: string | number;
   title: string;
-  status: StepStatus;
+  status?: StepStatus;
   children: ReactNode;
+  canContinue?: boolean | (() => boolean);
 };
 
 const Step = ({ id, title, status }: StepProps) => {
@@ -27,7 +28,9 @@ const Step = ({ id, title, status }: StepProps) => {
             <span className="flex items-center justify-center flex-shrink-0 w-10 h-10 bg-indigo-600 rounded-full group-hover:bg-indigo-800">
               <CheckIcon className="w-6 h-6 text-white" aria-hidden="true" />
             </span>
-            <span className="ml-4 text-sm font-medium text-gray-900">{id}</span>
+            <span className="ml-4 text-sm font-medium text-gray-900 dark:text-gray-300">
+              {title}
+            </span>
           </span>
         </div>
       ) : status === "current" ? (
@@ -35,10 +38,10 @@ const Step = ({ id, title, status }: StepProps) => {
           className="flex items-center px-6 py-4 text-sm font-medium"
           aria-current="step"
         >
-          <span className="flex items-center justify-center flex-shrink-0 w-10 h-10 border-2 border-indigo-600 rounded-full">
-            <span className="text-indigo-600">{id}</span>
+          <span className="flex items-center justify-center flex-shrink-0 w-10 h-10 border-2 border-indigo-600 rounded-full dark:border-indigo-300">
+            <span className="text-indigo-600 dark:text-indigo-300">{id}</span>
           </span>
-          <span className="ml-4 text-sm font-medium text-indigo-600">
+          <span className="ml-4 text-sm font-medium text-indigo-600 dark:text-indigo-300">
             {title}
           </span>
         </div>
@@ -66,7 +69,14 @@ const Steps = ({ children }: { children: ReactNode[] }) => {
     if (isValidElement(child)) {
       return cloneElement(child, {
         id: (index + 1).toString().padStart(2, "0"),
+
         ...child.props,
+        status:
+          index < currentStep
+            ? "complete"
+            : index === currentStep
+            ? "current"
+            : "upcoming",
       } as any);
     }
   });
@@ -76,6 +86,14 @@ const Steps = ({ children }: { children: ReactNode[] }) => {
       (childrenWithProps![currentStep].props as StepProps).children
     );
   }, [currentStep]);
+
+  const handleCanContinue = () => {
+    const step = childrenWithProps![currentStep].props as StepProps;
+    if (typeof step.canContinue === "function") {
+      return step.canContinue();
+    }
+    return step.canContinue;
+  };
 
   return (
     <div className="flex flex-col h-full">
@@ -137,6 +155,9 @@ const Steps = ({ children }: { children: ReactNode[] }) => {
         </Button>
         <Button
           onClick={() => {
+            if (handleCanContinue()) {
+              return;
+            }
             if (currentStep < children.length - 1) {
               setCurrentStep(currentStep + 1);
             }

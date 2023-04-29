@@ -192,8 +192,8 @@ function Statuses({
             Statuses
           </h3>
           <h2 className="mt-1 text-sm font-normal contrast-more:text-black">
-            Arigo offers extreme customization when it comes to statuses. You're
-            able to add up to 5 of your own rotating statuses.
+            Arigo offers extreme customization when it comes to statuses.
+            You&apos;re able to add up to 5 of your own rotating statuses.
           </h2>
 
           <div>
