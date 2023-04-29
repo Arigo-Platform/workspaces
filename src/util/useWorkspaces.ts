@@ -3,7 +3,7 @@ import {
   useSessionContext,
   useSupabaseClient,
 } from "@supabase/auth-helpers-react";
-import { useEffect, useMemo, useReducer, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 type Workspaces = Database["public"]["Tables"]["workspaces"]["Row"][];
 
@@ -12,7 +12,6 @@ const useProfile = () => {
   const { error, isLoading, session } = useSessionContext();
   const supabaseClient = useSupabaseClient<Database>();
   const [workspacesLoading, setWorkspacesLoading] = useState(false);
-  const [refresh, forceRefresh] = useReducer((x) => x + 1, 0);
 
   useEffect(() => {
     if (error) {
@@ -20,10 +19,12 @@ const useProfile = () => {
     }
 
     if (session && !isLoading) {
+      setWorkspacesLoading(true);
       supabaseClient
         .from("workspaces")
         .select("*")
         .then(({ data, error }) => {
+          setWorkspacesLoading(false);
           if (error) {
             console.error(error);
           } else {
@@ -39,9 +40,8 @@ const useProfile = () => {
         workspaces,
         workspacesLoading,
       }),
-      [workspaces, workspacesLoading, refresh]
+      [workspaces, workspacesLoading]
     ),
-    refresh: forceRefresh,
   };
 };
 

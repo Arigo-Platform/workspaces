@@ -4,6 +4,7 @@ import "tailwindcss/tailwind.css";
 import FeatureFlagsProvider from "@/components/FeatureFlagsProvider";
 import Navbar from "@/components/Navbar";
 import { Database } from "@/types/supabase";
+import { WorkspacesProvider } from "@/util/providers/WorkspacesProvider";
 import useDarkMode from "@/util/useDarkMode";
 import { createBrowserSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import {
@@ -21,6 +22,7 @@ export default function RootLayout({
   // Initialize Supabase client
   const [supabase] = useState(() => createBrowserSupabaseClient<Database>());
   const session = useSession();
+
   useDarkMode();
   return (
     <html lang="en" className="h-screen dark">
@@ -35,7 +37,9 @@ export default function RootLayout({
           <Navbar />
           <FeatureFlagsProvider>
             <Toaster />
-            <main className="flex-grow h-full">{children}</main>
+            <WorkspacesProvider>
+              <main className="flex-grow h-full">{children}</main>
+            </WorkspacesProvider>
           </FeatureFlagsProvider>
         </body>
       </SessionContextProvider>

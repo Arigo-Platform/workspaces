@@ -1,8 +1,8 @@
 "use client";
 import { Database } from "@/types/supabase";
+import { useWorkspacesContext } from "@/util/providers/WorkspacesProvider";
 import useRoleInWorkspace from "@/util/useRoleInWorkspace";
 import useWorkspaceMemberCount from "@/util/useWorkspaceMemberCount";
-import useWorkspaces from "@/util/useWorkspaces";
 import { useUser } from "@supabase/auth-helpers-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,7 +10,7 @@ import Link from "next/link";
 type Workspace = Database["public"]["Tables"]["workspaces"]["Row"];
 
 export default function Home() {
-  const { workspaces, refresh, workspacesLoading } = useWorkspaces();
+  const { workspaces, loading } = useWorkspacesContext();
   const user = useUser();
   return (
     <div>
@@ -26,7 +26,7 @@ export default function Home() {
           Your Workspaces
         </h2>
         <div>
-          {!workspacesLoading ? (
+          {!loading ? (
             workspaces ? (
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 animate-slideLeftAndFade">
                 {workspaces.map((workspace) => (
