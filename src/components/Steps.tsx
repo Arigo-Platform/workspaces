@@ -4,7 +4,6 @@ import {
   cloneElement,
   isValidElement,
   ReactNode,
-  useEffect,
   useState,
 } from "react";
 import Button from "./Button";
@@ -17,6 +16,7 @@ type StepProps = {
   status?: StepStatus;
   children: ReactNode;
   canContinue?: boolean | (() => boolean);
+  beforeNext?: (() => boolean) | (() => Promise<boolean>);
 };
 
 const Step = ({ id, title, status }: StepProps) => {
@@ -62,14 +62,13 @@ const Step = ({ id, title, status }: StepProps) => {
 };
 
 const Steps = ({ children }: { children: ReactNode[] }) => {
-  const [currentStepContent, setCurrentStepContent] = useState<ReactNode>();
   const [currentStep, setCurrentStep] = useState(0);
+  const [nextLoading, setNextLoading] = useState(false);
 
   const childrenWithProps = Children.map(children, (child, index) => {
     if (isValidElement(child)) {
       return cloneElement(child, {
         id: (index + 1).toString().padStart(2, "0"),
-
         ...child.props,
         status:
           index < currentStep
@@ -81,18 +80,39 @@ const Steps = ({ children }: { children: ReactNode[] }) => {
     }
   });
 
-  useEffect(() => {
-    setCurrentStepContent(
-      (childrenWithProps![currentStep].props as StepProps).children
-    );
-  }, [currentStep]);
-
   const handleCanContinue = () => {
     const step = childrenWithProps![currentStep].props as StepProps;
     if (typeof step.canContinue === "function") {
       return step.canContinue();
     }
     return step.canContinue;
+  };
+
+  const isContinueDisabled = handleCanContinue() === false || nextLoading;
+
+  const handleBack = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const handleNext = async () => {
+    const step = childrenWithProps![currentStep].props as StepProps;
+
+    if (handleCanContinue()) {
+      if (currentStep < children.length) {
+        if (step.beforeNext) {
+          setNextLoading(true);
+          const r = await step.beforeNext();
+          setNextLoading(false);
+          if (r) {
+            setCurrentStep(currentStep + 1);
+          }
+        } else {
+          setCurrentStep(currentStep + 1);
+        }
+      }
+    }
   };
 
   return (
@@ -136,33 +156,25 @@ const Steps = ({ children }: { children: ReactNode[] }) => {
       <div className="grow">
         <div className="mx-auto max-w-7xl">
           <div className="flex justify-between h-full py-4">
-            <div className="space-y-4">{currentStepContent}</div>
+            <div className="w-full space-y-4">
+              {(childrenWithProps![currentStep].props as StepProps).children}
+            </div>
           </div>
         </div>
       </div>
 
       <div className="flex space-x-2">
         <Button
-          onClick={() => {
-            if (currentStep > 0) {
-              setCurrentStep(currentStep - 1);
-            }
-          }}
+          onClick={handleBack}
           disabled={currentStep === 0}
           aria-label="Previous Step"
         >
           Previous
         </Button>
         <Button
-          onClick={() => {
-            if (handleCanContinue()) {
-              return;
-            }
-            if (currentStep < children.length - 1) {
-              setCurrentStep(currentStep + 1);
-            }
-          }}
-          disabled={currentStep === children.length - 1}
+          onClick={handleNext}
+          saving={nextLoading}
+          disabled={currentStep === children.length - 1 || isContinueDisabled}
           aria-label="Next Step"
         >
           Next

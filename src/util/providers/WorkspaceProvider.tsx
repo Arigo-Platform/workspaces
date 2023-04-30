@@ -1,8 +1,10 @@
 import { Database } from "@/types/supabase";
 import React, { createContext, useContext } from "react";
 
+export type Workspace = Database["public"]["Tables"]["workspaces"]["Row"];
+
 export interface WorkspaceContextValue {
-  workspace: Database["public"]["Tables"]["workspaces"]["Row"] | null;
+  workspace: Workspace | null;
   loading: boolean;
   children?: React.ReactNode;
 }

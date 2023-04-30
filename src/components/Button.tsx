@@ -1,10 +1,12 @@
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
+import { ButtonHTMLAttributes } from "react";
 
 export default function Button({
   saving,
   className,
   disabled,
   children,
+  type = "button",
   onClick,
   "aria-label": ariaLabel,
 }: {
@@ -12,11 +14,13 @@ export default function Button({
   className?: string;
   disabled?: boolean;
   children?: React.ReactNode;
+  type?: ButtonHTMLAttributes<HTMLButtonElement>["type"];
   onClick?: () => void;
   "aria-label": string;
 }) {
   return (
     <button
+      type={type}
       onClick={onClick}
       disabled={saving || disabled}
       aria-label={ariaLabel}

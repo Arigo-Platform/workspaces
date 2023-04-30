@@ -52,7 +52,7 @@ export default function RealtimeCommands() {
     if (!bot) {
       return;
     }
-    const { from, to } = getPagination(filter.page, filter.perPage);
+    const { from, to } = getPagination(filter.page, filter.perPage - 1);
     let query = supabase.from("command_log").select();
 
     query = query.eq("bot_id", bot.id);
@@ -238,6 +238,9 @@ export default function RealtimeCommands() {
             <button
               className="rounded-md p-2 inline-flex items-center justify-center dark:text-white text-black shadow-[0_2px_10px] shadow-blackA7 outline-none border border-gray-600 dark:hover:bg-gray-900 hover:bg-gray-200 focus:shadow-[0_0_0_2px] focus:shadow-black"
               aria-label="Previous Page"
+              onClick={() => {
+                setFilter((prev) => ({ ...prev, page: prev.page - 1 }));
+              }}
             >
               <ChevronLeftIcon
                 aria-label="Previous Page Icon"
@@ -247,6 +250,9 @@ export default function RealtimeCommands() {
             <button
               className="rounded-md p-2 inline-flex items-center justify-center dark:text-white text-black shadow-[0_2px_10px] shadow-blackA7 outline-none border border-gray-600 dark:hover:bg-gray-900 hover:bg-gray-200 focus:shadow-[0_0_0_2px] focus:shadow-black"
               aria-label="Next Page"
+              onClick={() => {
+                setFilter((prev) => ({ ...prev, page: prev.page + 1 }));
+              }}
             >
               <ChevronRightIcon
                 aria-label="Next Page Icon"

@@ -1,8 +1,9 @@
 import { Database } from "@/types/supabase";
 import React, { createContext, useContext } from "react";
 
+export type Bot = Database["public"]["Tables"]["bots"]["Row"];
 export interface BotContextValue {
-  bot: Database["public"]["Tables"]["bots"]["Row"] | null;
+  bot: Bot | null;
   loading: boolean;
   children?: React.ReactNode;
 }

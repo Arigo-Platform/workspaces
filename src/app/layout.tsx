@@ -22,6 +22,7 @@ export default function RootLayout({
   // Initialize Supabase client
   const [supabase] = useState(() => createBrowserSupabaseClient<Database>());
   const session = useSession();
+  const [theme] = useDarkMode();
 
   useDarkMode();
   return (
@@ -36,7 +37,7 @@ export default function RootLayout({
         <body className="flex flex-col h-full bg-white dark:bg-blackA12">
           <Navbar />
           <FeatureFlagsProvider>
-            <Toaster />
+            <Toaster theme={theme === "light" ? "light" : "dark"} />
             <WorkspacesProvider>
               <main className="flex-grow h-full">{children}</main>
             </WorkspacesProvider>

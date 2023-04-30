@@ -111,7 +111,8 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
                       </Form.Message>
                     </div>
                     <Form.Control asChild>
-                      <textarea
+                      <input
+                        type="password"
                         className="w-full p-2 text-sm font-normal bg-white border border-gray-600 rounded-md shadow-sm outline-none resize-none focus:border-gray-300 dark:focus:border-gray-400 h-max dark:bg-black dark:text-white dark:shadow-none"
                         required
                         defaultValue={bot?.token || ""}
