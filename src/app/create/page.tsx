@@ -5,13 +5,16 @@ import { Step, Steps } from "@/components/Steps";
 import { Bot } from "@/util/providers/BotProvider";
 import { Workspace } from "@/util/providers/WorkspaceProvider";
 import { useWorkspacesContext } from "@/util/providers/WorkspacesProvider";
+import getStripe from "@/util/stripe";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import * as Form from "@radix-ui/react-form";
+import { Elements, PaymentElement } from "@stripe/react-stripe-js";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { RESTAPIPartialCurrentUserGuild } from "discord-api-types/v10";
 import { Dispatch, Fragment, SetStateAction, useEffect, useState } from "react";
 import { toast } from "sonner";
+import { Stripe } from "stripe";
 
 export default function Create() {
   const [newWorkspace, setNewWorkspace] = useState<Partial<Workspace>>();
@@ -106,11 +109,8 @@ export default function Create() {
               userServers={userServers}
             />
           </Step>
-          <Step title="Choose a Plan">
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-              quos quia, voluptatum, quod, voluptates quibusdam quae doloribus
-            </p>
+          <Step title="Payment">
+            <StepTwo newWorkspace={newWorkspace} />
           </Step>
           <Step title="Invite Members">
             <p>
@@ -144,7 +144,7 @@ function StepOne({
       <Form.Field className="grid mb-[10px] w-full" name="name">
         <div className="flex items-baseline justify-between">
           <Form.Label className="text-[15px] font-medium leading-[35px] dark:text-white text-black">
-            Give us your amazing workspace name!
+            Workspace Name
           </Form.Label>
           <Form.Message
             className="text-[13px] text-white opacity-[0.8]"
@@ -159,9 +159,11 @@ function StepOne({
             Please provide a valid name
           </Form.Message>
         </div>
+
         <Form.Control asChild>
           <input
-            className="box-border w-full dark:bg-white dark:shadow-none shadow-blackA9 inline-flex h-[35px] appearance-none items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none dark:text-black text-white shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_2px_black] selection:color-white selection:bg-blackA9"
+            className="w-full p-2 text-sm font-normal bg-white border border-gray-600 rounded-md shadow-sm outline-none resize-none focus:border-gray-300 dark:focus:border-gray-400 h-max dark:bg-black dark:text-white dark:shadow-none"
+            placeholder="Enter a workspace name"
             type="text"
             required
             onChange={(e) =>
@@ -275,7 +277,7 @@ function StepOne({
       <Form.Field className="grid mb-[10px] w-full" name="name">
         <div className="flex items-baseline justify-between">
           <Form.Label className="text-[15px] font-medium leading-[35px] dark:text-white text-black">
-            Your bot token, please!
+            Bot Token
           </Form.Label>
           <Form.Message
             className="text-[13px] text-white opacity-[0.8]"
@@ -292,7 +294,8 @@ function StepOne({
         </div>
         <Form.Control asChild>
           <input
-            className="box-border w-full dark:bg-white dark:shadow-none shadow-blackA9 inline-flex h-[35px] appearance-none items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none dark:text-black text-white shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_2px_black] selection:color-white selection:bg-blackA9"
+            className="w-full p-2 text-sm font-normal bg-white border border-gray-600 rounded-md shadow-sm outline-none resize-none focus:border-gray-300 dark:focus:border-gray-400 h-max dark:bg-black dark:text-white dark:shadow-none"
+            placeholder="From the Discord Developer Portal"
             type="password"
             required
             onChange={(e) =>
@@ -305,5 +308,58 @@ function StepOne({
         </Form.Control>
       </Form.Field>
     </>
+  );
+}
+
+function StepTwo({
+  newWorkspace,
+}: {
+  newWorkspace: Partial<Workspace | undefined>;
+}) {
+  const [subscription, setSubscription] = useState<Stripe.Subscription>();
+  const { session } = useSessionContext();
+  useEffect(() => {
+    async function createSubscription() {
+      fetch("/api/stripe/createSubscription", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: session?.access_token as string,
+        },
+        body: JSON.stringify({
+          workspace: newWorkspace,
+        }),
+      })
+        .then((r) => {
+          if (r.ok) {
+            return r.json();
+          } else {
+            throw new Error("Failed to create subscription");
+          }
+        })
+        .then((data) => {
+          setSubscription(data);
+        });
+    }
+
+    createSubscription();
+  }, []);
+
+  return (
+    <div>
+      {subscription ? (
+        <Elements
+          stripe={getStripe()}
+          options={{
+            clientSecret: (subscription?.latest_invoice as any)?.payment_intent,
+            mode: "subscription",
+          }}
+        >
+          <PaymentElement />
+        </Elements>
+      ) : (
+        <div>loading Stripe...</div>
+      )}
+    </div>
   );
 }

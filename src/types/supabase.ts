@@ -14,6 +14,7 @@ export interface Database {
           discord_id: string | null;
           id: string;
           registered: string;
+          stripe_customer_id: string | null;
           support_access: boolean;
           suspended: boolean;
           username: string;
@@ -23,6 +24,7 @@ export interface Database {
           discord_id?: string | null;
           id: string;
           registered?: string;
+          stripe_customer_id?: string | null;
           support_access?: boolean;
           suspended?: boolean;
           username: string;
@@ -32,6 +34,7 @@ export interface Database {
           discord_id?: string | null;
           id?: string;
           registered?: string;
+          stripe_customer_id?: string | null;
           support_access?: boolean;
           suspended?: boolean;
           username?: string;
@@ -292,30 +295,36 @@ export interface Database {
       workspaces: {
         Row: {
           created_at: string | null;
+          enabled: boolean | null;
           guild_id: string;
           guild_member_count: number | null;
           icon: string | null;
           id: string;
           name: string | null;
           owner: string | null;
+          stripe_subscription_id: string | null;
         };
         Insert: {
           created_at?: string | null;
+          enabled?: boolean | null;
           guild_id: string;
           guild_member_count?: number | null;
           icon?: string | null;
           id?: string;
           name?: string | null;
           owner?: string | null;
+          stripe_subscription_id?: string | null;
         };
         Update: {
           created_at?: string | null;
+          enabled?: boolean | null;
           guild_id?: string;
           guild_member_count?: number | null;
           icon?: string | null;
           id?: string;
           name?: string | null;
           owner?: string | null;
+          stripe_subscription_id?: string | null;
         };
       };
     };
