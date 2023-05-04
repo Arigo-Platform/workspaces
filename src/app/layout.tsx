@@ -1,5 +1,6 @@
 "use client";
 import "tailwindcss/tailwind.css";
+import "../../global.css";
 
 import FeatureFlagsProvider from "@/components/FeatureFlagsProvider";
 import Navbar from "@/components/Navbar";

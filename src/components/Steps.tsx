@@ -4,6 +4,7 @@ import {
   cloneElement,
   isValidElement,
   ReactNode,
+  useEffect,
   useState,
 } from "react";
 import Button from "./Button";
@@ -16,6 +17,7 @@ type StepProps = {
   status?: StepStatus;
   children: ReactNode;
   canContinue?: boolean | (() => boolean);
+  canGoBack?: boolean | (() => boolean);
   beforeNext?: (() => boolean) | (() => Promise<boolean>);
 };
 
@@ -61,9 +63,21 @@ const Step = ({ id, title, status }: StepProps) => {
   );
 };
 
-const Steps = ({ children }: { children: ReactNode[] }) => {
+const Steps = ({
+  children,
+  forceStep,
+  onFinish,
+}: {
+  children: ReactNode[];
+  forceStep?: number;
+  onFinish?: () => void;
+}) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [nextLoading, setNextLoading] = useState(false);
+
+  useEffect(() => {
+    if (forceStep) setCurrentStep(forceStep);
+  }, [forceStep]);
 
   const childrenWithProps = Children.map(children, (child, index) => {
     if (isValidElement(child)) {
@@ -88,11 +102,22 @@ const Steps = ({ children }: { children: ReactNode[] }) => {
     return step.canContinue;
   };
 
+  const handleCanGoBack = () => {
+    const step = childrenWithProps![currentStep].props as StepProps;
+    if (typeof step.canGoBack === "function") {
+      return step.canGoBack();
+    }
+    return step.canGoBack;
+  };
+
   const isContinueDisabled = handleCanContinue() === false || nextLoading;
+  const isBackDisabled = handleCanGoBack() === false;
 
   const handleBack = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
+    if (handleCanGoBack()) {
+      if (currentStep > 0) {
+        setCurrentStep(currentStep - 1);
+      }
     }
   };
 
@@ -166,19 +191,29 @@ const Steps = ({ children }: { children: ReactNode[] }) => {
       <div className="flex space-x-2">
         <Button
           onClick={handleBack}
-          disabled={currentStep === 0}
+          disabled={currentStep === 0 || isBackDisabled}
           aria-label="Previous Step"
         >
           Previous
         </Button>
-        <Button
-          onClick={handleNext}
-          saving={nextLoading}
-          disabled={currentStep === children.length - 1 || isContinueDisabled}
-          aria-label="Next Step"
-        >
-          Next
-        </Button>
+        {currentStep !== children.length - 1 ? (
+          <Button
+            onClick={handleNext}
+            saving={nextLoading}
+            disabled={isContinueDisabled}
+            aria-label="Next Step"
+          >
+            Next
+          </Button>
+        ) : (
+          <Button
+            onClick={onFinish}
+            disabled={isContinueDisabled}
+            aria-label="Finish"
+          >
+            Finish
+          </Button>
+        )}
       </div>
     </div>
   );

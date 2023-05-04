@@ -4,31 +4,40 @@ import {
   createOrRetrieveCustomer,
   supabaseServer,
 } from "@/util/supabaseServer";
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: NextApiRequest, res: NextApiResponse) {
-  if (!req.headers.authorization) {
-    return res.status(401).json({ error: "Unauthorized" });
+export async function POST(req: NextRequest, res: NextResponse) {
+  const auth = req.headers.get("Authorization");
+  if (!auth) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const {
     data: { user },
-  } = await supabaseServer.auth.getUser(req.headers.authorization);
+  } = await supabaseServer.auth.getUser(auth);
 
   if (!user) {
-    return res.status(401).json({ error: "Unauthorized" });
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const customerId = await createOrRetrieveCustomer(user.id);
 
   if (!customerId) {
-    return res.status(500).json({ error: "Failed to create customer" });
+    return NextResponse.json(
+      { error: "Failed to create customer" },
+      { status: 500 }
+    );
   }
 
-  const pendingWorkspace = req.body.workspace as Partial<Workspace>;
+  const body = await req.json();
+
+  const pendingWorkspace = body.workspace as Partial<Workspace>;
 
   if (!pendingWorkspace) {
-    return res.status(400).json({ error: "Missing workspace" });
+    return NextResponse.json(
+      { error: "No workspace provided" },
+      { status: 400 }
+    );
   }
 
   const { data: workspaceData, error } = await supabaseServer
@@ -44,11 +53,17 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
 
   if (error) {
     console.error(error);
-    return res.status(500).json({ error: "Failed to create workspace" });
+    return NextResponse.json(
+      { error: "Failed to create workspace" },
+      { status: 500 }
+    );
   }
 
   if (!workspaceData) {
-    return res.status(500).json({ error: "Failed to create workspace" });
+    return NextResponse.json(
+      { error: "Failed to create workspace" },
+      { status: 500 }
+    );
   }
 
   const sub = await stripe.subscriptions.create({
@@ -62,7 +77,10 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
   });
 
   if (!sub) {
-    return res.status(500).json({ error: "Failed to create subscription" });
+    return NextResponse.json(
+      { error: "Failed to create subscription" },
+      { status: 500 }
+    );
   }
 
   await supabaseServer
@@ -70,5 +88,5 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     .update({ stripe_subscription_id: sub.id })
     .eq("id", workspaceData.id);
 
-  return res.status(200).json({ sub });
+  return NextResponse.json({ subscription: sub });
 }

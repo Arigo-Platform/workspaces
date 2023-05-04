@@ -15,20 +15,20 @@ export default function Home() {
   return (
     <div>
       <section className="p-4">
-        <h1 className="pt-5 pb-2 text-4xl font-bold text-black dark:text-white animate-slideLeftAndFade">
+        <h1 className="animate-fadeIn animation-delay-100 opacity-[0] pt-5 pb-2 text-4xl font-bold text-black dark:text-white animate-slideLeftAndFade">
           Welcome back, {user?.user_metadata.full_name}! 👋
         </h1>
-        <h3 className="flex pb-5 text-lg text-gray-800 dark:text-gray-200 animate-slideLeftAndFade">
+        <h3 className="animate-fadeIn animation-delay-100 opacity-[0] flex pb-5 text-lg text-gray-800 dark:text-gray-200 animate-slideLeftAndFade">
           The greatest glory in living lies not in never falling, but in rising
           every time we fall &bull; Nelson Mandela
         </h3>
-        <h2 className="pb-2 text-3xl font-bold text-black dark:text-white animate-slideLeftAndFade">
+        <h2 className="animate-fadeIn animation-delay-500 opacity-[0] pb-2 text-3xl font-bold text-black dark:text-white animate-slideLeftAndFade">
           Your Workspaces
         </h2>
         <div>
           {!loading ? (
             workspaces ? (
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 animate-slideLeftAndFade">
+              <div className="animate-fadeIn animation-delay-500 opacity-[0] grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 animate-slideLeftAndFade">
                 {workspaces.map((workspace) => (
                   <WorkspaceCard key={workspace.id} workspace={workspace} />
                 ))}
@@ -70,11 +70,11 @@ export default function Home() {
             </div>
           )}
         </div>
-        <div>
-          <h2 className="pt-5 pb-2 text-3xl font-bold text-black dark:text-white animate-slideLeftAndFade">
+        <div className="animate-fadeIn animation-delay-900 opacity-[0]">
+          <h2 className="animate-fadeIn animation-delay-900 opacity-[0] pt-5 pb-2 text-3xl font-bold text-black dark:text-white animate-slideLeftAndFade">
             Recent News &#38; Updates
           </h2>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 animate-slideLeftAndFade">
+          <div className="animate-fadeIn animation-delay-900 opacity-[0] grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 animate-slideLeftAndFade">
             <Link
               href={`news.arigoapp.com/news/14772-introducing-arigo-ai---support`}
               className="w-full h-full max-h-32"

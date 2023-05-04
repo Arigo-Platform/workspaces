@@ -1,15 +1,22 @@
 "use client";
 
+import Button from "@/components/Button";
 import ListboxSkeletonLoader from "@/components/ListboxSkeletonLoader";
 import { Step, Steps } from "@/components/Steps";
 import { Bot } from "@/util/providers/BotProvider";
 import { Workspace } from "@/util/providers/WorkspaceProvider";
 import { useWorkspacesContext } from "@/util/providers/WorkspacesProvider";
 import getStripe from "@/util/stripe";
+import useDarkMode from "@/util/useDarkMode";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import * as Form from "@radix-ui/react-form";
-import { Elements, PaymentElement } from "@stripe/react-stripe-js";
+import {
+  Elements,
+  PaymentElement,
+  useElements,
+  useStripe,
+} from "@stripe/react-stripe-js";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { RESTAPIPartialCurrentUserGuild } from "discord-api-types/v10";
 import { Dispatch, Fragment, SetStateAction, useEffect, useState } from "react";
@@ -22,9 +29,81 @@ export default function Create() {
   const [userServers, setUserServers] =
     useState<RESTAPIPartialCurrentUserGuild[]>();
   const [canFetchServers, setCanFetchServers] = useState(false);
+  const [subscription, setSubscription] = useState<Stripe.Subscription>();
+  const [step, setStep] = useState(0);
 
-  const { session } = useSessionContext();
+  const { session, supabaseClient } = useSessionContext();
   const { workspaces } = useWorkspacesContext();
+  const [theme] = useDarkMode();
+
+  useEffect(() => {
+    async function parsePaymentIntent() {
+      const stripe = await getStripe();
+
+      if (!stripe) {
+        toast.error("There was an error initializing Stripe");
+        return;
+      }
+
+      const clientSecret = new URLSearchParams(window.location.search).get(
+        "payment_intent_client_secret"
+      );
+
+      const guild = new URLSearchParams(window.location.search).get("guild");
+
+      if (!guild) {
+        toast.error("There was an error retrieving the payment intent");
+        return;
+      }
+
+      if (!clientSecret) {
+        toast.error("There was an error retrieving the payment intent");
+        return;
+      }
+
+      const { paymentIntent, error } = await stripe.retrievePaymentIntent(
+        clientSecret
+      );
+      console.log(paymentIntent);
+      if (!paymentIntent) {
+        toast.error("There was an error retrieving the payment intent");
+        return;
+      }
+
+      switch (paymentIntent.status) {
+        case "succeeded":
+          const { data, error } = await supabaseClient
+            .from("workspaces")
+            .select("*")
+            .eq("guild_id", guild)
+            .single();
+
+          if (error) {
+            toast.error("There was an error retrieving the workspace");
+            return;
+          }
+
+          if (data) {
+            setNewWorkspace(data);
+            setStep(2);
+          }
+          break;
+
+        case "processing":
+          break;
+
+        case "requires_payment_method":
+          // Redirect your user back to your payment page to attempt collecting
+          // payment again
+          break;
+
+        default:
+          break;
+      }
+    }
+
+    parsePaymentIntent();
+  }, []);
 
   useEffect(() => {
     if (session && workspaces) {
@@ -64,9 +143,34 @@ export default function Create() {
     }
   };
 
+  async function createSubscription() {
+    fetch("/api/stripe/createSubscription", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: session?.access_token as string,
+      },
+      body: JSON.stringify({
+        workspace: newWorkspace,
+      }),
+    })
+      .then((r) => {
+        if (r.ok) {
+          return r.json();
+        } else {
+          throw new Error("Failed to create subscription");
+        }
+      })
+      .then((data) => {
+        setSubscription(data.subscription);
+      });
+  }
+
   const beforeStepTwo = async (): Promise<boolean> => {
     if (!newBot) {
-      toast.error("No bot token provied.");
+      toast.error("Please provide a bot token", {
+        description: "Head to the Discord Developer Portal to find it",
+      });
       return false;
     }
     return fetch(`/api/discord/users/@me`, {
@@ -75,19 +179,31 @@ export default function Create() {
         Authorization: `Bot ${newBot.token}`,
         "Content-Type": "application/json",
       },
-    }).then((r) => {
+    }).then(async (r) => {
       if (r.ok) {
-        toast.success("Bot Token OK!");
+        toast.success("Bot Token validated");
+
+        await createSubscription().catch((e) => {
+          toast.error("There was an error creating the subscription", {
+            description:
+              "Please retry or contact Arigo Support if the error persists.",
+          });
+          return false;
+        });
+
         return true;
       } else {
-        toast.error("Bot Token Invalid.");
+        toast.error("The provided bot token is invalid", {
+          description: "Head to the Discord Developer Portal to get your token",
+        });
+
         return false;
       }
     });
   };
 
   return (
-    <div className="h-full p-6">
+    <div className="h-full p-6 select-none">
       <h1 className="pt-5 pb-2 text-4xl font-bold text-black dark:text-white animate-slideLeftAndFade">
         We&apos;re glad you&apos;re joining us! ✨
       </h1>
@@ -95,7 +211,7 @@ export default function Create() {
         Let&apos;s get started.
       </h3>
       <Form.Root>
-        <Steps>
+        <Steps forceStep={step}>
           <Step
             title="Basic Details"
             canContinue={stepOneContinue()}
@@ -109,10 +225,28 @@ export default function Create() {
               userServers={userServers}
             />
           </Step>
-          <Step title="Payment">
-            <StepTwo newWorkspace={newWorkspace} />
+          <Step title="Payment" canContinue={false}>
+            {subscription ? (
+              <Elements
+                stripe={getStripe()}
+                options={{
+                  clientSecret: (subscription?.latest_invoice as any)
+                    ?.payment_intent.client_secret,
+                  appearance: {
+                    theme: theme === "dark" ? "night" : "stripe",
+                  },
+                }}
+              >
+                <StepTwo
+                  newWorkspace={newWorkspace}
+                  subscription={subscription}
+                />
+              </Elements>
+            ) : (
+              <p>Loading Stripe...</p>
+            )}
           </Step>
-          <Step title="Invite Members">
+          <Step title="Invite Members" canGoBack={false}>
             <p>
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
               quos quia, voluptatum, quod, voluptates quibusdam quae doloribus
@@ -313,50 +447,55 @@ function StepOne({
 
 function StepTwo({
   newWorkspace,
+  subscription,
 }: {
   newWorkspace: Partial<Workspace | undefined>;
+  subscription: Stripe.Subscription | undefined;
 }) {
-  const [subscription, setSubscription] = useState<Stripe.Subscription>();
-  const { session } = useSessionContext();
-  useEffect(() => {
-    async function createSubscription() {
-      fetch("/api/stripe/createSubscription", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: session?.access_token as string,
-        },
-        body: JSON.stringify({
-          workspace: newWorkspace,
-        }),
-      })
-        .then((r) => {
-          if (r.ok) {
-            return r.json();
-          } else {
-            throw new Error("Failed to create subscription");
-          }
-        })
-        .then((data) => {
-          setSubscription(data);
-        });
+  const stripe = useStripe();
+  const elements = useElements();
+
+  const handleSubmit = async (): Promise<boolean> => {
+    if (!stripe || !elements) {
+      return false;
     }
 
-    createSubscription();
-  }, []);
+    const { error } = await stripe.confirmPayment({
+      elements,
+      confirmParams: {
+        return_url: `${window.location.origin}/create?guild=${newWorkspace?.guild_id}`,
+      },
+    });
+
+    if (error) {
+      toast.error(error.message);
+      return false;
+    }
+
+    return true;
+  };
 
   return (
     <div>
       {subscription ? (
-        <Elements
-          stripe={getStripe()}
-          options={{
-            clientSecret: (subscription?.latest_invoice as any)?.payment_intent,
-            mode: "subscription",
-          }}
-        >
+        <>
           <PaymentElement />
-        </Elements>
+          <p className="mt-2 text-sm font-medium text-black dark:text-white">
+            Arigo uses{" "}
+            <a
+              href="https://stripe.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 hover:underline"
+            >
+              Stripe
+            </a>
+            as its secure 3rd party payment processor .
+          </p>
+          <Button onClick={handleSubmit} aria-label="Pay Now button">
+            Pay Now
+          </Button>
+        </>
       ) : (
         <div>loading Stripe...</div>
       )}

@@ -1,18 +1,11 @@
-import React, { useEffect } from "react";
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import {
-  HamburgerMenuIcon,
-  DotFilledIcon,
-  CheckIcon,
-  ChevronRightIcon,
-  CaretSortIcon,
-  PlusIcon,
-} from "@radix-ui/react-icons";
 import { Database } from "@/types/supabase";
 import useWorkspaces from "@/util/useWorkspaces";
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import { CaretSortIcon, PlusIcon } from "@radix-ui/react-icons";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import Image from "next/image";
+import React, { useEffect } from "react";
 
 const DropdownMenuDemo = () => {
   const workspaces = useWorkspaces();
@@ -34,7 +27,7 @@ const DropdownMenuDemo = () => {
   }, [pathname, workspaces]);
 
   if (!workspaces) {
-    return <p>loading...</p>;
+    return <p>Loading...</p>;
   }
 
   const handleWorkspaceChange = (
