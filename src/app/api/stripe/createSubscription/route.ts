@@ -69,8 +69,9 @@ export async function POST(req: NextRequest, res: NextResponse) {
     );
   }
 
-  const { data: workspaceMemberData, error: workspaceMemberError } =
-    await supabaseServer.from("workspace_members").insert({
+  const { error: workspaceMemberError } = await supabaseServer
+    .from("workspace_members")
+    .insert({
       workspace: workspaceData.id,
       user: user.id,
       created_at: new Date().toISOString(),
@@ -79,13 +80,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
   if (workspaceMemberError) {
     console.error(workspaceMemberError);
-    return NextResponse.json(
-      { error: "Failed to create workspace member" },
-      { status: 500 }
-    );
-  }
-
-  if (!workspaceMemberData) {
     return NextResponse.json(
       { error: "Failed to create workspace member" },
       { status: 500 }
