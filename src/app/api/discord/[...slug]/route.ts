@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 
-export default async function handler(
+export async function handler(
   req: Request,
   { params }: { params: { slug: string[] } }
 ) {
