@@ -96,6 +96,23 @@ export interface Database {
           workspace?: string | null;
         };
       };
+      bots_statuses: {
+        Row: {
+          active: boolean;
+          id: string;
+          payment_intents: string[];
+        };
+        Insert: {
+          active: boolean;
+          id: string;
+          payment_intents: string[];
+        };
+        Update: {
+          active?: boolean;
+          id?: string;
+          payment_intents?: string[];
+        };
+      };
       command_log: {
         Row: {
           args: Json[] | null;

@@ -1,4 +1,3 @@
-import { type NextRequest, type NextResponse } from "next/server";
 import { headers } from "next/headers";
 
 export default async function handler(

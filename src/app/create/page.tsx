@@ -19,6 +19,7 @@ import {
 } from "@stripe/react-stripe-js";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { RESTAPIPartialCurrentUserGuild } from "discord-api-types/v10";
+import { useRouter } from "next/navigation";
 import { Dispatch, Fragment, SetStateAction, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Stripe } from "stripe";
@@ -31,13 +32,16 @@ export default function Create() {
   const [canFetchServers, setCanFetchServers] = useState(false);
   const [subscription, setSubscription] = useState<Stripe.Subscription>();
   const [step, setStep] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const { session, supabaseClient } = useSessionContext();
   const { workspaces } = useWorkspacesContext();
   const [theme] = useDarkMode();
+  const router = useRouter();
 
   useEffect(() => {
     async function parsePaymentIntent() {
+      setLoading(true);
       const stripe = await getStripe();
 
       if (!stripe) {
@@ -52,19 +56,19 @@ export default function Create() {
       const guild = new URLSearchParams(window.location.search).get("guild");
 
       if (!guild) {
-        toast.error("There was an error retrieving the payment intent");
+        setLoading(false);
         return;
       }
 
       if (!clientSecret) {
-        toast.error("There was an error retrieving the payment intent");
+        setLoading(false);
         return;
       }
 
       const { paymentIntent, error } = await stripe.retrievePaymentIntent(
         clientSecret
       );
-      console.log(paymentIntent);
+
       if (!paymentIntent) {
         toast.error("There was an error retrieving the payment intent");
         return;
@@ -73,18 +77,36 @@ export default function Create() {
       switch (paymentIntent.status) {
         case "succeeded":
           const { data, error } = await supabaseClient
-            .from("workspaces")
-            .select("*")
-            .eq("guild_id", guild)
+            .from("bots")
+            .select("*, workspace!inner(*)")
+            .eq("workspace.guild_id", guild)
             .single();
 
           if (error) {
             toast.error("There was an error retrieving the workspace");
+            setLoading(false);
             return;
           }
 
           if (data) {
-            setNewWorkspace(data);
+            await fetch("/api/activate", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: session?.access_token as string,
+              },
+              body: JSON.stringify({
+                bot: data.id,
+                workspace: data.workspace.id,
+                paymentIntent: paymentIntent.id,
+              }),
+            }).catch((e) => {
+              toast.error("There was an error activating your bot");
+              console.error(e);
+              setLoading(false);
+            });
+
+            setNewWorkspace(data.workspace);
             setStep(2);
           }
           break;
@@ -100,6 +122,8 @@ export default function Create() {
         default:
           break;
       }
+
+      setLoading(false);
     }
 
     parsePaymentIntent();
@@ -152,6 +176,7 @@ export default function Create() {
       },
       body: JSON.stringify({
         workspace: newWorkspace,
+        bot: newBot,
       }),
     })
       .then((r) => {
@@ -210,52 +235,66 @@ export default function Create() {
       <h3 className="flex pb-5 text-lg text-gray-800 dark:text-gray-200 animate-slideLeftAndFade">
         Let&apos;s get started.
       </h3>
-      <Form.Root>
-        <Steps forceStep={step}>
-          <Step
-            title="Basic Details"
-            canContinue={stepOneContinue()}
-            beforeNext={beforeStepTwo}
+      {!loading ? (
+        <Form.Root>
+          <Steps
+            forceStep={step}
+            onFinish={() =>
+              newWorkspace?.id
+                ? router.push(`/workspace/${newWorkspace?.id}`)
+                : {}
+            }
           >
-            <StepOne
-              newWorkspace={newWorkspace}
-              setNewWorkspace={setNewWorkspace}
-              newBot={newBot}
-              setNewBot={setNewBot}
-              userServers={userServers}
-            />
-          </Step>
-          <Step title="Payment" canContinue={false}>
-            {subscription ? (
-              <Elements
-                stripe={getStripe()}
-                options={{
-                  clientSecret: (subscription?.latest_invoice as any)
-                    ?.payment_intent.client_secret,
-                  appearance: {
-                    theme: theme === "dark" ? "night" : "stripe",
-                  },
-                }}
-              >
-                <StepTwo
-                  newWorkspace={newWorkspace}
-                  subscription={subscription}
-                />
-              </Elements>
-            ) : (
-              <p>Loading Stripe...</p>
-            )}
-          </Step>
-          <Step title="Invite Members" canGoBack={false}>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-              quos quia, voluptatum, quod, voluptates quibusdam quae doloribus
-              voluptatibus quas quidem natus. Quisquam quos quia, voluptatum,
-              quod,
-            </p>
-          </Step>
-        </Steps>
-      </Form.Root>
+            <Step
+              title="Basic Details"
+              canContinue={stepOneContinue()}
+              beforeNext={beforeStepTwo}
+            >
+              <StepOne
+                newWorkspace={newWorkspace}
+                setNewWorkspace={setNewWorkspace}
+                newBot={newBot}
+                setNewBot={setNewBot}
+                userServers={userServers}
+              />
+            </Step>
+            <Step title="Payment" canContinue={false}>
+              {subscription ? (
+                <Elements
+                  stripe={getStripe()}
+                  options={{
+                    clientSecret: (subscription?.latest_invoice as any)
+                      ?.payment_intent.client_secret,
+                    appearance: {
+                      theme: theme === "dark" ? "night" : "stripe",
+                    },
+                  }}
+                >
+                  <StepTwo
+                    newWorkspace={newWorkspace}
+                    subscription={subscription}
+                  />
+                </Elements>
+              ) : (
+                <p>Loading Stripe...</p>
+              )}
+            </Step>
+            <Step title="Success" canGoBack={false}>
+              <h1 className="text-2xl font-bold dark:text-white">Success!</h1>
+              <h2 className="text-xl font-semibold dark:text-white">
+                Your payment has been accepted.
+              </h2>
+              <p className="text-lg font-medium dark:text-white">
+                Click &quot;Finish&quot; to continue to your new workspace.
+              </p>
+            </Step>
+          </Steps>
+        </Form.Root>
+      ) : (
+        <div className="flex items-center justify-center w-full h-full">
+          <p>Loading...</p>
+        </div>
+      )}
     </div>
   );
 }
