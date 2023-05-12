@@ -22,7 +22,6 @@ import { APIRole } from "discord-api-types/v10";
 import Link from "next/link";
 import { Fragment, useEffect, useState } from "react";
 import { toast } from "sonner";
-
 type PermissionsSet =
   Database["public"]["Tables"]["workspace_permissions"]["Row"];
 
@@ -207,7 +206,7 @@ export default function PemissionsPage({ params }: { params: { id: string } }) {
         </div>
 
         <ul className="grid grid-cols-1 gap-2 col-span-full">
-          {currentPermissions.length === 0 && (
+          {currentPermissions && currentPermissions.length === 0 && (
             <div>
               <Separator.Root className="my-6 bg-gray-300 dark:bg-zinc-700 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px" />
               <p className="font-medium text-center dark:text-gray-400">
@@ -216,7 +215,8 @@ export default function PemissionsPage({ params }: { params: { id: string } }) {
               </p>
             </div>
           )}
-          {roles.length > 0 &&
+
+          {roles.length > 0 ? (
             currentPermissions.map((perm) => {
               const role = roles.find((r) => r.id === perm.role);
               return (
@@ -262,7 +262,15 @@ export default function PemissionsPage({ params }: { params: { id: string } }) {
                   </div>
                 </li>
               );
-            })}
+            })
+          ) : (
+            <div>
+              <Separator.Root className="my-6 bg-gray-300 dark:bg-zinc-700 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px" />
+              <p className="font-medium text-center dark:text-gray-400">
+                Loading...one second please!
+              </p>
+            </div>
+          )}
         </ul>
       </section>
 
