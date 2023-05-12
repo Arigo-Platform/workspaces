@@ -1,7 +1,6 @@
 "use client";
 
 import Button from "@/components/Button";
-import Switch from "@/components/Switch";
 import Tooltip from "@/components/Tooltip";
 import { Database } from "@/types/supabase";
 import { useWorkspaceContext } from "@/util/providers/WorkspaceProvider";
@@ -17,6 +16,7 @@ import {
 import * as Dialog from "@radix-ui/react-dialog";
 import { CheckIcon, Cross2Icon } from "@radix-ui/react-icons";
 import * as Separator from "@radix-ui/react-separator";
+import * as ToggleGroup from "@radix-ui/react-toggle-group";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { APIRole } from "discord-api-types/v10";
 import Link from "next/link";
@@ -25,7 +25,18 @@ import { toast } from "sonner";
 type PermissionsSet =
   Database["public"]["Tables"]["workspace_permissions"]["Row"];
 
+const toggleGroupItemClasses =
+  "hover:bg-violet3 color-mauve11 data-[state=off]:dark:text-white data-[state=off]:dark:bg-slate-700 data-[state=on]:bg-violet6 data-[state=on]:text-violet12 flex px-3 py-2 items-center justify-center bg-white text-base leading-4 first:rounded-l last:rounded-r focus:z-10 focus:shadow-[0_0_0_2px] focus:shadow-black focus:outline-none";
+
 type Permission = Database["public"]["Tables"]["permissions"]["Row"];
+type PermissionToggleGroup = {
+  // IDs are domain-based, so like "arigo.bot.settings.view", but we only want "arigo.bot.settings", then we can filter by the "view" or "edit" property
+  id: string;
+  view: boolean;
+  edit: boolean;
+  permission: Permission;
+};
+
 export default function PemissionsPage({ params }: { params: { id: string } }) {
   const { workspace } = useWorkspaceContext();
   const { botSettings } = useBotSettings(params.id);
@@ -38,7 +49,9 @@ export default function PemissionsPage({ params }: { params: { id: string } }) {
   const [selectedPermission, setSelectedPermission] =
     useState<PermissionsSet>();
 
-  const [permissionsList, setPermissionsList] = useState<Permission[]>([]);
+  const [permissionsList, setPermissionsList] = useState<
+    PermissionToggleGroup[]
+  >([]);
 
   const supabase = useSupabaseClient<Database>();
 
@@ -97,7 +110,33 @@ export default function PemissionsPage({ params }: { params: { id: string } }) {
     }
 
     if (data) {
-      setPermissionsList(data);
+      let permissions: PermissionToggleGroup[] = data.map((perm) => {
+        const id = perm.id.split(".");
+        id.pop(); // remove the "view" or "edit" string from the end of the ID
+        const baseId = id.join(".");
+        const view = perm.id.endsWith(".view");
+        const edit = perm.id.endsWith(".edit");
+        return {
+          id: baseId,
+          view,
+          edit,
+          permission: perm,
+        };
+      });
+
+      // combine permissions to remove duplicate ids
+      permissions = permissions.reduce<PermissionToggleGroup[]>((prev, cur) => {
+        const existing = prev.find((p) => p.id === cur.id);
+        if (existing) {
+          existing.view = existing.view || cur.view;
+          existing.edit = existing.edit || cur.edit;
+        } else {
+          prev.push(cur);
+        }
+        return prev;
+      }, []);
+
+      setPermissionsList(permissions);
     }
   };
 
@@ -210,8 +249,8 @@ export default function PemissionsPage({ params }: { params: { id: string } }) {
             <div>
               <Separator.Root className="my-6 bg-gray-300 dark:bg-zinc-700 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px" />
               <p className="font-medium text-center dark:text-gray-400">
-                There's nothing to show right now, add a permission above to get
-                started
+                There&apos;s nothing to show right now, add a permission above
+                to get started
               </p>
             </div>
           )}
@@ -309,7 +348,7 @@ function PermissionsDialog({
   onClose: (p: Partial<PermissionsSet>, existing?: boolean) => void;
   roles: APIRole[];
   existing?: PermissionsSet;
-  permissionsList: Permission[];
+  permissionsList: PermissionToggleGroup[];
 }) {
   const [selectedRole, setSelectedRole] = useState<string>();
   const [permissions, setPermissions] = useState<string[]>([]);
@@ -469,49 +508,72 @@ function PermissionsDialog({
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {/* separate permissions by the second item when the id is split by "." */}
-              {permissionsList
-                .reduce((acc: Permission[][], curr: Permission) => {
-                  const key = curr.id.split(".")[1];
-                  const index = acc.findIndex(
-                    (a) => a[0].id.split(".")[1] === key
-                  );
-                  if (index === -1) {
-                    acc.push([curr]);
-                  } else {
-                    acc[index].push(curr);
-                  }
-                  return acc;
-                }, [])
-                .map((ps: Permission[], index: number) => (
-                  <div key={index}>
-                    <p className="text-gray-500 dark:text-gray-400 capitalize text-[15px] font-medium">
-                      {ps[0].id.split(".")[1]}
-                    </p>
-                    <div className="flex flex-col space-y-2">
-                      {ps.map((permission) => (
-                        <div
-                          key={index}
-                          className="flex items-center justify-between w-full"
-                        >
-                          <Switch
-                            label={permission.name || permission.id}
-                            defaultChecked={permissions.includes(permission.id)}
-                            checked={permissions.includes(permission.id)}
-                            onChange={(e) => {
-                              if (e) {
-                                setPermissions([...permissions, permission.id]);
-                              } else {
-                                setPermissions(
-                                  permissions.filter((p) => p !== permission.id)
-                                );
-                              }
+              {permissionsList.map(
+                (p: PermissionToggleGroup, index: number) => {
+                  const existingPermissions = [
+                    ...new Set(
+                      permissions
+                        .filter((perm) => {
+                          return perm.includes(p.id);
+                        })
+                        .map((pe) => {
+                          const a = pe.split(".");
+
+                          return a.pop() || "";
+                        })
+                    ),
+                  ];
+
+                  return (
+                    <div key={index}>
+                      <p className="text-gray-500 dark:text-gray-400 capitalize text-[15px] font-medium">
+                        {p.id.split(".")[1]}
+                      </p>
+                      <div className="flex flex-col space-y-2">
+                        <div className="flex items-center justify-between w-full">
+                          <p className="dark:text-white">{p.permission.name}</p>
+                          <ToggleGroup.Root
+                            className="inline-flex items-center bg-mauve6 dark:bg-slate-800 rounded shadow-[0_2px_10px] shadow-blackA7 space-x-px"
+                            type="multiple"
+                            aria-label="Permissions"
+                            defaultValue={existingPermissions}
+                            onValueChange={(v) => {
+                              const fullPermissions = v.map((perm) => {
+                                return `${p.id}.${perm}`;
+                              });
+
+                              setPermissions((prev) => {
+                                return [
+                                  ...new Set([...prev, ...fullPermissions]),
+                                ];
+                              });
                             }}
-                          />
+                          >
+                            {p.view && (
+                              <ToggleGroup.Item
+                                className={toggleGroupItemClasses}
+                                value="view"
+                                aria-label="View"
+                              >
+                                View
+                              </ToggleGroup.Item>
+                            )}
+                            {p.edit && (
+                              <ToggleGroup.Item
+                                className={toggleGroupItemClasses}
+                                value="edit"
+                                aria-label="Edit"
+                              >
+                                Edit
+                              </ToggleGroup.Item>
+                            )}
+                          </ToggleGroup.Root>
                         </div>
-                      ))}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                }
+              )}
             </div>
           </section>
 

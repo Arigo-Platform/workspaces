@@ -49,10 +49,13 @@ export default function RealtimeCommands() {
   });
 
   async function getData() {
-    const { from, to } = getPagination(filter.page, filter.perPage);
+    if (!bot) {
+      return;
+    }
+    const { from, to } = getPagination(filter.page, filter.perPage - 1);
     let query = supabase.from("command_log").select();
 
-    query = query.eq("bot_id", bot!.id);
+    query = query.eq("bot_id", bot.id);
 
     if (filter.user) {
       query = query.eq("user_id", filter.user);
@@ -152,7 +155,10 @@ export default function RealtimeCommands() {
       />
       {commands &&
         commands.map((command) => (
-          <div className="relative flex flex-row flex-wrap items-stretch justify-between max-w-full p-6 text-4xl bg-white border border-gray-600 rounded-md shadow-sm animate-slideRightAndFade dark:shadow-none gap-x-4 dark:bg-black dark:text-white">
+          <div
+            key={command.id}
+            className="relative flex flex-row flex-wrap items-stretch justify-between max-w-full p-6 text-4xl bg-white border border-gray-600 rounded-md shadow-sm animate-slideRightAndFade dark:shadow-none gap-x-4 dark:bg-black dark:text-white"
+          >
             <div className="grid w-full max-w-lg grid-cols-3 gap-x-4">
               <h3 className="flex items-center text-sm font-medium gap-x-1">
                 <CommandLineIcon className="w-4 h-4" />
@@ -232,6 +238,9 @@ export default function RealtimeCommands() {
             <button
               className="rounded-md p-2 inline-flex items-center justify-center dark:text-white text-black shadow-[0_2px_10px] shadow-blackA7 outline-none border border-gray-600 dark:hover:bg-gray-900 hover:bg-gray-200 focus:shadow-[0_0_0_2px] focus:shadow-black"
               aria-label="Previous Page"
+              onClick={() => {
+                setFilter((prev) => ({ ...prev, page: prev.page - 1 }));
+              }}
             >
               <ChevronLeftIcon
                 aria-label="Previous Page Icon"
@@ -241,6 +250,9 @@ export default function RealtimeCommands() {
             <button
               className="rounded-md p-2 inline-flex items-center justify-center dark:text-white text-black shadow-[0_2px_10px] shadow-blackA7 outline-none border border-gray-600 dark:hover:bg-gray-900 hover:bg-gray-200 focus:shadow-[0_0_0_2px] focus:shadow-black"
               aria-label="Next Page"
+              onClick={() => {
+                setFilter((prev) => ({ ...prev, page: prev.page + 1 }));
+              }}
             >
               <ChevronRightIcon
                 aria-label="Next Page Icon"
@@ -299,7 +311,7 @@ const Dropdown = ({ username }: { username: string }) => {
               </p>
             </DropdownMenu.Item>
             <p className="px-4 py-1 text-xs text-gray-600 outline-none select-none dark:text-gray-300">
-              Notify Arigo's Trust &#38; Safety team about abusive usage
+              Notify Arigo&apos;s Trust &#38; Safety team about abusive usage
             </p>
           </div>
         </DropdownMenu.Content>

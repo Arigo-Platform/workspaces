@@ -14,25 +14,51 @@ export interface Database {
           discord_id: string | null;
           id: string;
           registered: string;
+          stripe_customer_id: string | null;
           support_access: boolean;
           suspended: boolean;
           username: string;
+          waitlist_status: boolean | null;
         };
         Insert: {
           discord_id?: string | null;
           id: string;
           registered?: string;
+          stripe_customer_id?: string | null;
           support_access?: boolean;
           suspended?: boolean;
           username: string;
+          waitlist_status?: boolean | null;
         };
         Update: {
           discord_id?: string | null;
           id?: string;
           registered?: string;
+          stripe_customer_id?: string | null;
           support_access?: boolean;
           suspended?: boolean;
           username?: string;
+          waitlist_status?: boolean | null;
+        };
+      };
+      bot_moderation_settings: {
+        Row: {
+          bot: string | null;
+          created_at: string | null;
+          id: number;
+          perm_ban: string[] | null;
+        };
+        Insert: {
+          bot?: string | null;
+          created_at?: string | null;
+          id?: number;
+          perm_ban?: string[] | null;
+        };
+        Update: {
+          bot?: string | null;
+          created_at?: string | null;
+          id?: number;
+          perm_ban?: string[] | null;
         };
       };
       bots: {
@@ -70,9 +96,27 @@ export interface Database {
           workspace?: string | null;
         };
       };
+      bots_statuses: {
+        Row: {
+          active: boolean;
+          id: string;
+          payment_intents: string[];
+        };
+        Insert: {
+          active: boolean;
+          id: string;
+          payment_intents: string[];
+        };
+        Update: {
+          active?: boolean;
+          id?: string;
+          payment_intents?: string[];
+        };
+      };
       command_log: {
         Row: {
           args: Json[] | null;
+          bot_id: string | null;
           channel_id: string;
           channel_name: string;
           command_name: string;
@@ -86,6 +130,7 @@ export interface Database {
         };
         Insert: {
           args?: Json[] | null;
+          bot_id?: string | null;
           channel_id: string;
           channel_name: string;
           command_name: string;
@@ -99,6 +144,7 @@ export interface Database {
         };
         Update: {
           args?: Json[] | null;
+          bot_id?: string | null;
           channel_id?: string;
           channel_name?: string;
           command_name?: string;
@@ -159,22 +205,22 @@ export interface Database {
           category: string | null;
           description: string | null;
           id: string;
-          is_app: boolean;
-          name: string | null;
+          is_app: boolean | null;
+          name: string;
         };
         Insert: {
           category?: string | null;
           description?: string | null;
           id: string;
-          is_app: boolean;
-          name?: string | null;
+          is_app?: boolean | null;
+          name: string;
         };
         Update: {
           category?: string | null;
           description?: string | null;
           id?: string;
-          is_app?: boolean;
-          name?: string | null;
+          is_app?: boolean | null;
+          name?: string;
         };
       };
       posts: {
@@ -200,6 +246,7 @@ export interface Database {
           id: string;
           invite: string;
           name: string;
+          refId: string | null;
           role: string;
           user: string;
         };
@@ -208,6 +255,7 @@ export interface Database {
           id?: string;
           invite: string;
           name: string;
+          refId?: string | null;
           role: string;
           user: string;
         };
@@ -216,6 +264,7 @@ export interface Database {
           id?: string;
           invite?: string;
           name?: string;
+          refId?: string | null;
           role?: string;
           user?: string;
         };
@@ -263,30 +312,36 @@ export interface Database {
       workspaces: {
         Row: {
           created_at: string | null;
+          enabled: boolean | null;
           guild_id: string;
           guild_member_count: number | null;
           icon: string | null;
           id: string;
           name: string | null;
           owner: string | null;
+          stripe_subscription_id: string | null;
         };
         Insert: {
           created_at?: string | null;
+          enabled?: boolean | null;
           guild_id: string;
           guild_member_count?: number | null;
           icon?: string | null;
           id?: string;
           name?: string | null;
           owner?: string | null;
+          stripe_subscription_id?: string | null;
         };
         Update: {
           created_at?: string | null;
+          enabled?: boolean | null;
           guild_id?: string;
           guild_member_count?: number | null;
           icon?: string | null;
           id?: string;
           name?: string | null;
           owner?: string | null;
+          stripe_subscription_id?: string | null;
         };
       };
     };

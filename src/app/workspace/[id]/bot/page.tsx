@@ -111,7 +111,8 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
                       </Form.Message>
                     </div>
                     <Form.Control asChild>
-                      <textarea
+                      <input
+                        type="password"
                         className="w-full p-2 text-sm font-normal bg-white border border-gray-600 rounded-md shadow-sm outline-none resize-none focus:border-gray-300 dark:focus:border-gray-400 h-max dark:bg-black dark:text-white dark:shadow-none"
                         required
                         defaultValue={bot?.token || ""}
@@ -192,8 +193,8 @@ function Statuses({
             Statuses
           </h3>
           <h2 className="mt-1 text-sm font-normal contrast-more:text-black">
-            Arigo offers extreme customization when it comes to statuses. You're
-            able to add up to 5 of your own rotating statuses.
+            Arigo offers extreme customization when it comes to statuses.
+            You&apos;re able to add up to 5 of your own rotating statuses.
           </h2>
 
           <div>

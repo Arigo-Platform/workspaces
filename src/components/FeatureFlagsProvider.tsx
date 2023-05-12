@@ -37,7 +37,7 @@ export default function FeatureFlagsProvider({
         )
       ) : (
         <div className="flex flex-col items-center dark:text-white justify-center h-screen">
-          <h1 className="text-2xl font-bold">Loading...</h1>
+          <h1 className="text-2xl font-bold">Getting things ready...</h1>
         </div>
       )}
     </Context.Provider>
