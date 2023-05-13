@@ -121,7 +121,7 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
             Here&apos;s your rundown:
           </p>
         </header>
-        <div className="w-full h-full col-span-2 p-6 text-4xl font-bold bg-white border border-gray-600 rounded-md shadow-sm dark:bg-black dark:text-white dark:shadow-none ">
+        <div className="animate-fadeInFast opacity-[0] w-full h-full col-span-2 p-6 text-4xl font-bold bg-white border border-gray-600 rounded-md shadow-sm dark:bg-black dark:text-white dark:shadow-none ">
           <div className="flex items-center justify-between space-x-4">
             <div className="grid col-span-4">
               <h3 className="text-sm font-medium contrast-more:text-black">
@@ -133,22 +133,24 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
           </div>
         </div>
 
-        <div className="w-full h-full col-span-2 p-6 text-4xl font-bold bg-white border border-gray-600 rounded-md shadow-sm dark:bg-black dark:text-white dark:shadow-none ">
-          <div className="flex items-center justify-between space-x-4">
-            <div className="grid col-span-4">
-              <h3 className="text-sm font-medium contrast-more:text-black">
-                Server Members
-              </h3>
-              {discordServer ? (
-                <span>
-                  {discordServer.approximate_member_count?.toLocaleString()}
-                </span>
-              ) : (
-                <span>...</span>
-              )}
+        {discordServer ? (
+          <div className="animate-fadeInFast opacity-[0] w-full h-full col-span-2 p-6 text-4xl font-bold bg-white border border-gray-600 rounded-md shadow-sm dark:bg-black dark:text-white dark:shadow-none ">
+            <div className="flex items-center justify-between space-x-4">
+              <div className="grid col-span-4">
+                <h3 className="text-sm font-medium contrast-more:text-black">
+                  Server Members
+                </h3>
+                {discordServer ? (
+                  <span>
+                    {discordServer.approximate_member_count?.toLocaleString()}
+                  </span>
+                ) : (
+                  <span>...</span>
+                )}
+              </div>
             </div>
           </div>
-        </div>
+        ) : null}
       </section>
     </section>
   );

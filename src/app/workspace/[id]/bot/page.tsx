@@ -24,7 +24,7 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
   const { bot } = useBotContext();
 
   const [saving, setSaving] = useState(false);
-
+  const [botTokenChange, setBotTokenChange] = useState(false);
   useEffect(() => {
     if (bot) {
       setNewBot(bot);
@@ -126,6 +126,7 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
                               token: e.target.value,
                             };
                             setNewBot(updatedBot);
+                            setBotTokenChange(true);
                           }
                         }}
                       />
@@ -143,9 +144,11 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
                           <ArrowTopRightOnSquareIcon className="w-3 h-3" />
                         </Link>
                       </p>
-                      <Button saving={saving} aria-label="Save Button">
-                        Save
-                      </Button>
+                      {botTokenChange === true ? (
+                        <Button saving={saving} aria-label="Save Button">
+                          Save
+                        </Button>
+                      ) : null}
                     </div>
                   </Form.Submit>
                 </Form.Root>
