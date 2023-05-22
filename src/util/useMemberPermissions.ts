@@ -2,11 +2,11 @@ import { Database } from "@/types/supabase";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+import { useGuildMemberContext } from "./providers/GuildMemberProvider";
 import { Workspace } from "./providers/WorkspaceProvider";
-import useGuildMember from "./useGuildMember";
 
 export default function useMemberPermissions(workspace: Workspace | null) {
-  const member = useGuildMember(workspace);
+  const { member } = useGuildMemberContext();
   const [loading, setLoading] = useState(true);
   const supabase = useSupabaseClient<Database>();
   const [userPermissions, setUserPermissions] = useState<string[]>();

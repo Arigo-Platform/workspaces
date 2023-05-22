@@ -1,7 +1,10 @@
 "use client";
 import RealtimeCommands from "@/components/RealtimeCommands";
+import PermissionsGate from "@/util/providers/PermissionsGate";
+import { useWorkspaceContext } from "@/util/providers/WorkspaceProvider";
 
 export default function CommandLog({ params }: { params: { id: string } }) {
+  const { workspace } = useWorkspaceContext();
   return (
     <section id="dashboard" className="p-6">
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-4 md:grid-cols-6">
@@ -12,11 +15,20 @@ export default function CommandLog({ params }: { params: { id: string } }) {
 
           <p className="text-sm italic font-light text-gray-400 dark:text-gray-200">
             Note: user and/or channel names may inaccurate; they&apos;re saved
-            upon command execution for preformance purposes.
+            upon command execution for performance purposes.
           </p>
         </header>
-        <div className="w-full col-span-full">
-          <RealtimeCommands />
+        <div className="w-full font-bold text-black col-span-full dark:text-white">
+          <PermissionsGate
+            required={["arigo.bot.command-log.view"]}
+            workspace={workspace}
+            fallback={<p>Loading commands...</p>}
+            failed={
+              <p>You don&apos;t have permission to view the command log.</p>
+            }
+          >
+            <RealtimeCommands />
+          </PermissionsGate>
         </div>
       </section>
     </section>

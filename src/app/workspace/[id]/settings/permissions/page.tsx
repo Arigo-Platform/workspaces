@@ -10,6 +10,7 @@ import { Listbox, Transition } from "@headlessui/react";
 import {
   ArrowTopRightOnSquareIcon,
   ChevronUpDownIcon,
+  ClockIcon,
   EyeIcon,
   PencilIcon,
   PlusCircleIcon,
@@ -300,6 +301,17 @@ export default function PemissionsPage({ params }: { params: { id: string } }) {
                             </div>
                           </Button>
                         }
+                        fallback={
+                          <Button
+                            className="text-white hover:text-black dark:text-black dark:hover:text-black dark:hover:bg-zinc-300 hover:bg-violet4  inline-flex h-[26px] w-[0px] appearance-none items-center justify-center rounded-full focus:outline-none"
+                            aria-label="Edit"
+                            disabled={true}
+                          >
+                            <div>
+                              <ClockIcon className="w-5 h-5" />
+                            </div>
+                          </Button>
+                        }
                       >
                         <Button
                           className="text-white hover:text-black dark:text-black dark:hover:text-black dark:hover:bg-zinc-300 hover:bg-violet4  inline-flex h-[26px] w-[0px] appearance-none items-center justify-center rounded-full focus:outline-none"
@@ -315,17 +327,34 @@ export default function PemissionsPage({ params }: { params: { id: string } }) {
                           </div>
                         </Button>
                       </PermissionsGate>
-                      <Button
-                        className="text-white hover:text-black dark:text-black dark:hover:text-black dark:hover:bg-zinc-300 hover:bg-violet4  inline-flex h-[26px] w-[0px] appearance-none items-center justify-center rounded-full focus:outline-none"
-                        aria-label="Delete"
-                        onClick={() => {
-                          deletePermissionSet(perm);
-                        }}
+
+                      <PermissionsGate
+                        workspace={workspace}
+                        required={["arigo.workspace.settings.permissions.edit"]}
+                        fallback={
+                          <Button
+                            className="text-white hover:text-black dark:text-black dark:hover:text-black dark:hover:bg-zinc-300 hover:bg-violet4  inline-flex h-[26px] w-[0px] appearance-none items-center justify-center rounded-full focus:outline-none"
+                            aria-label="Edit"
+                            disabled={true}
+                          >
+                            <div>
+                              <ClockIcon className="w-5 h-5" />
+                            </div>
+                          </Button>
+                        }
                       >
-                        <div>
-                          <TrashIcon className="w-5 h-5" />
-                        </div>
-                      </Button>
+                        <Button
+                          className="text-white hover:text-black dark:text-black dark:hover:text-black dark:hover:bg-zinc-300 hover:bg-violet4  inline-flex h-[26px] w-[0px] appearance-none items-center justify-center rounded-full focus:outline-none"
+                          aria-label="Delete"
+                          onClick={() => {
+                            deletePermissionSet(perm);
+                          }}
+                        >
+                          <div>
+                            <TrashIcon className="w-5 h-5" />
+                          </div>
+                        </Button>
+                      </PermissionsGate>
                     </div>
                   </div>
                 </li>

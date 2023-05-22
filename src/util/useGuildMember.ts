@@ -1,8 +1,5 @@
 import { Database } from "@/types/supabase";
-import {
-  useSessionContext,
-  useSupabaseClient,
-} from "@supabase/auth-helpers-react";
+import { useSessionContext } from "@supabase/auth-helpers-react";
 import { APIGuildMember } from "discord-api-types/v10";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -18,7 +15,6 @@ export default function useGuildMember(
   );
   const server = useDiscordServer(workspace);
   const [loading, setLoading] = useState(true);
-  const supabase = useSupabaseClient<Database>();
   const { session } = useSessionContext();
   const [getMember, setGetMember] = useState(false);
 

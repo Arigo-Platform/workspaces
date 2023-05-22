@@ -42,6 +42,12 @@ export default function RealtimeCommands() {
   const [uniqueCommands, setUniqueCommands] = useState<
     Database["public"]["Views"]["unique_commands"]["Row"][]
   >([]);
+  const [uniqueUsers, setUniqueUsers] = useState<
+    Database["public"]["Views"]["unique_commands_users"]["Row"][]
+  >([]);
+  const [uniqueChannels, setUniqueChannels] = useState<
+    Database["public"]["Views"]["unique_commands_channels"]["Row"][]
+  >([]);
 
   const [filter, setFilter] = useState<LogFilter>({
     page: 0,
@@ -85,13 +91,23 @@ export default function RealtimeCommands() {
   }
 
   async function getCommandList() {
-    const { data, error } = await supabase.from("unique_commands").select();
+    const { data: uC, error: uCerror } = await supabase
+      .from("unique_commands")
+      .select();
+    const { data: uCu, error: uCuError } = await supabase
+      .from("unique_commands_users")
+      .select();
+    const { data: uCc, error: uCcError } = await supabase
+      .from("unique_commands_channels")
+      .select();
 
-    if (error) {
+    if (uCerror || uCuError || uCcError) {
       return;
     }
 
-    setUniqueCommands(data);
+    setUniqueCommands(uC);
+    setUniqueUsers(uCu);
+    setUniqueChannels(uCc);
   }
 
   useEffect(() => {
@@ -150,6 +166,8 @@ export default function RealtimeCommands() {
         filter={filter}
         setFilter={setFilter}
         uniqueCommands={uniqueCommands}
+        uniqueUsers={uniqueUsers}
+        uniqueChannels={uniqueChannels}
         areCommandsPending={areCommandsPending}
         setAreCommandsPending={setAreCommandsPending}
       />
@@ -273,7 +291,7 @@ const Dropdown = ({ username }: { username: string }) => {
       <DropdownMenu.Trigger asChild>
         <button
           className="rounded-lg w-[35px] h-[35px] inline-flex items-center justify-center dark:text-white text-black shadow-[0_2px_10px] shadow-blackA7 outline-none border border-gray-600 dark:hover:bg-gray-900 hover:bg-gray-200 focus:shadow-[0_0_0_2px] focus:shadow-black"
-          aria-label="Customise options"
+          aria-label="Command options"
         >
           <HamburgerMenuIcon aria-label="Hamburger Menu Icon" />
         </button>
@@ -288,31 +306,33 @@ const Dropdown = ({ username }: { username: string }) => {
           {/* Ban from bot / Bot ban */}
           <div className="py-1">
             <DropdownMenu.Item className="outline-none">
-              <p className="dark:text-white dark:hover:bg-zinc-700 block px-4 py-2 text-sm hover:bg-gray-200 text-gray-700 outline-none select-none rounded-md data-[highlighted]:bg-gray-200 data-[highlighted]:rounded">
+              <div className="dark:text-white dark:hover:bg-zinc-700 block px-4 py-2 text-sm hover:bg-gray-200 text-gray-700 outline-none select-none rounded-md data-[highlighted]:bg-gray-200 data-[highlighted]:rounded">
                 Issue Bot Ban
-              </p>
+                <div className="flex py-1 space-x-1">
+                  <p className="max-w-sm text-xs text-gray-600 truncate outline-none select-none dark:text-gray-300">
+                    Ban
+                  </p>
+                  <p className="max-w-sm text-xs text-gray-600 truncate outline-none select-none dark:text-gray-300">
+                    {username}
+                  </p>
+                  <p className="max-w-sm text-xs text-gray-600 truncate outline-none select-none dark:text-gray-300">
+                    from your bot
+                  </p>
+                </div>
+              </div>
             </DropdownMenu.Item>
-            <div className="flex px-4 py-1 space-x-1">
-              <p className="max-w-sm text-xs text-gray-600 truncate outline-none select-none dark:text-gray-300">
-                Ban
-              </p>
-              <p className="max-w-sm text-xs text-gray-600 truncate outline-none select-none dark:text-gray-300">
-                {username}
-              </p>
-              <p className="max-w-sm text-xs text-gray-600 truncate outline-none select-none dark:text-gray-300">
-                from your bot
-              </p>
-            </div>
+
             {/* Seperator / Divider */}
             <DropdownMenu.Separator className="h-[1px] bg-gray-500 bg-opacity-10 dark:bg-opacity-40 m-[5px]" />
             <DropdownMenu.Item className="outline-none">
               <p className="dark:text-white dark:hover:bg-zinc-700 block px-4 py-2 text-sm hover:bg-gray-200 text-gray-700 outline-none select-none rounded-md data-[highlighted]:bg-gray-200 data-[highlighted]:rounded">
                 Report Abuse
+                <p className="py-1 text-xs text-gray-600 outline-none select-none dark:text-gray-300">
+                  Notify Arigo&apos;s Trust &#38; Safety team about abusive
+                  usage
+                </p>
               </p>
             </DropdownMenu.Item>
-            <p className="px-4 py-1 text-xs text-gray-600 outline-none select-none dark:text-gray-300">
-              Notify Arigo&apos;s Trust &#38; Safety team about abusive usage
-            </p>
           </div>
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
@@ -324,12 +344,16 @@ function Filter({
   filter,
   setFilter,
   uniqueCommands,
+  uniqueUsers,
+  uniqueChannels,
   areCommandsPending,
   setAreCommandsPending,
 }: {
   filter: LogFilter;
   setFilter: (filter: LogFilter) => void;
   uniqueCommands: Database["public"]["Views"]["unique_commands"]["Row"][];
+  uniqueUsers: Database["public"]["Views"]["unique_commands_users"]["Row"][];
+  uniqueChannels: Database["public"]["Views"]["unique_commands_channels"]["Row"][];
   areCommandsPending: boolean;
   setAreCommandsPending: (value: boolean) => void;
 }) {
@@ -398,6 +422,186 @@ function Filter({
                         }`}
                       >
                         {cmd.command_name}
+                      </span>
+                      {selected ? (
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-800 dark:text-gray-200">
+                          <CheckIcon className="w-5 h-5" aria-hidden="true" />
+                        </span>
+                      ) : null}
+                    </>
+                  )}
+                </Listbox.Option>
+              ))}
+            </Listbox.Options>
+          </Transition>
+        </div>
+      </Listbox>
+
+      <Listbox
+        value={filter.user}
+        onChange={(value) => setFilter({ ...filter, user: value })}
+      >
+        <div className="relative col-span-6">
+          <Listbox.Button className="relative w-full px-10 py-2 pl-3 text-left bg-white rounded-lg shadow-md cursor-default focus:border-gray-300 focus:dark:border-gray-400 dark:text-white dark:bg-black dark:border dark:border-gray-600 focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+            <span className="block truncate">
+              {uniqueUsers.find((u) => u.user_id === filter.user)?.username ??
+                "Select user"}
+            </span>
+            <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+              <ChevronUpDownIcon
+                className="w-5 h-5 text-gray-400"
+                aria-hidden="true"
+              />
+            </span>
+          </Listbox.Button>
+          <Transition
+            as={Fragment}
+            leave="transition ease-in duration-100"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <Listbox.Options className="absolute z-50 grid w-full grid-cols-2 gap-0 px-1 py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg dark:bg-black dark:text-white dark:border dark:border-gray-600 max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+              <Listbox.Option
+                className={({ active, selected }) =>
+                  `text-center relative cursor-default select-none rounded-md dark:text-white py-2 px-10 dark:hover:bg-zinc-700 hover:bg-gray-200 hover:rounded-md ${
+                    active ? "bg-zinc-700 text-white" : "text-gray-900"
+                  } ${
+                    selected
+                      ? "bg-zinc-900 text-white font-bold"
+                      : "font-normal"
+                  }`
+                }
+                value={null}
+              >
+                {({ selected }) => (
+                  <>
+                    <span
+                      className={`block truncate ${
+                        selected ? "font-medium" : "font-normal"
+                      }`}
+                    >
+                      All Users
+                    </span>
+                    {selected ? (
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-800 dark:text-gray-200">
+                        <CheckIcon className="w-5 h-5" aria-hidden="true" />
+                      </span>
+                    ) : null}
+                  </>
+                )}
+              </Listbox.Option>
+              {uniqueUsers.map((user, userIdx) => (
+                <Listbox.Option
+                  key={userIdx}
+                  className={({ active, selected }) =>
+                    `text-center relative cursor-default select-none rounded-md dark:text-white py-2 px-10 dark:hover:bg-zinc-700 hover:bg-gray-200 hover:rounded-md ${
+                      active ? "bg-zinc-700 text-white" : "text-gray-900"
+                    } ${
+                      selected
+                        ? "bg-zinc-900 text-white font-bold"
+                        : "font-normal"
+                    }`
+                  }
+                  value={user.user_id}
+                >
+                  {({ selected }) => (
+                    <>
+                      <span
+                        className={`block truncate ${
+                          selected ? "font-medium" : "font-normal"
+                        }`}
+                      >
+                        {user.username}
+                      </span>
+                      {selected ? (
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-800 dark:text-gray-200">
+                          <CheckIcon className="w-5 h-5" aria-hidden="true" />
+                        </span>
+                      ) : null}
+                    </>
+                  )}
+                </Listbox.Option>
+              ))}
+            </Listbox.Options>
+          </Transition>
+        </div>
+      </Listbox>
+
+      <Listbox
+        value={filter.channel}
+        onChange={(value) => setFilter({ ...filter, channel: value })}
+      >
+        <div className="relative col-span-6">
+          <Listbox.Button className="relative w-full px-10 py-2 pl-3 text-left bg-white rounded-lg shadow-md cursor-default focus:border-gray-300 focus:dark:border-gray-400 dark:text-white dark:bg-black dark:border dark:border-gray-600 focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+            <span className="block truncate">
+              {uniqueChannels.find((c) => c.channel_id === filter.channel)
+                ?.channel_name ?? "Select channel"}
+            </span>
+            <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+              <ChevronUpDownIcon
+                className="w-5 h-5 text-gray-400"
+                aria-hidden="true"
+              />
+            </span>
+          </Listbox.Button>
+          <Transition
+            as={Fragment}
+            leave="transition ease-in duration-100"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <Listbox.Options className="absolute z-50 grid w-full grid-cols-2 gap-0 px-1 py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg dark:bg-black dark:text-white dark:border dark:border-gray-600 max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+              <Listbox.Option
+                className={({ active, selected }) =>
+                  `text-center relative cursor-default select-none rounded-md dark:text-white py-2 px-10 dark:hover:bg-zinc-700 hover:bg-gray-200 hover:rounded-md ${
+                    active ? "bg-zinc-700 text-white" : "text-gray-900"
+                  } ${
+                    selected
+                      ? "bg-zinc-900 text-white font-bold"
+                      : "font-normal"
+                  }`
+                }
+                value={null}
+              >
+                {({ selected }) => (
+                  <>
+                    <span
+                      className={`block truncate ${
+                        selected ? "font-medium" : "font-normal"
+                      }`}
+                    >
+                      All Channels
+                    </span>
+                    {selected ? (
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-800 dark:text-gray-200">
+                        <CheckIcon className="w-5 h-5" aria-hidden="true" />
+                      </span>
+                    ) : null}
+                  </>
+                )}
+              </Listbox.Option>
+              {uniqueChannels.map((chan, chanIdx) => (
+                <Listbox.Option
+                  key={chanIdx}
+                  className={({ active, selected }) =>
+                    `text-center relative cursor-default select-none rounded-md dark:text-white py-2 px-10 dark:hover:bg-zinc-700 hover:bg-gray-200 hover:rounded-md ${
+                      active ? "bg-zinc-700 text-white" : "text-gray-900"
+                    } ${
+                      selected
+                        ? "bg-zinc-900 text-white font-bold"
+                        : "font-normal"
+                    }`
+                  }
+                  value={chan.channel_id}
+                >
+                  {({ selected }) => (
+                    <>
+                      <span
+                        className={`block truncate ${
+                          selected ? "font-medium" : "font-normal"
+                        }`}
+                      >
+                        {chan.channel_name}
                       </span>
                       {selected ? (
                         <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-800 dark:text-gray-200">

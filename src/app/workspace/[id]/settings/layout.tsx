@@ -29,15 +29,36 @@ export default function SettingsLayout({
           id="sidebar"
           className="flex flex-col w-full col-span-2 px-6 space-y-2 dark:text-white"
         >
-          <Link
-            href={`/workspace/${workspace?.id}/settings`}
-            className={`w-full px-3 py-2 rounded-md dark:hover:bg-zinc-700 hover:bg-zinc-200 ${
-              pathname === `/workspace/${workspace?.id}/settings` &&
-              "bg-zinc-200 dark:bg-zinc-700"
-            }`}
+          <PermissionsGate
+            required={["arigo.workspace.settings.general.view"]}
+            workspace={workspace}
+            fallback={
+              <a
+                aria-disabled="true"
+                className="w-full px-3 py-2 rounded-md cursor-wait"
+              >
+                General
+              </a>
+            }
+            failed={
+              <a
+                aria-disabled="true"
+                className="w-full px-3 py-2 rounded-md cursor-not-allowed"
+              >
+                General
+              </a>
+            }
           >
-            General
-          </Link>
+            <Link
+              href={`/workspace/${workspace?.id}/settings`}
+              className={`w-full px-3 py-2 rounded-md dark:hover:bg-zinc-700 hover:bg-zinc-200 ${
+                pathname === `/workspace/${workspace?.id}/settings` &&
+                "bg-zinc-200 dark:bg-zinc-700"
+              }`}
+            >
+              General
+            </Link>
+          </PermissionsGate>
 
           <PermissionsGate
             required={["arigo.workspace.settings.permissions.view"]}
@@ -71,15 +92,36 @@ export default function SettingsLayout({
             </Link>
           </PermissionsGate>
 
-          <Link
-            href={`/workspace/${workspace?.id}/settings/billing`}
-            className={`w-full px-3 py-2 rounded-md dark:hover:bg-zinc-700 hover:bg-zinc-200 ${
-              pathname === `/workspace/${workspace?.id}/settings/billing` &&
-              "bg-zinc-200 dark:bg-zinc-700"
-            }`}
+          <PermissionsGate
+            workspace={workspace}
+            required={["arigo.workspace.settings.billing.view"]}
+            fallback={
+              <a
+                aria-disabled="true"
+                className="w-full px-3 py-2 rounded-md cursor-wait"
+              >
+                Billing
+              </a>
+            }
+            failed={
+              <a
+                aria-disabled="true"
+                className="w-full px-3 py-2 rounded-md cursor-not-allowed"
+              >
+                Billing
+              </a>
+            }
           >
-            Billing
-          </Link>
+            <Link
+              href={`/workspace/${workspace?.id}/settings/billing`}
+              className={`w-full px-3 py-2 rounded-md dark:hover:bg-zinc-700 hover:bg-zinc-200 ${
+                pathname === `/workspace/${workspace?.id}/settings/billing` &&
+                "bg-zinc-200 dark:bg-zinc-700"
+              }`}
+            >
+              Billing
+            </Link>
+          </PermissionsGate>
         </aside>
 
         <section className="col-span-6 pr-4">{children}</section>

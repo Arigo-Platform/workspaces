@@ -360,6 +360,18 @@ export interface Database {
           id: string | null;
         };
       };
+      unique_commands_channels: {
+        Row: {
+          channel_id: string | null;
+          channel_name: string | null;
+        };
+      };
+      unique_commands_users: {
+        Row: {
+          user_id: string | null;
+          username: string | null;
+        };
+      };
     };
     Functions: {
       can_access_workspace: {
