@@ -3,12 +3,14 @@
 import Button from "@/components/Button";
 import Tooltip from "@/components/Tooltip";
 import { Database } from "@/types/supabase";
+import PermissionsGate from "@/util/providers/PermissionsGate";
 import { useWorkspaceContext } from "@/util/providers/WorkspaceProvider";
 import useBotSettings from "@/util/useBotSettings";
 import { Listbox, Transition } from "@headlessui/react";
 import {
   ArrowTopRightOnSquareIcon,
   ChevronUpDownIcon,
+  EyeIcon,
   PencilIcon,
   PlusCircleIcon,
   TrashIcon,
@@ -52,6 +54,8 @@ export default function PemissionsPage({ params }: { params: { id: string } }) {
   const [permissionsList, setPermissionsList] = useState<
     PermissionToggleGroup[]
   >([]);
+
+  const [canEdit, setCanEdit] = useState(false);
 
   const supabase = useSupabaseClient<Database>();
 
@@ -163,7 +167,6 @@ export default function PemissionsPage({ params }: { params: { id: string } }) {
       setCurrentPermissions((prev) => {
         const index = prev.findIndex((perm) => perm.role === p.role!);
         prev[index].permissions = p.permissions!;
-        console.log(index);
         return [...prev];
       });
     } else {
@@ -231,17 +234,22 @@ export default function PemissionsPage({ params }: { params: { id: string } }) {
         </header>
 
         <div className="col-span-full">
-          <Button
-            className="flex justify-center w-full "
-            aria-label="Add Permission Set"
-            onClick={() => {
-              setSelectedPermission(undefined);
-              setModalOpen(true);
-            }}
+          <PermissionsGate
+            workspace={workspace}
+            required={["arigo.workspace.settings.permissions.edit"]}
           >
-            <PlusCircleIcon className="w-5 h-5 mr-2" />
-            Add Permission Set
-          </Button>
+            <Button
+              className="flex justify-center w-full "
+              aria-label="Add Permission Set"
+              onClick={() => {
+                setSelectedPermission(undefined);
+                setModalOpen(true);
+              }}
+            >
+              <PlusCircleIcon className="w-5 h-5 mr-2" />
+              Add Permission Set
+            </Button>
+          </PermissionsGate>
         </div>
 
         <ul className="grid grid-cols-1 gap-2 col-span-full">
@@ -274,18 +282,39 @@ export default function PemissionsPage({ params }: { params: { id: string } }) {
                         {perm.permissions.length > 1 ? "s" : "\u00a0\u00a0"}
                       </span>
 
-                      <Button
-                        className="text-white hover:text-black dark:text-black dark:hover:text-black dark:hover:bg-zinc-300 hover:bg-violet4  inline-flex h-[26px] w-[0px] appearance-none items-center justify-center rounded-full focus:outline-none"
-                        aria-label="Edit"
-                        onClick={() => {
-                          setSelectedPermission(perm);
-                          setModalOpen(true);
-                        }}
+                      <PermissionsGate
+                        workspace={workspace}
+                        required={["arigo.workspace.settings.permissions.edit"]}
+                        failed={
+                          <Button
+                            className="text-white hover:text-black dark:text-black dark:hover:text-black dark:hover:bg-zinc-300 hover:bg-violet4  inline-flex h-[26px] w-[0px] appearance-none items-center justify-center rounded-full focus:outline-none"
+                            aria-label="Edit"
+                            onClick={() => {
+                              setSelectedPermission(perm);
+                              setCanEdit(false);
+                              setModalOpen(true);
+                            }}
+                          >
+                            <div>
+                              <EyeIcon className="w-5 h-5" />
+                            </div>
+                          </Button>
+                        }
                       >
-                        <div>
-                          <PencilIcon className="w-5 h-5" />
-                        </div>
-                      </Button>
+                        <Button
+                          className="text-white hover:text-black dark:text-black dark:hover:text-black dark:hover:bg-zinc-300 hover:bg-violet4  inline-flex h-[26px] w-[0px] appearance-none items-center justify-center rounded-full focus:outline-none"
+                          aria-label="Edit"
+                          onClick={() => {
+                            setSelectedPermission(perm);
+                            setCanEdit(true);
+                            setModalOpen(true);
+                          }}
+                        >
+                          <div>
+                            <PencilIcon className="w-5 h-5" />
+                          </div>
+                        </Button>
+                      </PermissionsGate>
                       <Button
                         className="text-white hover:text-black dark:text-black dark:hover:text-black dark:hover:bg-zinc-300 hover:bg-violet4  inline-flex h-[26px] w-[0px] appearance-none items-center justify-center rounded-full focus:outline-none"
                         aria-label="Delete"
@@ -313,24 +342,29 @@ export default function PemissionsPage({ params }: { params: { id: string } }) {
         </ul>
       </section>
 
-      <PermissionsDialog
-        open={modalOpen}
-        setOpen={setModalOpen}
-        onClose={(p, e) =>
-          toast.promise(createNewPermissionSet(p, e), {
-            loading: e
-              ? "Updating permission set..."
-              : "Creating permission set...",
-            success: e ? "Updated permission set!" : "Created permission set!",
-            error: e
-              ? "Failed to update permission set."
-              : "Failed to create permission set.",
-          })
-        }
-        roles={availableRoles}
-        existing={selectedPermission}
-        permissionsList={permissionsList}
-      />
+      {permissionsList.length > 0 && (
+        <PermissionsDialog
+          open={modalOpen}
+          setOpen={setModalOpen}
+          onClose={(p, e) =>
+            toast.promise(createNewPermissionSet(p, e), {
+              loading: e
+                ? "Updating permission set..."
+                : "Creating permission set...",
+              success: e
+                ? "Updated permission set!"
+                : "Created permission set!",
+              error: e
+                ? "Failed to update permission set."
+                : "Failed to create permission set.",
+            })
+          }
+          roles={availableRoles}
+          existing={selectedPermission}
+          permissionsList={permissionsList}
+          canEdit={canEdit}
+        />
+      )}
     </section>
   );
 }
@@ -342,6 +376,7 @@ function PermissionsDialog({
   roles,
   existing,
   permissionsList,
+  canEdit,
 }: {
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -349,6 +384,7 @@ function PermissionsDialog({
   roles: APIRole[];
   existing?: PermissionsSet;
   permissionsList: PermissionToggleGroup[];
+  canEdit?: boolean;
 }) {
   const [selectedRole, setSelectedRole] = useState<string>();
   const [permissions, setPermissions] = useState<string[]>([]);
@@ -400,7 +436,7 @@ function PermissionsDialog({
         <Dialog.Overlay className="bg-blackA9 data-[state=open]:animate-overlayShow fixed inset-0" />
         <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-[50%] space-y-2 left-[50%] max-h-[85vh] w-[90vw] max-w-5xl translate-x-[-50%] translate-y-[-50%] rounded-[6px] dark:bg-zinc-900 bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
           <Dialog.Title className="text-mauve12 dark:text-white m-0 text-[17px] font-medium pb-2">
-            {existing ? "Modify" : "New"} Permission Set
+            {canEdit ? (existing ? "Modify" : "New") : "View"} Permission Set
           </Dialog.Title>
 
           {!existing && (
@@ -512,7 +548,7 @@ function PermissionsDialog({
                 (p: PermissionToggleGroup, index: number) => {
                   const existingPermissions = [
                     ...new Set(
-                      permissions
+                      existing?.permissions
                         .filter((perm) => {
                           return perm.includes(p.id);
                         })
@@ -542,9 +578,13 @@ function PermissionsDialog({
                                 return `${p.id}.${perm}`;
                               });
 
+                              // remove unselected permissions, add selected permissions
                               setPermissions((prev) => {
                                 return [
-                                  ...new Set([...prev, ...fullPermissions]),
+                                  ...prev.filter((perm) => {
+                                    return !perm.includes(p.id);
+                                  }),
+                                  ...fullPermissions,
                                 ];
                               });
                             }}
@@ -554,6 +594,7 @@ function PermissionsDialog({
                                 className={toggleGroupItemClasses}
                                 value="view"
                                 aria-label="View"
+                                disabled={!canEdit}
                                 defaultChecked={existingPermissions.includes(
                                   "view"
                                 )}
@@ -566,6 +607,7 @@ function PermissionsDialog({
                                 className={toggleGroupItemClasses}
                                 value="edit"
                                 aria-label="Edit"
+                                disabled={!canEdit}
                                 defaultChecked={existingPermissions.includes(
                                   "edit"
                                 )}
@@ -598,6 +640,7 @@ function PermissionsDialog({
               <Button
                 className="flex items-center justify-center w-full px-4 py-2"
                 onClick={handleOnClose}
+                disabled={!canEdit}
                 aria-label={existing ? "Save" : "Create"}
               >
                 {existing ? "Save" : "Create"}

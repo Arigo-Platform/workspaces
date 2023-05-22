@@ -1,4 +1,5 @@
 "use client";
+import PermissionsGate from "@/util/providers/PermissionsGate";
 import { useWorkspaceContext } from "@/util/providers/WorkspaceProvider";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -38,15 +39,37 @@ export default function SettingsLayout({
             General
           </Link>
 
-          <Link
-            href={`/workspace/${workspace?.id}/settings/permissions`}
-            className={`w-full px-3 py-2 rounded-md dark:hover:bg-zinc-700 hover:bg-zinc-200 ${
-              pathname === `/workspace/${workspace?.id}/settings/permissions` &&
-              "bg-zinc-200 dark:bg-zinc-700"
-            }`}
+          <PermissionsGate
+            required={["arigo.workspace.settings.permissions.view"]}
+            workspace={workspace}
+            fallback={
+              <a
+                aria-disabled="true"
+                className="w-full px-3 py-2 rounded-md cursor-wait"
+              >
+                Permissions
+              </a>
+            }
+            failed={
+              <a
+                aria-disabled="true"
+                className="w-full px-3 py-2 rounded-md cursor-not-allowed"
+              >
+                Permissions
+              </a>
+            }
           >
-            Permissions
-          </Link>
+            <Link
+              href={`/workspace/${workspace?.id}/settings/permissions`}
+              className={`w-full px-3 py-2 rounded-md dark:hover:bg-zinc-700 hover:bg-zinc-200 ${
+                pathname ===
+                  `/workspace/${workspace?.id}/settings/permissions` &&
+                "bg-zinc-200 dark:bg-zinc-700"
+              }`}
+            >
+              Permissions
+            </Link>
+          </PermissionsGate>
 
           <Link
             href={`/workspace/${workspace?.id}/settings/billing`}
