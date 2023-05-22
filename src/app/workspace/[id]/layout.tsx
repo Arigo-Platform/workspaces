@@ -1,5 +1,6 @@
 "use client";
 
+import PermissionsGate from "@/util/providers/PermissionsGate";
 import { WorkspaceProvider } from "@/util/providers/WorkspaceProvider";
 import useWorkspace from "@/util/useWorkspace";
 import Link from "next/link";
@@ -22,6 +23,7 @@ export default function RootLayout({
     {
       path: "bot",
       title: "Bot",
+      permissions: ["arigo.bot.settings.view"],
     },
     {
       path: "settings",
@@ -53,21 +55,58 @@ export default function RootLayout({
     <div>
       {/* Removed overflow-x-scroll to prevent weird white space */}
       <nav className="flex w-full px-6 pt-2 bg-slate-100 dark:bg-black delay-[5ms]">
-        {routes.map((route) => (
-          <Link
-            href={`/workspace/${params.id}/${route.path}`}
-            key={route.path}
-            className={`${
-              isRouteSelected(route.path)
-                ? "before:block before:absolute before:h-0 before:left-2 before:right-2 before:bottom-0 before:border-b-2 befordark:border-white border-black dark:text-white font-bold"
-                : "dark:text-slate-400 font-medium"
-            } pb-4 relative inline-block text-sm `}
-          >
-            <span className="px-4 py-2 transition-colors duration-150 rounded-md hover:bg-zinc-200 dark:hover:bg-zinc-800 dark:hover:text-white">
-              {route.title}
-            </span>
-          </Link>
-        ))}
+        {routes.map((route) => {
+          if (route.permissions) {
+            return (
+              <PermissionsGate
+                workspace={workspace}
+                required={route.permissions}
+                key={route.path}
+                fallback={
+                  <a
+                    aria-disabled="true"
+                    className="relative inline-block pb-4 text-sm font-medium cursor-wait dark:text-slate-300"
+                    title="Checking permissions..."
+                  >
+                    <span className="px-4 py-2 transition-colors duration-150 rounded-md hover:bg-zinc-200 dark:hover:bg-zinc-800 dark:hover:text-white">
+                      {route.title}
+                    </span>
+                  </a>
+                }
+              >
+                <Link
+                  href={`/workspace/${params.id}/${route.path}`}
+                  key={route.path}
+                  className={`${
+                    isRouteSelected(route.path)
+                      ? "before:block before:absolute before:h-0 before:left-2 before:right-2 before:bottom-0 before:border-b-2 befordark:border-white border-black dark:text-white font-bold"
+                      : "dark:text-slate-400 font-medium"
+                  } pb-4 relative inline-block text-sm `}
+                >
+                  <span className="px-4 py-2 transition-colors duration-150 rounded-md hover:bg-zinc-200 dark:hover:bg-zinc-800 dark:hover:text-white">
+                    {route.title}
+                  </span>
+                </Link>
+              </PermissionsGate>
+            );
+          } else {
+            return (
+              <Link
+                href={`/workspace/${params.id}/${route.path}`}
+                key={route.path}
+                className={`${
+                  isRouteSelected(route.path)
+                    ? "before:block before:absolute before:h-0 before:left-2 before:right-2 before:bottom-0 before:border-b-2 befordark:border-white border-black dark:text-white font-bold"
+                    : "dark:text-slate-400 font-medium"
+                } pb-4 relative inline-block text-sm `}
+              >
+                <span className="px-4 py-2 transition-colors duration-150 rounded-md hover:bg-zinc-200 dark:hover:bg-zinc-800 dark:hover:text-white">
+                  {route.title}
+                </span>
+              </Link>
+            );
+          }
+        })}
       </nav>
       <WorkspaceProvider workspace={workspace} loading={loading}>
         <div>{children}</div>

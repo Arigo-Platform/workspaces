@@ -554,6 +554,9 @@ function PermissionsDialog({
                                 className={toggleGroupItemClasses}
                                 value="view"
                                 aria-label="View"
+                                defaultChecked={existingPermissions.includes(
+                                  "view"
+                                )}
                               >
                                 View
                               </ToggleGroup.Item>
@@ -563,6 +566,9 @@ function PermissionsDialog({
                                 className={toggleGroupItemClasses}
                                 value="edit"
                                 aria-label="Edit"
+                                defaultChecked={existingPermissions.includes(
+                                  "edit"
+                                )}
                               >
                                 Edit
                               </ToggleGroup.Item>

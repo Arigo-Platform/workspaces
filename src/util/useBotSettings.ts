@@ -5,7 +5,7 @@ import {
 } from "@supabase/auth-helpers-react";
 import { useEffect, useMemo, useState } from "react";
 
-const useBotSettings = (workspaceId: string) => {
+const useBotSettings = (workspaceId?: string) => {
   type BotSettingsConfig = Database["public"]["Tables"]["bots"]["Row"];
 
   const [botSettings, setBotSettings] = useState<BotSettingsConfig>();
@@ -15,6 +15,7 @@ const useBotSettings = (workspaceId: string) => {
   const supabase = useSupabaseClient<Database>();
 
   const fetchBot = async () => {
+    if (!workspaceId) return;
     const { data, error } = await supabase
       .from("bots")
       .select()
