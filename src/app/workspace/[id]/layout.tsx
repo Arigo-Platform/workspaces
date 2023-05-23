@@ -84,7 +84,7 @@ export default function RootLayout({
                     key={route.path}
                     className={`${
                       isRouteSelected(route.path)
-                        ? "before:block before:absolute before:h-0 before:left-2 before:right-2 before:bottom-0 before:border-b-2 befordark:border-white border-black dark:text-white font-bold"
+                        ? "before:block before:absolute before:h-0 before:left-2 before:right-2 before:bottom-0 before:border-b-2 before:dark:border-white before:border-black dark:text-white font-bold"
                         : "dark:text-slate-400 font-medium"
                     } pb-4 relative inline-block text-sm `}
                   >
